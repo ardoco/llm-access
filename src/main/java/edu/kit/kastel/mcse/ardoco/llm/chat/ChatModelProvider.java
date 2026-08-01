@@ -166,14 +166,20 @@ public class ChatModelProvider {
         String host = Environment.getenv("OLLAMA_HOST");
         String user = Environment.getenv("OLLAMA_USER");
         String password = Environment.getenv("OLLAMA_PASSWORD");
+        String token = Environment.getenv("OLLAMA_TOKEN");
 
         if (host == null) {
             throw new IllegalStateException("OLLAMA_HOST environment variable not set");
         }
 
         return new LazyChatModel(() -> {
+            boolean hasBasicAuth = user != null && password != null && !user.isEmpty() && !password.isEmpty();
+            if (!hasBasicAuth && token != null && !token.isEmpty()) {
+                // Token/bearer auth against an OpenAI-compatible endpoint exposed at the Ollama host.
+                return new OpenAiChatModel.OpenAiChatModelBuilder().baseUrl(host).modelName(model).apiKey(token).temperature(temperature).seed(seed).build();
+            }
             var ollama = OllamaChatModel.builder().baseUrl(host).modelName(model).timeout(Duration.ofMinutes(10)).temperature(temperature).seed(seed);
-            if (user != null && password != null && !user.isEmpty() && !password.isEmpty()) {
+            if (hasBasicAuth) {
                 ollama.customHeaders(Map.of("Authorization", "Basic " + Base64.getEncoder()
                         .encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8))));
             }
@@ -189,15 +195,16 @@ public class ChatModelProvider {
      * @param seed        The seed value for randomization
      * @param temperature The temperature setting for the model
      * @return A configured OpenAI chat model instance
-     * @throws IllegalStateException If required environment variables are not set
+     * @throws IllegalStateException If the API key environment variable is not set
      */
     private static ChatModel createOpenAiChatModel(String model, int seed, double temperature) {
         String openAiOrganizationId = Environment.getenv("OPENAI_ORGANIZATION_ID");
         String openAiApiKey = Environment.getenv("OPENAI_API_KEY");
-        if (openAiOrganizationId == null || openAiApiKey == null) {
-            throw new IllegalStateException("OPENAI_ORGANIZATION_ID or OPENAI_API_KEY environment variable not set");
+        if (openAiApiKey == null) {
+            throw new IllegalStateException("OPENAI_API_KEY environment variable not set");
         }
 
+        // The organization id is optional; when set it is sent to OpenAI, otherwise it is omitted.
         return new LazyChatModel(() -> new OpenAiChatModel.OpenAiChatModelBuilder().modelName(model)
                 .organizationId(openAiOrganizationId)
                 .apiKey(openAiApiKey)

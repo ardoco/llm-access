@@ -37,15 +37,16 @@ public class OpenAiEmbeddingCreator extends CachedEmbeddingCreator {
      * @param model  The name of the OpenAI model to use
      * @param params Additional parameters (not used in this implementation)
      * @return A configured OpenAI embedding model instance
-     * @throws IllegalStateException If either OPENAI_ORGANIZATION_ID or OPENAI_API_KEY environment variable is not set
+     * @throws IllegalStateException If the OPENAI_API_KEY environment variable is not set
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {
         String openAiOrganizationId = Environment.getenv("OPENAI_ORGANIZATION_ID");
         String openAiApiKey = Environment.getenv("OPENAI_API_KEY");
-        if (openAiOrganizationId == null || openAiApiKey == null) {
-            throw new IllegalStateException("OPENAI_ORGANIZATION_ID or OPENAI_API_KEY environment variable not set");
+        if (openAiApiKey == null) {
+            throw new IllegalStateException("OPENAI_API_KEY environment variable not set");
         }
+        // The organization id is optional; when set it is sent to OpenAI, otherwise it is omitted.
         return new OpenAiEmbeddingModel.OpenAiEmbeddingModelBuilder().modelName(model)
                 .organizationId(openAiOrganizationId)
                 .apiKey(openAiApiKey)
