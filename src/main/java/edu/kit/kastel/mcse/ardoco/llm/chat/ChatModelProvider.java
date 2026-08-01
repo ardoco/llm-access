@@ -25,15 +25,17 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
  * <ul>
  * <li>OpenAI:
  * <ul>
- * <li>{@code OPENAI_ORGANIZATION_ID}: Your OpenAI organization ID</li>
  * <li>{@code OPENAI_API_KEY}: Your OpenAI API key</li>
+ * <li>{@code OPENAI_ORGANIZATION_ID}: Your OpenAI organization ID (optional; sent only when set)</li>
  * </ul>
  * </li>
  * <li>Ollama:
  * <ul>
  * <li>{@code OLLAMA_HOST}: The host URL for the Ollama server</li>
- * <li>{@code OLLAMA_USER}: Username for Ollama authentication (optional)</li>
- * <li>{@code OLLAMA_PASSWORD}: Password for Ollama authentication (optional)</li>
+ * <li>{@code OLLAMA_USER}: Username for Ollama basic authentication (optional)</li>
+ * <li>{@code OLLAMA_PASSWORD}: Password for Ollama basic authentication (optional)</li>
+ * <li>{@code OLLAMA_TOKEN}: Token for an OpenAI-compatible endpoint at the Ollama host (optional; used
+ * when no user/password is set)</li>
  * </ul>
  * </li>
  * <li>Blablador:

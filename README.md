@@ -13,7 +13,7 @@ LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one implem
 
 - **Chat models** for OpenAI, Ollama, Blablador, DeepSeek, and Open WebUI, created lazily and
 configured via a typed builder.
-- **Cached requests**: single or n-fold LLM calls transparently backed by a cache.
+- **Cached requests**: single or n-fold LLM calls, or a transparent `CachingChatModel` decorator, backed by a cache.
 - **Embeddings** for OpenAI, Ollama, ONNX, and Open WebUI (plus a mock), with automatic caching and
 token-length handling.
 - **Pluggable cache** with local-file, Redis, and REST-Redis backends, hierarchical layering, and
@@ -74,6 +74,14 @@ var many = ChatModelUtils.nCachedRequest("Summarize X", model, cache, 5); // 5 s
 cache.flush(); // persist
 ```
 
+Alternatively, wrap any `ChatModel` in a `CachingChatModel` decorator to cache transparently (including
+multi-message chats) without changing call sites:
+
+```java
+ChatModel cached = new CachingChatModel(provider.createChatModel(), cache);
+cached.chat(List.of(UserMessage.from("Summarize X"))); // response cached by message content
+```
+
 ### Embeddings
 
 ```java
@@ -101,8 +109,8 @@ Credentials and hosts are read via `Environment`, which loads a `.env` file from
 
 |  Platform  |                  Chat env vars                   |                        Embedding env vars                         |
 |------------|--------------------------------------------------|-------------------------------------------------------------------|
-| OpenAI     | `OPENAI_ORGANIZATION_ID`, `OPENAI_API_KEY`       | `OPENAI_ORGANIZATION_ID`, `OPENAI_API_KEY`                        |
-| Ollama     | `OLLAMA_HOST` (`OLLAMA_USER`, `OLLAMA_PASSWORD`) | `OLLAMA_EMBEDDING_HOST` (`OLLAMA_EMBEDDING_USER`, `..._PASSWORD`) |
+| OpenAI     | `OPENAI_API_KEY` (`OPENAI_ORGANIZATION_ID` optional) | `OPENAI_API_KEY` (`OPENAI_ORGANIZATION_ID` optional) |
+| Ollama     | `OLLAMA_HOST` (`OLLAMA_USER`+`OLLAMA_PASSWORD`, or `OLLAMA_TOKEN`) | `OLLAMA_EMBEDDING_HOST` (`OLLAMA_EMBEDDING_USER`, `..._PASSWORD`) |
 | Blablador  | `BLABLADOR_API_KEY`                              | —                                                                 |
 | DeepSeek   | `DEEPSEEK_API_KEY`                               | —                                                                 |
 | Open WebUI | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`             | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                              |
