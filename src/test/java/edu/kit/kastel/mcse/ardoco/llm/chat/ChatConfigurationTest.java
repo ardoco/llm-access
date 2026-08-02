@@ -17,9 +17,9 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 class ChatConfigurationTest {
 
     @Test
-    @DisplayName("of() applies platform defaults")
-    void testDefaults() {
-        LlmConfiguration config = LlmConfiguration.of(ChatModelPlatform.OPENAI);
+    @DisplayName("of() sets platform and model with default seed and temperature")
+    void testOf() {
+        LlmConfiguration config = LlmConfiguration.of(ChatModelPlatform.OPENAI, "gpt-4o-mini");
         assertEquals(ChatModelPlatform.OPENAI, config.platform());
         assertEquals("gpt-4o-mini", config.modelName());
         assertEquals(LlmConfiguration.DEFAULT_SEED, config.seed());
@@ -37,10 +37,10 @@ class ChatConfigurationTest {
     }
 
     @Test
-    @DisplayName("builder falls back to the platform default model when unset or blank")
-    void testBuilderDefaultModel() {
-        assertEquals("deepseek-chat", LlmConfiguration.builder(ChatModelPlatform.DEEPSEEK).build().modelName());
-        assertEquals("deepseek-chat", LlmConfiguration.builder(ChatModelPlatform.DEEPSEEK).modelName("  ").build().modelName());
+    @DisplayName("build requires a model name")
+    void testBuilderRequiresModel() {
+        assertThrows(IllegalArgumentException.class, () -> LlmConfiguration.builder(ChatModelPlatform.DEEPSEEK).build());
+        assertThrows(IllegalArgumentException.class, () -> LlmConfiguration.builder(ChatModelPlatform.DEEPSEEK).modelName("  ").build());
     }
 
     @Test
@@ -52,12 +52,11 @@ class ChatConfigurationTest {
     }
 
     @Test
-    @DisplayName("provider exposes cache parameters and thread count")
+    @DisplayName("provider exposes cache parameters")
     void testProviderMetadata() {
         LlmConfiguration config = LlmConfiguration.builder(ChatModelPlatform.OPENAI).modelName("gpt-4o").seed(133742243).temperature(0.0).build();
         ChatModelProvider provider = new ChatModelProvider(config);
 
-        assertEquals(100, provider.threads());
         assertEquals("gpt-4o", provider.modelName());
 
         ChatCacheParameter parameters = provider.cacheParameters();

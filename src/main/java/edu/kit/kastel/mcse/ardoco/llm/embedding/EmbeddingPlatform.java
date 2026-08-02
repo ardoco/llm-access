@@ -2,8 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.llm.embedding;
 
 /**
- * Enum representing supported embedding model platforms.
- * Each platform specifies a default number of threads for parallel embedding generation and a default model.
+ * Enum representing supported embedding model platforms. The model name is not part of the platform; it must
+ * be provided through the configuration. The number of threads used for parallel generation is decided by
+ * the concrete {@link EmbeddingCreator} implementations.
  *
  * <ul>
  * <li>OLLAMA: Local embedding generation using Ollama models</li>
@@ -17,51 +18,25 @@ package edu.kit.kastel.mcse.ardoco.llm.embedding;
  */
 public enum EmbeddingPlatform {
     /**
-     * Ollama platform (1 thread).
+     * Ollama platform.
      */
-    OLLAMA(1, "nomic-embed-text:v1.5"),
+    OLLAMA,
     /**
-     * OpenAI platform (40 threads).
+     * OpenAI platform.
      */
-    OPENAI(40, "text-embedding-ada-002"),
+    OPENAI,
     /**
-     * ONNX platform (1 thread). Has no default model; a model name and file paths must be provided.
+     * ONNX platform. Requires a model name and file paths.
      */
-    ONNX(1, ""),
+    ONNX,
     /**
-     * Open WebUI platform (1 thread).
+     * Open WebUI platform.
      */
-    OPENWEBUI(1, "nomic-embed-text:v1.5"),
+    OPENWEBUI,
     /**
-     * Mock platform (1 thread), returns zero vectors.
+     * Mock platform, returns zero vectors.
      */
-    MOCK(1, "mock");
-
-    private final int threads;
-    private final String defaultModel;
-
-    EmbeddingPlatform(int threads, String defaultModel) {
-        this.threads = threads;
-        this.defaultModel = defaultModel;
-    }
-
-    /**
-     * Returns the number of threads for this platform.
-     *
-     * @return the thread count
-     */
-    public int getThreads() {
-        return threads;
-    }
-
-    /**
-     * Returns the default model name for this platform (empty if none).
-     *
-     * @return the default model name
-     */
-    public String getDefaultModel() {
-        return defaultModel;
-    }
+    MOCK;
 
     /**
      * Returns the enum value for the given platform name (case-insensitive).

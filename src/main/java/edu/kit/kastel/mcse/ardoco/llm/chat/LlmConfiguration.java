@@ -10,8 +10,8 @@ import org.jspecify.annotations.Nullable;
  * <p>
  * This record replaces the previously required coupling to any application-specific configuration object.
  * It captures the platform, model name, seed, and temperature that fully determine which chat model is
- * created (and how it is cached). Use {@link #of(ChatModelPlatform)} for defaults or {@link #builder(ChatModelPlatform)}
- * to override individual settings.
+ * created (and how it is cached). Use {@link #of(ChatModelPlatform, String)} for the common case or
+ * {@link #builder(ChatModelPlatform)} to override the seed and temperature as well.
  *
  * @param platform    The platform that hosts the model
  * @param modelName   The name of the model to use
@@ -44,13 +44,14 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
     }
 
     /**
-     * Creates a configuration for the given platform using its default model, seed, and temperature.
+     * Creates a configuration for the given platform and model, using the default seed and temperature.
      *
-     * @param platform The platform that hosts the model
-     * @return A configuration with default settings for the platform
+     * @param platform  The platform that hosts the model
+     * @param modelName The name of the model to use
+     * @return A configuration with the given platform and model and default seed and temperature
      */
-    public static LlmConfiguration of(ChatModelPlatform platform) {
-        return builder(platform).build();
+    public static LlmConfiguration of(ChatModelPlatform platform, String modelName) {
+        return builder(platform).modelName(modelName).build();
     }
 
     /**
@@ -64,7 +65,8 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
     }
 
     /**
-     * Builder for {@link LlmConfiguration} that fills in platform-specific defaults for any value not set.
+     * Builder for {@link LlmConfiguration}. The model name is required; the seed and temperature default to
+     * {@link #DEFAULT_SEED} and {@link #DEFAULT_TEMPERATURE}.
      */
     public static final class Builder {
         private final ChatModelPlatform platform;
@@ -77,7 +79,7 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
         }
 
         /**
-         * Sets the model name. If not set, the platform default is used.
+         * Sets the model name. This value is required.
          *
          * @param modelName The name of the model to use
          * @return This builder
@@ -110,13 +112,16 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
         }
 
         /**
-         * Builds the configuration, applying the platform default model if none was set.
+         * Builds the configuration.
          *
          * @return The configuration
+         * @throws IllegalArgumentException if no model name was set
          */
         public LlmConfiguration build() {
-            String resolvedModel = (modelName == null || modelName.isBlank()) ? platform.getDefaultModel() : modelName;
-            return new LlmConfiguration(platform, resolvedModel, seed, temperature);
+            if (modelName == null || modelName.isBlank()) {
+                throw new IllegalArgumentException("A model name must be set for platform " + platform);
+            }
+            return new LlmConfiguration(platform, modelName, seed, temperature);
         }
     }
 }

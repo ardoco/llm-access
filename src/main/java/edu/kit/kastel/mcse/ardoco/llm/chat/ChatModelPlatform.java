@@ -2,66 +2,40 @@
 package edu.kit.kastel.mcse.ardoco.llm.chat;
 
 /**
- * Enum representing supported chat language model platforms.
- * Each platform specifies a default number of threads to use for parallel execution and a default model.
+ * Enum representing supported chat language model platforms. The model name is not part of the platform;
+ * it must be provided through the configuration.
  *
  * <ul>
- * <li>OPENAI: OpenAI platform (100 threads)</li>
- * <li>OLLAMA: Ollama platform (1 thread)</li>
- * <li>BLABLADOR: Blablador platform (100 threads)</li>
- * <li>DEEPSEEK: DeepSeek platform (1 thread)</li>
- * <li>OPENWEBUI: Open WebUI platform (10 threads)</li>
+ * <li>OPENAI: OpenAI platform</li>
+ * <li>OLLAMA: Ollama platform</li>
+ * <li>BLABLADOR: Blablador platform</li>
+ * <li>DEEPSEEK: DeepSeek platform</li>
+ * <li>OPENWEBUI: Open WebUI platform</li>
  * </ul>
  *
  * @see ChatModelProvider
  */
 public enum ChatModelPlatform {
     /**
-     * OpenAI platform (100 threads).
+     * OpenAI platform.
      */
-    OPENAI(100, "gpt-4o-mini"),
+    OPENAI,
     /**
-     * Ollama platform (1 thread).
+     * Ollama platform.
      */
-    OLLAMA(1, "llama3:8b"),
+    OLLAMA,
     /**
-     * Blablador platform (100 threads).
+     * Blablador platform.
      */
-    BLABLADOR(100, "2 - Llama 3.3 70B instruct"),
+    BLABLADOR,
     /**
-     * DeepSeek platform (1 thread).
+     * DeepSeek platform.
      */
-    DEEPSEEK(1, "deepseek-chat"),
+    DEEPSEEK,
     /**
-     * Open WebUI platform (10 threads).
+     * Open WebUI platform.
      */
-    OPENWEBUI(10, "llama3:8b");
-
-    private final int threads;
-    private final String defaultModel;
-
-    ChatModelPlatform(int threads, String defaultModel) {
-        this.threads = threads;
-        this.defaultModel = defaultModel;
-    }
-
-    /**
-     * Returns the number of threads for this platform.
-     *
-     * @return the thread count
-     */
-    public int getThreads() {
-        return threads;
-    }
-
-    /**
-     * Returns the default model name for this platform.
-     *
-     * @return the default model name
-     */
-    public String getDefaultModel() {
-        return defaultModel;
-    }
+    OPENWEBUI;
 
     /**
      * Returns the enum value for the given platform name (case-insensitive).

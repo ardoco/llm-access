@@ -16,10 +16,17 @@ import org.junit.jupiter.api.Test;
 class EmbeddingConfigurationTest {
 
     @Test
-    @DisplayName("of() applies platform default models")
-    void testDefaults() {
-        assertEquals("text-embedding-ada-002", EmbeddingConfiguration.of(EmbeddingPlatform.OPENAI).modelName());
-        assertEquals("nomic-embed-text:v1.5", EmbeddingConfiguration.of(EmbeddingPlatform.OLLAMA).modelName());
+    @DisplayName("of() sets platform and model")
+    void testOf() {
+        EmbeddingConfiguration config = EmbeddingConfiguration.of(EmbeddingPlatform.OPENAI, "text-embedding-3-large");
+        assertEquals(EmbeddingPlatform.OPENAI, config.platform());
+        assertEquals("text-embedding-3-large", config.modelName());
+    }
+
+    @Test
+    @DisplayName("build requires a model name")
+    void testRequiresModel() {
+        assertThrows(IllegalArgumentException.class, () -> EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).build());
     }
 
     @Test
@@ -43,7 +50,7 @@ class EmbeddingConfigurationTest {
     @Test
     @DisplayName("create() builds a mock creator returning zero vectors")
     void testMockCreator() {
-        EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.of(EmbeddingPlatform.MOCK));
+        EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.of(EmbeddingPlatform.MOCK, "mock"));
         List<float[]> embeddings = creator.calculateEmbeddings(List.of("a", "b"));
         assertEquals(2, embeddings.size());
         assertArrayEquals(new float[] { 0 }, embeddings.get(0));

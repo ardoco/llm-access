@@ -9,8 +9,8 @@ import org.jspecify.annotations.Nullable;
  * Framework-neutral configuration for an embedding model.
  * <p>
  * Captures the platform, model name, and (for the ONNX platform) the local model and tokenizer file paths.
- * Use {@link #of(EmbeddingPlatform)} for defaults, {@link #onnx(String, String, String)} for ONNX models, or
- * {@link #builder(EmbeddingPlatform)} to override individual settings.
+ * Use {@link #of(EmbeddingPlatform, String)} for the common case, {@link #onnx(String, String, String)} for
+ * ONNX models, or {@link #builder(EmbeddingPlatform)} to set the file paths as well.
  *
  * @param platform        The embedding platform
  * @param modelName       The name of the embedding model
@@ -33,13 +33,14 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
     }
 
     /**
-     * Creates a configuration for the given platform using its default model.
+     * Creates a configuration for the given platform and model.
      *
-     * @param platform The embedding platform
-     * @return A configuration with default settings for the platform
+     * @param platform  The embedding platform
+     * @param modelName The name of the embedding model
+     * @return A configuration with the given platform and model
      */
-    public static EmbeddingConfiguration of(EmbeddingPlatform platform) {
-        return builder(platform).build();
+    public static EmbeddingConfiguration of(EmbeddingPlatform platform, String modelName) {
+        return builder(platform).modelName(modelName).build();
     }
 
     /**
@@ -65,7 +66,7 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
     }
 
     /**
-     * Builder for {@link EmbeddingConfiguration} that fills in the platform default model if none is set.
+     * Builder for {@link EmbeddingConfiguration}. The model name is required.
      */
     public static final class Builder {
         private final EmbeddingPlatform platform;
@@ -78,7 +79,7 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
         }
 
         /**
-         * Sets the model name. If not set, the platform default is used.
+         * Sets the model name. This value is required.
          *
          * @param modelName The name of the embedding model
          * @return This builder
@@ -111,13 +112,16 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
         }
 
         /**
-         * Builds the configuration, applying the platform default model if none was set.
+         * Builds the configuration.
          *
          * @return The configuration
+         * @throws IllegalArgumentException if no model name was set
          */
         public EmbeddingConfiguration build() {
-            String resolvedModel = (modelName == null || modelName.isBlank()) ? platform.getDefaultModel() : modelName;
-            return new EmbeddingConfiguration(platform, resolvedModel, pathToModel, pathToTokenizer);
+            if (modelName == null || modelName.isBlank()) {
+                throw new IllegalArgumentException("A model name must be set for platform " + platform);
+            }
+            return new EmbeddingConfiguration(platform, modelName, pathToModel, pathToTokenizer);
         }
     }
 }

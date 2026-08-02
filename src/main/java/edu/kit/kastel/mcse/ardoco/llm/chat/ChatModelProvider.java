@@ -147,15 +147,6 @@ public class ChatModelProvider {
     }
 
     /**
-     * Determines the number of threads to use based on the configured platform.
-     *
-     * @return The number of threads to use
-     */
-    public int threads() {
-        return platform.getThreads();
-    }
-
-    /**
      * Creates an Ollama chat model instance.
      * The model is configured with authentication if credentials are provided.
      *

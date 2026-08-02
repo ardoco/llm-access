@@ -43,7 +43,7 @@ import edu.kit.kastel.mcse.ardoco.llm.chat.*;
 import dev.langchain4j.model.chat.ChatModel;
 
 LlmConfiguration config = LlmConfiguration.builder(ChatModelPlatform.OPENAI)
-		.modelName("gpt-4o-mini") // optional; defaults per platform
+		.modelName("gpt-4o-mini") // required
 		.seed(133742243)          // optional
 		.temperature(0.0)         // optional
 		.build();
@@ -63,7 +63,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.chat.*;
 
 CacheManager.setCacheDir("cache");
-ChatModelProvider provider = new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENAI));
+ChatModelProvider provider = new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENAI, "gpt-4o-mini"));
 
 Cache<ChatCacheKey> cache = CacheManager.getDefaultInstance().getCache(provider, provider.cacheParameters());
 ChatModel model = provider.createChatModel();
@@ -89,7 +89,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.embedding.*;
 
 CacheManager.setCacheDir("cache"); // required for the caching creators
-EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.of(EmbeddingPlatform.OPENAI));
+EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.of(EmbeddingPlatform.OPENAI, "text-embedding-3-large"));
 
 float[] vector = creator.calculateEmbedding("some text");
 var vectors = creator.calculateEmbeddings(List.of("a", "b", "c"));

@@ -36,7 +36,6 @@ class ChatModelProviderTest {
         assertEquals("mistral", provider.modelName());
         assertEquals(99, provider.seed());
         assertEquals(0.7, provider.temperature());
-        assertEquals(1, provider.threads()); // OLLAMA is single-threaded
         assertEquals(new ChatCacheParameter("mistral", 99, 0.7), provider.cacheParameters());
     }
 
@@ -44,7 +43,7 @@ class ChatModelProviderTest {
     @DisplayName("createChatModel builds a lazy model when the required credentials are present")
     void buildsOpenAiModel() {
         // .env-test provides OPENAI_API_KEY
-        ChatModel model = new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENAI)).createChatModel();
+        ChatModel model = new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENAI, "gpt-4o-mini")).createChatModel();
         assertNotNull(model);
         assertTrue(model instanceof LazyChatModel);
     }
@@ -53,8 +52,9 @@ class ChatModelProviderTest {
     @DisplayName("createChatModel fails fast when required credentials are missing")
     void missingCredentialsThrow() {
         // .env-test defines no Blablador/DeepSeek/Open WebUI credentials
-        assertThrows(IllegalStateException.class, () -> new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.BLABLADOR)).createChatModel());
-        assertThrows(IllegalStateException.class, () -> new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.DEEPSEEK)).createChatModel());
-        assertThrows(IllegalStateException.class, () -> new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENWEBUI)).createChatModel());
+        assertThrows(IllegalStateException.class, () -> new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.BLABLADOR, "llama")).createChatModel());
+        assertThrows(IllegalStateException.class, () -> new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.DEEPSEEK, "deepseek-chat"))
+                .createChatModel());
+        assertThrows(IllegalStateException.class, () -> new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENWEBUI, "llama")).createChatModel());
     }
 }
