@@ -42,6 +42,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
     private final Cache<EmbeddingCacheKey> cache;
     private final EmbeddingModel embeddingModel;
     private final String rawNameOfModel;
+    private final String[] params;
     private final int threads;
     private final EmbeddingCacheParameter embeddingCacheParameter;
 
@@ -57,6 +58,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
         this.cache = CacheManager.getDefaultInstance().getCache(this, embeddingCacheParameter);
         this.embeddingModel = Objects.requireNonNull(createEmbeddingModel(model, params));
         this.rawNameOfModel = model;
+        this.params = params;
         this.threads = Math.max(1, threads);
     }
 
@@ -96,7 +98,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
             int end = i == threadCount - 1 ? contents.size() : (i + 1) * numberOfElementsPerThread;
             List<String> subList = contents.subList(start, end);
             futureResults.add(executor.submit(() -> {
-                var embeddingModelInstance = createEmbeddingModel(this.rawNameOfModel);
+                var embeddingModelInstance = createEmbeddingModel(this.rawNameOfModel, this.params);
                 return calculateEmbeddingsSequential(embeddingModelInstance, subList);
             }));
         }

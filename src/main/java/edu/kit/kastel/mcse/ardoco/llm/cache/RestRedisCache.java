@@ -38,7 +38,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
     private static UnifiedRedisClient createRedisConnection() {
         String restRedisUri = "http://localhost:8080";
         String restRedisUriEnv = Environment.getenv("REST_REDIS_URI");
-        if (restRedisUriEnv != null) {
+        if (restRedisUriEnv != null && !restRedisUriEnv.isBlank()) {
             restRedisUri = restRedisUriEnv;
         }
         String restRedisUsername = Environment.getenv("REST_REDIS_USERNAME");
