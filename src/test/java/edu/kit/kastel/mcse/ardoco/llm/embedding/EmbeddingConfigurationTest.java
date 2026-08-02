@@ -24,9 +24,11 @@ class EmbeddingConfigurationTest {
     }
 
     @Test
-    @DisplayName("build requires a model name")
+    @DisplayName("build requires a model name except for the mock platform")
     void testRequiresModel() {
         assertThrows(IllegalArgumentException.class, () -> EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).build());
+        // The mock platform ignores the model, so it builds without one.
+        assertEquals(EmbeddingPlatform.MOCK, EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).build().platform());
     }
 
     @Test
@@ -50,7 +52,7 @@ class EmbeddingConfigurationTest {
     @Test
     @DisplayName("create() builds a mock creator returning zero vectors")
     void testMockCreator() {
-        EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.of(EmbeddingPlatform.MOCK, "mock"));
+        EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).build());
         List<float[]> embeddings = creator.calculateEmbeddings(List.of("a", "b"));
         assertEquals(2, embeddings.size());
         assertArrayEquals(new float[] { 0 }, embeddings.get(0));

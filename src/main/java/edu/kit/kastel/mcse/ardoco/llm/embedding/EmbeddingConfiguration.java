@@ -66,7 +66,8 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
     }
 
     /**
-     * Builder for {@link EmbeddingConfiguration}. The model name is required.
+     * Builder for {@link EmbeddingConfiguration}. The model name is required for every platform except
+     * {@link EmbeddingPlatform#MOCK}, which ignores it.
      */
     public static final class Builder {
         private final EmbeddingPlatform platform;
@@ -115,13 +116,19 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
          * Builds the configuration.
          *
          * @return The configuration
-         * @throws IllegalArgumentException if no model name was set
+         * @throws IllegalArgumentException if no model name was set for a non-mock platform
          */
         public EmbeddingConfiguration build() {
-            if (modelName == null || modelName.isBlank()) {
-                throw new IllegalArgumentException("A model name must be set for platform " + platform);
+            String resolvedModel = modelName;
+            if (resolvedModel == null || resolvedModel.isBlank()) {
+                // The mock platform ignores the model entirely, so a name is optional there;
+                // every real platform requires one.
+                if (platform != EmbeddingPlatform.MOCK) {
+                    throw new IllegalArgumentException("A model name must be set for platform " + platform);
+                }
+                resolvedModel = "mock";
             }
-            return new EmbeddingConfiguration(platform, modelName, pathToModel, pathToTokenizer);
+            return new EmbeddingConfiguration(platform, resolvedModel, pathToModel, pathToTokenizer);
         }
     }
 }
