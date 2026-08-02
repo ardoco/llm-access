@@ -9,6 +9,7 @@ import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import dev.langchain4j.model.chat.ChatModel;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
@@ -19,10 +20,11 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
  * factory, including its fail-fast behaviour when required credentials are missing.
  */
 @NullMarked
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ChatModelProviderTest {
 
     @BeforeAll
-    static void init() {
+    void init() {
         Environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 

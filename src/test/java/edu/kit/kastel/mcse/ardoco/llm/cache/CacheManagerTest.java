@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
@@ -25,13 +26,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
  * persistence, and constructor validation.
  */
 @NullMarked
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CacheManagerTest {
 
     @TempDir
     private Path tempCacheDir;
 
     @BeforeAll
-    static void init() {
+    void init() {
         Environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 
