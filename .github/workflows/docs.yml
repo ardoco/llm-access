@@ -26,7 +26,7 @@ jobs:
 
       - name: Remove contents in Wiki
         working-directory: wiki
-        run: ls -A1 | grep -v '.git' | xargs rm -r
+        run: ls -A1 | grep -v '.git' | xargs -r rm -r
 
       - name: Copy Wiki from Docs folder
         run: |
