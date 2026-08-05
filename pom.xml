@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>llm-access</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 
   <name>ARDoCo LLM Access</name>
   <description>A reusable library for accessing Large Language Models (LLMs) and embedding models via LangChain4j. It provides framework-neutral chat-model providers, embedding creators, and a pluggable caching subsystem (local file, Redis, REST-Redis) for LLM requests and embeddings.</description>
