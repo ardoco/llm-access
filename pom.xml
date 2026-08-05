@@ -27,7 +27,7 @@
   </issueManagement>
 
   <properties>
-    <langchain4j.version>1.16.3</langchain4j.version>
+    <langchain4j.version>1.18.1</langchain4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <jtokkit.version>1.1.0</jtokkit.version>
     <rest-redis.version>0.1.4</rest-redis.version>
