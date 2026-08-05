@@ -74,8 +74,9 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
      */
     private static RedisAdapter createRedisConnection() {
         String redisUrl = "redis://localhost:6379";
-        if (Environment.getenv("REDIS_URL") != null) {
-            redisUrl = Environment.getenv("REDIS_URL");
+        String redisUrlEnv = Environment.getenv("REDIS_URL");
+        if (redisUrlEnv != null && !redisUrlEnv.isBlank()) {
+            redisUrl = redisUrlEnv;
         }
         RedisAdapter redis = new RedisAdapter(RedisClient.create(redisUrl));
         // Check if connection is working

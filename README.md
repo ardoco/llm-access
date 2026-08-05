@@ -4,8 +4,8 @@ A small, reusable Java library for accessing Large Language Models (LLMs) and em
 [LangChain4j](https://docs.langchain4j.dev/), with a pluggable caching layer for LLM requests and
 embeddings.
 
-It is framework-neutral: model settings are passed as plain configuration objects (no coupling to any
-particular application's config format), while credentials and hosts are read from the environment. The
+It is framework-neutral. Model settings are passed as plain configuration objects,
+while credentials and hosts are read from the environment. The
 code was extracted and generalized from the [LiSSA](https://github.com/ardoco/lissa) project so that
 LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one implementation.
 
@@ -14,8 +14,8 @@ LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one implem
 - **Chat models** for OpenAI, Ollama, Blablador, DeepSeek, and Open WebUI, created lazily and
 configured via a typed builder.
 - **Cached requests**: single or n-fold LLM calls, or a transparent `CachingChatModel` decorator, backed by a cache.
-- **Embeddings** for OpenAI, Ollama, ONNX, and Open WebUI (plus a mock), with automatic caching and
-token-length handling.
+- **Embeddings** for OpenAI, Ollama, ONNX, Open WebUI, and a mock (for when embeddings are not required),
+with automatic caching and token-length handling.
 - **Pluggable cache** with local-file, Redis, and REST-Redis backends, hierarchical layering, and
 conflict-resolution strategies. The on-disk format is compatible with LiSSA's existing caches.
 
