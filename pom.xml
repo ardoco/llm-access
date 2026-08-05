@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.github.ardoco</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.0.1</version>
+  </parent>
+
+  <artifactId>llm-access</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+
+  <name>ARDoCo LLM Access</name>
+  <description>A reusable library for accessing Large Language Models (LLMs) and embedding models via LangChain4j. It provides framework-neutral chat-model providers, embedding creators, and a pluggable caching subsystem (local file, Redis, REST-Redis) for LLM requests and embeddings.</description>
+  <url>https://github.com/ardoco/llm-access</url>
+
+  <scm>
+    <connection>scm:git:git://github.com/ardoco/llm-access.git</connection>
+    <developerConnection>scm:git:ssh://github.com:ardoco/llm-access.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/ardoco/llm-access/tree/main</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/ardoco/llm-access/issues</url>
+  </issueManagement>
+
+  <properties>
+    <langchain4j.version>1.16.3</langchain4j.version>
+    <testcontainers.version>2.0.5</testcontainers.version>
+    <jtokkit.version>1.1.0</jtokkit.version>
+    <rest-redis.version>0.1.4</rest-redis.version>
+    <dotenv.version>3.2.0</dotenv.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>dev.langchain4j</groupId>
+        <artifactId>langchain4j-bom</artifactId>
+        <version>${langchain4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.knuddels</groupId>
+      <artifactId>jtokkit</artifactId>
+      <version>${jtokkit.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-embeddings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-ollama</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-open-ai</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.cdimascio</groupId>
+      <artifactId>dotenv-java</artifactId>
+      <version>${dotenv.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.fuchss</groupId>
+      <artifactId>rest-redis</artifactId>
+      <version>${rest-redis.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- The ARDoCo parent references flatten-maven-plugin without a version, so Maven would resolve
+             the latest (1.8.0), which has an NPE regression in its CI-friendly interpolator. Pin a known-good version. -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>1.7.3</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <!-- Override the parent's central-publishing deploymentName (which defaults to "ardoco") so this
+           library's bundle is named distinctly in the Central Publisher Portal. -->
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+          <autoPublish>true</autoPublish>
+          <waitUntil>published</waitUntil>
+          <deploymentName>ardoco-llm-access</deploymentName>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
