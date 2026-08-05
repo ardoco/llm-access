@@ -107,13 +107,13 @@ EmbeddingCreator creator = EmbeddingCreator.create(
 Credentials and hosts are read via `Environment`, which loads a `.env` file from the working directory
 (falling back to system environment variables). See [`sample.env`](sample.env) for a template.
 
-| Platform   | Chat env vars                                                     | Embedding env vars                                               |
-| ---------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
-| OpenAI     | `OPENAI_API_KEY` (`OPENAI_ORGANIZATION_ID` optional)             | `OPENAI_API_KEY` (`OPENAI_ORGANIZATION_ID` optional)             |
-| Ollama     | `OLLAMA_HOST` (`OLLAMA_USER`+`OLLAMA_PASSWORD`, or `OLLAMA_TOKEN`)| `OLLAMA_EMBEDDING_HOST` (`OLLAMA_EMBEDDING_USER`, `..._PASSWORD`) |
-| Blablador  | `BLABLADOR_API_KEY`                                              | —                                                                |
-| DeepSeek   | `DEEPSEEK_API_KEY`                                               | —                                                                |
-| Open WebUI | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                             | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                             |
+| Platform   | Chat env vars                                                      | Embedding env vars                                                |
+| ---------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| OpenAI     | `OPENAI_API_KEY` (`OPENAI_ORGANIZATION_ID` optional)               | `OPENAI_API_KEY` (`OPENAI_ORGANIZATION_ID` optional)              |
+| Ollama     | `OLLAMA_HOST` (`OLLAMA_USER`+`OLLAMA_PASSWORD`, or `OLLAMA_TOKEN`) | `OLLAMA_EMBEDDING_HOST` (`OLLAMA_EMBEDDING_USER`, `..._PASSWORD`) |
+| Blablador  | `BLABLADOR_API_KEY`                                                | —                                                                 |
+| DeepSeek   | `DEEPSEEK_API_KEY`                                                 | —                                                                 |
+| Open WebUI | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                               | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                              |
 
 ## Caching
 
