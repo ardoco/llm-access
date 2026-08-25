@@ -107,9 +107,11 @@ keys, Redis, or model access required.
 | --- | --- | --- |
 | `verify.yml` | push (main, non-tag), PR, manual | Reusable Maven build/verify via `ardoco/actions` (no deploy). Ignores `docs/**` and `openwiki/**` paths. |
 | `format.yml` | PR to main, manual | Runs `mvn spotless:apply` and auto-commits formatting changes. |
-| `openwiki.yml` | weekly (Mon 06:00 UTC), manual | Runs `openwiki --update --print` and opens an update PR if there are relevant commits on main in the last 7 days (ignoring `openwiki/**`-only changes). |
+| `openwiki.yml` | weekly (Mon 06:00 UTC), manual | Delegates to the shared `ardoco/actions/.github/workflows/openwiki.yml@main` reusable workflow, forwarding `OPENROUTER_API_KEY`. The update logic (commit gating, `openwiki --update --print`, PR creation) is owned by that shared workflow, not inlined here. |
 
-The OpenWiki workflow gates on recent commits to avoid churn: it skips when `origin/main`
-has no relevant (non-`openwiki/**`) commits in the last 7 days. Generated wiki content lives
-under `/openwiki`; `AGENTS.md` notes that the wiki is optional just-in-time context and that
-source/tests are authoritative.
+This repository's `openwiki.yml` only wires the reusable workflow and the `OPENROUTER_API_KEY`
+secret; the commit-gating, `openwiki --update --print` invocation, and update-PR creation live
+in the shared `ardoco/actions` workflow. The shared workflow gates on recent commits to avoid
+churn: it skips when `origin/main` has no relevant (non-`openwiki/**`) commits in the last 7
+days. Generated wiki content lives under `/openwiki`; `AGENTS.md` notes that the wiki is
+optional just-in-time context and that source/tests are authoritative.
