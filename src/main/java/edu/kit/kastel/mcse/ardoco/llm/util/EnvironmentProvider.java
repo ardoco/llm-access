@@ -3,6 +3,9 @@ package edu.kit.kastel.mcse.ardoco.llm.util;
 
 import org.jspecify.annotations.Nullable;
 
+/**
+ * Utility interface to manage environments.
+ */
 public interface EnvironmentProvider {
     /**
      * Retrieves an environment variable value.

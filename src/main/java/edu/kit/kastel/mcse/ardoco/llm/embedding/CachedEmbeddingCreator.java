@@ -41,6 +41,9 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
 
     private static final Logger STATIC_LOGGER = LoggerFactory.getLogger(CachedEmbeddingCreator.class);
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    /**
+     * The default .env environment
+     */
     protected final EnvironmentProvider environment = SystemEnvironment.getInstance();
     private final Cache<EmbeddingCacheKey> cache;
     private final EmbeddingModel embeddingModel;
