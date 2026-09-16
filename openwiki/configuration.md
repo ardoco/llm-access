@@ -1,24 +1,24 @@
 ---
 type: Reference
-title: Configuration and Environment
-description: Environment loads .env over system env vars and is the single source of credentials and hosts; KeyGenerator produces stable content UUIDs for cache keys; Futures resolves parallel embedding futures.
+title: Configuration and SystemEnvironment
+description: SystemEnvironment loads .env over system env vars and is the single source of credentials and hosts; KeyGenerator produces stable content UUIDs for cache keys; Futures resolves parallel embedding futures.
 tags: [configuration, environment, utilities]
 openwiki:
   roles: [repository, integration]
   change_kinds: [public-api]
   source_paths:
-    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Environment.java
+    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/SystemEnvironment.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Futures.java
     - sample.env
-  symbols: [Environment, Environment.getenv, Environment.getenvNonNull, Environment.overwrite, KeyGenerator, KeyGenerator.generateKey, Futures, Futures.getLogged]
+  symbols: [SystemEnvironment, SystemEnvironment.getenv, SystemEnvironment.getenvNonNull, SystemEnvironment.overwrite, KeyGenerator, KeyGenerator.generateKey, Futures, Futures.getLogged]
   test_paths:
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/FuturesTest.java
   invariants:
     - Precedence is .env values then system env vars then null.
-    - Environment.overwrite replaces the Dotenv config; a missing path keeps the previous config.
+    - SystemEnvironment.overwrite replaces the Dotenv config; a missing path keeps the previous config.
     - KeyGenerator normalizes CRLF to LF before hashing and produces type-3 name UUIDs.
     - Futures.getLogged never throws a checked exception; failures become IllegalStateException.
   validation_commands: ["mvn -q test -Dtest=EnvironmentTest,KeyGeneratorTest,FuturesTest"]
@@ -33,7 +33,7 @@ are small utilities used by the cache and embedding subsystems.
 
 ## Environment
 
-`edu.kit.kastel.mcse.ardoco.llm.util.Environment` is a final utility class backed by
+`edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment` is a final utility class backed by
 `io.github.cdimascio.dotenv` (dotenv-java). On class load it tries to load a `.env` from the
 project root; otherwise it falls back to system environment variables.
 

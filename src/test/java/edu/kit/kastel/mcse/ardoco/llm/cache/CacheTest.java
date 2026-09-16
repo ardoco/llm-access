@@ -15,8 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Unit tests for the LocalCache implementation.
@@ -25,12 +25,13 @@ import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
  */
 @NullMarked
 class CacheTest {
+    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
     @TempDir
     private Path tempCacheDir;
 
     @BeforeAll
     static void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
+        environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 
     @BeforeEach

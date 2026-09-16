@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.llm.embedding;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 
 /**
  * An embedding creator that uses OpenAI's embedding models for generating embeddings.
@@ -41,8 +40,8 @@ public class OpenAiEmbeddingCreator extends CachedEmbeddingCreator {
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {
-        String openAiOrganizationId = Environment.getenv("OPENAI_ORGANIZATION_ID");
-        String openAiApiKey = Environment.getenv("OPENAI_API_KEY");
+        String openAiOrganizationId = environment.getenv("OPENAI_ORGANIZATION_ID");
+        String openAiApiKey = environment.getenv("OPENAI_API_KEY");
         if (openAiApiKey == null) {
             throw new IllegalStateException("OPENAI_API_KEY environment variable not set");
         }

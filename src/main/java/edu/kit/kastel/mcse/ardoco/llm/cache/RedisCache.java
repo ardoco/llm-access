@@ -9,7 +9,8 @@ import org.jspecify.annotations.Nullable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 import redis.clients.jedis.RedisClient;
 
 /**
@@ -29,6 +30,8 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
      * Redis client instance.
      */
     private final UnifiedRedisClient redis;
+
+    private static final EnvironmentProvider environment = SystemEnvironment.getInstance();
 
     /**
      * Creates a new Redis cache instance.
@@ -74,7 +77,7 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
      */
     private static RedisAdapter createRedisConnection() {
         String redisUrl = "redis://localhost:6379";
-        String redisUrlEnv = Environment.getenv("REDIS_URL");
+        String redisUrlEnv = environment.getenv("REDIS_URL");
         if (redisUrlEnv != null && !redisUrlEnv.isBlank()) {
             redisUrl = redisUrlEnv;
         }

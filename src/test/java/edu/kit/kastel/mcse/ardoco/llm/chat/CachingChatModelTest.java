@@ -25,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Tests for {@link CachingChatModel} using a real local cache and a recording delegate model.
@@ -37,13 +37,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 @NullMarked
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CachingChatModelTest {
+    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
 
     @TempDir
     private Path tempCacheDir;
 
     @BeforeAll
     void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
+        environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 
     @BeforeEach

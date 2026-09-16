@@ -23,7 +23,7 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Tests the caching, ordering, and parameter-forwarding behaviour of {@link CachedEmbeddingCreator} through
@@ -32,13 +32,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 @NullMarked
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CachedEmbeddingCreatorTest {
+    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
 
     @TempDir
     private Path tempCacheDir;
 
     @BeforeAll
     void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
+        environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 
     @BeforeEach

@@ -16,8 +16,10 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.Futures;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Abstract base class for embedding creators that implement caching functionality.
@@ -39,6 +41,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
 
     private static final Logger STATIC_LOGGER = LoggerFactory.getLogger(CachedEmbeddingCreator.class);
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final EnvironmentProvider environment = SystemEnvironment.getInstance();
     private final Cache<EmbeddingCacheKey> cache;
     private final EmbeddingModel embeddingModel;
     private final String rawNameOfModel;

@@ -1,9 +1,14 @@
 /* Licensed under MIT 2026. */
 package edu.kit.kastel.mcse.ardoco.llm.chat;
 
+import java.util.Map;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
+
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Framework-neutral configuration for a chat language model.
@@ -17,8 +22,9 @@ import org.jspecify.annotations.Nullable;
  * @param modelName   The name of the model to use
  * @param seed        The seed value for model randomization
  * @param temperature The temperature setting for the model
+ * @param environment The environment variables for the model
  */
-public record LlmConfiguration(ChatModelPlatform platform, String modelName, int seed, double temperature) {
+public record LlmConfiguration(ChatModelPlatform platform, String modelName, int seed, double temperature, EnvironmentProvider environment) {
 
     /**
      * Default seed value for models.
@@ -37,6 +43,7 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
      * @param modelName   The name of the model to use
      * @param seed        The seed value for model randomization
      * @param temperature The temperature setting for the model
+     * @param environment The environment variables for the model
      */
     public LlmConfiguration {
         Objects.requireNonNull(platform, "platform must not be null");
@@ -73,6 +80,7 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
         private @Nullable String modelName;
         private int seed = DEFAULT_SEED;
         private double temperature = DEFAULT_TEMPERATURE;
+        private EnvironmentProvider environment = SystemEnvironment.getInstance();
 
         private Builder(ChatModelPlatform platform) {
             this.platform = Objects.requireNonNull(platform, "platform must not be null");
@@ -112,6 +120,20 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
         }
 
         /**
+         * Sets the environment to a non-empty {@link MapEnvironment} based on the parameter. If the environment
+         * parameter is empty, nothing happens.
+         *
+         * @param environment The environment key value mapping
+         * @return This builder
+         */
+        public Builder environment(Map<String, String> environment) {
+            if (!environment.isEmpty()) {
+                this.environment = new MapEnvironment(environment);
+            }
+            return this;
+        }
+
+        /**
          * Builds the configuration.
          *
          * @return The configuration
@@ -121,7 +143,7 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
             if (modelName == null || modelName.isBlank()) {
                 throw new IllegalArgumentException("A model name must be set for platform " + platform);
             }
-            return new LlmConfiguration(platform, modelName, seed, temperature);
+            return new LlmConfiguration(platform, modelName, seed, temperature, environment);
         }
     }
 }

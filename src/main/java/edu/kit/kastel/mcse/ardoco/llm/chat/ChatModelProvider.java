@@ -13,7 +13,8 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Provides chat language model instances for different platforms.
@@ -21,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
  * and handles their configuration, including authentication and model settings.
  * <p>
  * Model settings are supplied through a framework-neutral {@link LlmConfiguration}, while credentials and
- * host URLs are read from the environment (see {@link Environment}).
+ * host URLs are read from the environment (see {@link SystemEnvironment}).
  * <p>
  * Required environment variables for each platform:
  * <ul>
@@ -84,6 +85,11 @@ public class ChatModelProvider {
     private final double temperature;
 
     /**
+     * Optional environment variables for the model if the .env file is to be avoided.
+     */
+    private final EnvironmentProvider environment;
+
+    /**
      * Creates a new chat language model provider with the specified configuration.
      *
      * @param configuration The configuration containing model settings
@@ -94,6 +100,7 @@ public class ChatModelProvider {
         this.modelName = configuration.modelName();
         this.seed = configuration.seed();
         this.temperature = configuration.temperature();
+        this.environment = configuration.environment();
     }
 
     /**
@@ -104,42 +111,12 @@ public class ChatModelProvider {
      */
     public ChatModel createChatModel() {
         return switch (platform) {
-            case OPENAI -> createOpenAiChatModel(modelName, seed, temperature);
-            case OLLAMA -> createOllamaChatModel(modelName, seed, temperature);
-            case BLABLADOR -> createBlabladorChatModel(modelName, seed, temperature);
-            case DEEPSEEK -> createDeepSeekChatModel(modelName, seed, temperature);
-            case OPENWEBUI -> createOpenWebUIChatModel(modelName, seed, temperature);
+            case OPENAI -> createOpenAiChatModel();
+            case OLLAMA -> createOllamaChatModel();
+            case BLABLADOR -> createBlabladorChatModel();
+            case DEEPSEEK -> createDeepSeekChatModel();
+            case OPENWEBUI -> createOpenWebUIChatModel();
         };
-    }
-
-    /**
-     * Creates a chat model instance using an explicit map of configuration keys to values.
-     * Keys should match the environment variable names (e.g., OPENAI_API_KEY, OLLAMA_HOST).
-     * Missing values are treated as null.
-     *
-     * @param arguments Map of environment-style keys to values for dependency injection
-     * @return A configured chat model instance
-     * @throws IllegalArgumentException if required keys are missing
-     */
-    public ChatModel createChatModel(Map<String, String> arguments) {
-        return switch (platform) {
-            case OPENAI -> createOpenAiChatModel(modelName, seed, temperature, arguments.get("OPENAI_ORGANIZATION_ID"), getRequired(arguments,
-                    "OPENAI_API_KEY"));
-            case OLLAMA -> createOllamaChatModel(modelName, seed, temperature, getRequired(arguments, "OLLAMA_HOST"), arguments.get("OLLAMA_USER"), arguments
-                    .get("OLLAMA_PASSWORD"), arguments.get("OLLAMA_TOKEN"));
-            case BLABLADOR -> createBlabladorChatModel(modelName, seed, temperature, getRequired(arguments, "BLABLADOR_API_KEY"));
-            case DEEPSEEK -> createDeepSeekChatModel(modelName, seed, temperature, getRequired(arguments, "DEEPSEEK_API_KEY"));
-            case OPENWEBUI -> createOpenWebUIChatModel(modelName, seed, temperature, getRequired(arguments, "OPENWEBUI_URL"), getRequired(arguments,
-                    "OPENWEBUI_API_KEY"));
-        };
-    }
-
-    private static String getRequired(Map<String, String> args, String key) {
-        String val = args.get(key);
-        if (val == null) {
-            throw new IllegalArgumentException("Required argument '" + key + "' is missing");
-        }
-        return val;
     }
 
     /**
@@ -182,14 +159,11 @@ public class ChatModelProvider {
      * Creates an Ollama chat model instance.
      * The model is configured with authentication if credentials are provided.
      *
-     * @param model       The name of the model to use
-     * @param seed        The seed value for randomization
-     * @param temperature The temperature setting for the model
      * @return A configured Ollama chat model instance
      */
-    private static ChatModel createOllamaChatModel(String model, int seed, double temperature) {
-        return createOllamaChatModel(model, seed, temperature, Environment.getenvNonNull("OLLAMA_HOST"), Environment.getenv("OLLAMA_USER"), Environment.getenv(
-                "OLLAMA_PASSWORD"), Environment.getenv("OLLAMA_TOKEN"));
+    private ChatModel createOllamaChatModel() {
+        return createOllamaChatModel(modelName, seed, temperature, environment.getenvNonNull("OLLAMA_HOST"), environment.getenv("OLLAMA_USER"), environment
+                .getenv("OLLAMA_PASSWORD"), environment.getenv("OLLAMA_TOKEN"));
     }
 
     /**
@@ -227,14 +201,11 @@ public class ChatModelProvider {
      * Creates an OpenAI chat model instance.
      * Requires OpenAI organization ID and API key to be set in environment variables.
      *
-     * @param model       The name of the model to use
-     * @param seed        The seed value for randomization
-     * @param temperature The temperature setting for the model
      * @return A configured OpenAI chat model instance
      * @throws IllegalStateException If the API key environment variable is not set
      */
-    private static ChatModel createOpenAiChatModel(String model, int seed, double temperature) {
-        return createOpenAiChatModel(model, seed, temperature, Environment.getenv("OPENAI_ORGANIZATION_ID"), Environment.getenvNonNull("OPENAI_API_KEY"));
+    private ChatModel createOpenAiChatModel() {
+        return createOpenAiChatModel(modelName, seed, temperature, environment.getenv("OPENAI_ORGANIZATION_ID"), environment.getenvNonNull("OPENAI_API_KEY"));
     }
 
     /**
@@ -263,14 +234,11 @@ public class ChatModelProvider {
      * Creates a Blablador chat model instance.
      * Requires Blablador API key to be set in environment variables.
      *
-     * @param model       The name of the model to use
-     * @param seed        The seed value for randomization
-     * @param temperature The temperature setting for the model
      * @return A configured Blablador chat model instance
      * @throws IllegalStateException If required environment variables are not set
      */
-    private static ChatModel createBlabladorChatModel(String model, int seed, double temperature) {
-        return createBlabladorChatModel(model, seed, temperature, Environment.getenvNonNull("BLABLADOR_API_KEY"));
+    private ChatModel createBlabladorChatModel() {
+        return createBlabladorChatModel(modelName, seed, temperature, environment.getenvNonNull("BLABLADOR_API_KEY"));
     }
 
     /**
@@ -297,14 +265,11 @@ public class ChatModelProvider {
      * Creates a DeepSeek chat model instance.
      * Requires DeepSeek API key to be set in environment variables.
      *
-     * @param model       The name of the model to use
-     * @param seed        The seed value for randomization
-     * @param temperature The temperature setting for the model
      * @return A configured DeepSeek chat model instance
      * @throws IllegalStateException If required environment variables are not set
      */
-    private static ChatModel createDeepSeekChatModel(String model, int seed, double temperature) {
-        return createDeepSeekChatModel(model, seed, temperature, Environment.getenvNonNull("DEEPSEEK_API_KEY"));
+    private ChatModel createDeepSeekChatModel() {
+        return createDeepSeekChatModel(modelName, seed, temperature, environment.getenvNonNull("DEEPSEEK_API_KEY"));
     }
 
     /**
@@ -330,14 +295,12 @@ public class ChatModelProvider {
      * Creates an Open WebUI chat model instance.
      * Requires Open WebUI API key and url to be set in environment variables.
      *
-     * @param model       The name of the model to use
-     * @param seed        The seed value for randomization
-     * @param temperature The temperature setting for the model
      * @return A configured Open WebUI chat model instance
      * @throws IllegalStateException If required environment variables are not set
      */
-    private static ChatModel createOpenWebUIChatModel(String model, int seed, double temperature) {
-        return createOpenWebUIChatModel(model, seed, temperature, Environment.getenvNonNull("OPENWEBUI_URL"), Environment.getenvNonNull("OPENWEBUI_API_KEY"));
+    private ChatModel createOpenWebUIChatModel() {
+        return createOpenWebUIChatModel(modelName, seed, temperature, environment.getenvNonNull("OPENWEBUI_URL"), environment.getenvNonNull(
+                "OPENWEBUI_API_KEY"));
     }
 
     /**

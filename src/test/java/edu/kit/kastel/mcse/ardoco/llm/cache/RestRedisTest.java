@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 import kong.unirest.core.Unirest;
 
 /**
@@ -39,6 +39,8 @@ import kong.unirest.core.Unirest;
  */
 @Testcontainers(disabledWithoutDocker = true)
 public class RestRedisTest {
+
+    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
 
     private static final Path BASELINE_ENV = Path.of("src/test/resources/.env-test");
 
@@ -81,7 +83,7 @@ public class RestRedisTest {
                 REST_REDIS_PASSWORD=
                 """.formatted(baseUrl));
 
-        Environment.overwrite(envFile);
+        environment.overwrite(envFile);
         client = new Client(new ClientConfiguration(baseUrl, null, null));
     }
 
@@ -94,13 +96,13 @@ public class RestRedisTest {
             serverThread.interrupt();
             serverThread.join(5000);
         }
-        Environment.overwrite(BASELINE_ENV);
+        environment.overwrite(BASELINE_ENV);
         Unirest.shutDown();
     }
 
     @BeforeEach
     public void setup() {
-        Environment.overwrite(envFile);
+        environment.overwrite(envFile);
         restCache = new RestRedisCache<>(cacheParameter, new ObjectMapper());
     }
 

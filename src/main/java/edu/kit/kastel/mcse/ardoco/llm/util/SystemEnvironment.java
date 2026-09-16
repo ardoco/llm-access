@@ -31,47 +31,40 @@ import io.github.cdimascio.dotenv.Dotenv;
  * KEY=value
  * </pre>
  */
-public final class Environment {
-    private static final Logger logger = LoggerFactory.getLogger(Environment.class);
-    /** The loaded .env configuration, or null if no .env file exists */
-    private static volatile @Nullable Dotenv dotenv = load();
+public class SystemEnvironment implements EnvironmentProvider {
 
-    private Environment() {
-        throw new IllegalAccessError("Utility class");
+    private static SystemEnvironment INSTANCE = null;
+
+    private static final Logger logger = LoggerFactory.getLogger(SystemEnvironment.class);
+    /** The loaded .env configuration, or null if no .env file exists */
+    private @Nullable Dotenv dotenv;
+
+    private SystemEnvironment() {
+        dotenv = load();
     }
 
     /**
-     * Retrieves an environment variable value.
-     * This method:
-     * <ol>
-     * <li>First checks the .env file for the variable</li>
-     * <li>If not found, falls back to system environment variables</li>
-     * <li>Returns null if the variable is not found in either location</li>
-     * </ol>
+     * Returns the singleton instance of the SystemEnvironment class.
      *
-     * @param key The name of the environment variable to retrieve
-     * @return The value of the environment variable, or null if not found
+     * @return The singleton instance
      */
-    public static @Nullable String getenv(String key) {
+    public static SystemEnvironment getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new SystemEnvironment();
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public @Nullable String getenv(String key) {
         String dotenvValue = dotenv == null ? null : dotenv.get(key);
         if (dotenvValue != null)
             return dotenvValue;
         return System.getenv(key);
     }
 
-    /**
-     * Retrieves an environment variable value, requiring it to be non-null.
-     * This method:
-     * <ol>
-     * <li>Attempts to retrieve the variable using {@link #getenv(String)}</li>
-     * <li>Throws an IllegalStateException if environment variable would be null</li>
-     * </ol>
-     *
-     * @param key The name of the environment variable to retrieve
-     * @return The value of the environment variable
-     * @throws IllegalStateException if the variable is not found and strict mode is enabled
-     */
-    public static String getenvNonNull(String key) {
+    @Override
+    public String getenvNonNull(String key) {
         String env = getenv(key);
         if (env == null) {
             throw new IllegalStateException("environment variable %s is missing, use '.env' or your system to set it up".formatted(key));
@@ -92,7 +85,7 @@ public final class Environment {
      *
      * @return The loaded Dotenv configuration, or null if no .env file exists
      */
-    private static synchronized @Nullable Dotenv load() {
+    private synchronized @Nullable Dotenv load() {
         if (dotenv != null) {
             return dotenv;
         }
@@ -118,7 +111,7 @@ public final class Environment {
      *
      * @param path The path to the new .env file
      */
-    public static synchronized void overwrite(Path path) {
+    public synchronized void overwrite(Path path) {
         if (Files.exists(path)) {
             String directory;
             if (path.getParent() != null) {

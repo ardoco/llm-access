@@ -6,7 +6,8 @@ import org.fuchss.restredis.client.ClientConfiguration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Implements a Redis-based cache for storing and retrieving values using a REST interface.
@@ -14,6 +15,8 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
  * @param <K> The type of cache key used in this cache
  */
 /*package-private*/ class RestRedisCache<K extends CacheKey> extends RedisCache<K> {
+
+    private static final EnvironmentProvider environment = SystemEnvironment.getInstance();
 
     /**
      * Creates a new Rest Redis cache instance.
@@ -37,15 +40,15 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
      */
     private static UnifiedRedisClient createRedisConnection() {
         String restRedisUri = "http://localhost:8080";
-        String restRedisUriEnv = Environment.getenv("REST_REDIS_URI");
+        String restRedisUriEnv = environment.getenv("REST_REDIS_URI");
         if (restRedisUriEnv != null && !restRedisUriEnv.isBlank()) {
             restRedisUri = restRedisUriEnv;
         }
-        String restRedisUsername = Environment.getenv("REST_REDIS_USERNAME");
+        String restRedisUsername = environment.getenv("REST_REDIS_USERNAME");
         if (restRedisUsername != null && restRedisUsername.isBlank()) {
             restRedisUsername = null;
         }
-        String restRedisPassword = Environment.getenv("REST_REDIS_PASSWORD");
+        String restRedisPassword = environment.getenv("REST_REDIS_PASSWORD");
         if (restRedisPassword != null && restRedisPassword.isBlank()) {
             restRedisPassword = null;
         }

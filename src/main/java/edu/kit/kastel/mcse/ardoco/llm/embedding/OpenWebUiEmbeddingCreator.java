@@ -5,7 +5,6 @@ import java.time.Duration;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 
 /**
  * An embedding creator that uses Open WebUI for generating embeddings.
@@ -38,8 +37,8 @@ public class OpenWebUiEmbeddingCreator extends CachedEmbeddingCreator {
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {
-        String url = Environment.getenvNonNull("OPENWEBUI_URL");
-        String apiKey = Environment.getenvNonNull("OPENWEBUI_API_KEY");
+        String url = environment.getenvNonNull("OPENWEBUI_URL");
+        String apiKey = environment.getenvNonNull("OPENWEBUI_API_KEY");
 
         var openWebUiEmbeddingModel = new OpenAiEmbeddingModel.OpenAiEmbeddingModelBuilder().baseUrl(url)
                 .apiKey(apiKey)

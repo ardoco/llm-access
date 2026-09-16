@@ -13,7 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import dev.langchain4j.model.chat.ChatModel;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Tests {@link ChatModelProvider}: exposed settings and the {@link ChatModelProvider#createChatModel()}
@@ -23,9 +23,11 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ChatModelProviderTest {
 
+    private final SystemEnvironment environment = SystemEnvironment.getInstance();
+
     @BeforeAll
     void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
+        environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 
     @Test

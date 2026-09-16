@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Manages caching operations.
@@ -49,6 +49,8 @@ public final class CacheManager {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheManager.class);
 
+    private static final SystemEnvironment ENVIRONMENT = SystemEnvironment.getInstance();
+
     /**
      * Sets the cache directory for the default cache manager instance.
      * This method must be called before using the default instance.
@@ -72,7 +74,7 @@ public final class CacheManager {
      * @throws IllegalArgumentException If the environment variable value is set but invalid
      */
     private static CacheReplacementStrategy readCacheReplacementStrategy() {
-        String strategyValue = Environment.getenv("CACHE_REPLACEMENT_STRATEGY");
+        String strategyValue = ENVIRONMENT.getenv("CACHE_REPLACEMENT_STRATEGY");
         if (strategyValue == null) {
             return DEFAULT_REPLACEMENT_STRATEGY;
         }
@@ -91,7 +93,7 @@ public final class CacheManager {
      * @return The cache hierarchy configuration string
      */
     private static String readHierarchyString() {
-        String hierarchyString = Environment.getenv("CACHE_HIERARCHY");
+        String hierarchyString = ENVIRONMENT.getenv("CACHE_HIERARCHY");
         if (hierarchyString == null) {
             return DEFAULT_CACHE_HIERARCHY;
         }

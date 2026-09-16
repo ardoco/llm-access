@@ -19,7 +19,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Tests for {@link CacheManager}: singleton lifecycle, cache naming and sanitization, conflict detection,
@@ -28,13 +28,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 @NullMarked
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CacheManagerTest {
+    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
 
     @TempDir
     private Path tempCacheDir;
 
     @BeforeAll
     void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
+        environment.overwrite(Path.of("src/test/resources/.env-test"));
     }
 
     @BeforeEach
