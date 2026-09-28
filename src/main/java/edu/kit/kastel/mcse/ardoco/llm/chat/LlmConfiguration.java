@@ -1,7 +1,6 @@
 /* Licensed under MIT 2026. */
 package edu.kit.kastel.mcse.ardoco.llm.chat;
 
-import java.util.Map;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
@@ -126,10 +125,8 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
          * @param environment The environment key value mapping
          * @return This builder
          */
-        public Builder environment(Map<String, String> environment) {
-            if (!environment.isEmpty()) {
-                this.environment = new MapEnvironment(environment);
-            }
+        public Builder environment(EnvironmentProvider environment) {
+            this.environment = environment;
             return this;
         }
 

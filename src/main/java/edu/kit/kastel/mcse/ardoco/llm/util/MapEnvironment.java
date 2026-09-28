@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * A class that simulates environment variables using a {@code Map<String, String>}.
- * This can be used as a drop-in replacement for the SystemEnvironment class when
+ * This can be used as a drop-in replacement for the {@link SystemEnvironment} class when
  * environment variables should be provided programmatically rather than from a .env file.
  */
 public record MapEnvironment(Map<String, String> envMap) implements EnvironmentProvider {
