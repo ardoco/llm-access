@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
@@ -49,8 +50,6 @@ public final class CacheManager {
 
     private static final Logger logger = LoggerFactory.getLogger(CacheManager.class);
 
-    private static final SystemEnvironment ENVIRONMENT = SystemEnvironment.getInstance();
-
     /**
      * Sets the cache directory for the default cache manager instance.
      * This method must be called before using the default instance.
@@ -59,7 +58,19 @@ public final class CacheManager {
      * @throws IOException If the cache directory cannot be created
      */
     public static synchronized void setCacheDir(@Nullable String directory) throws IOException {
-        defaultInstanceManager = new CacheManager(Path.of(directory == null ? DEFAULT_CACHE_DIRECTORY : directory));
+        setCacheDir(directory, SystemEnvironment.getInstance());
+    }
+
+    /**
+     * Sets the cache directory for the default cache manager instance.
+     * This method must be called before using the default instance.
+     *
+     * @param directory   The path to the cache directory, or null to use the default directory
+     * @param environment The environment provider to read configuration from
+     * @throws IOException If the cache directory cannot be created
+     */
+    public static synchronized void setCacheDir(@Nullable String directory, EnvironmentProvider environment) throws IOException {
+        defaultInstanceManager = new CacheManager(Path.of(directory == null ? DEFAULT_CACHE_DIRECTORY : directory), environment);
     }
 
     /**
@@ -70,11 +81,12 @@ public final class CacheManager {
      * <li>If not found, uses the default strategy ({@link #DEFAULT_REPLACEMENT_STRATEGY})</li>
      * </ol>
      *
+     * @param environment The environment provider to read configuration from
      * @return The cache replacement strategy
      * @throws IllegalArgumentException If the environment variable value is set but invalid
      */
-    private static CacheReplacementStrategy readCacheReplacementStrategy() {
-        String strategyValue = ENVIRONMENT.getenv("CACHE_REPLACEMENT_STRATEGY");
+    private static CacheReplacementStrategy readCacheReplacementStrategy(EnvironmentProvider environment) {
+        String strategyValue = environment.getenv("CACHE_REPLACEMENT_STRATEGY");
         if (strategyValue == null) {
             return DEFAULT_REPLACEMENT_STRATEGY;
         }
@@ -90,10 +102,11 @@ public final class CacheManager {
     /**
      * Reads the cache hierarchy configuration from environment variables or uses the default if it's not set.
      *
+     * @param environment The environment provider to read configuration from
      * @return The cache hierarchy configuration string
      */
-    private static String readHierarchyString() {
-        String hierarchyString = ENVIRONMENT.getenv("CACHE_HIERARCHY");
+    private static String readHierarchyString(EnvironmentProvider environment) {
+        String hierarchyString = environment.getenv("CACHE_HIERARCHY");
         if (hierarchyString == null) {
             return DEFAULT_CACHE_HIERARCHY;
         }
@@ -108,8 +121,8 @@ public final class CacheManager {
      * @throws IOException              If the cache directory cannot be created
      * @throws IllegalArgumentException If the path exists but is not a directory
      */
-    public CacheManager(Path cacheDir) throws IOException {
-        this(cacheDir, readCacheReplacementStrategy(), parseCacheHierarchy(readHierarchyString()));
+    public CacheManager(Path cacheDir, EnvironmentProvider environment) throws IOException {
+        this(cacheDir, readCacheReplacementStrategy(environment), parseCacheHierarchy(readHierarchyString(environment)));
     }
 
     /**
@@ -140,7 +153,7 @@ public final class CacheManager {
 
     /**
      * Gets the default cache manager instance.
-     * The cache directory must be set using {@link #setCacheDir(String)} before calling this method.
+     * The cache directory must be set using {@link #setCacheDir(String, EnvironmentProvider)} before calling this method.
      *
      * @return The default cache manager instance
      * @throws IllegalStateException If the cache directory has not been set
@@ -262,7 +275,7 @@ public final class CacheManager {
     /**
      * Resets the default cache manager instance.
      * This method is intended for testing purposes only to allow clean state between tests.
-     * After calling this method, {@link #setCacheDir(String)}
+     * After calling this method, {@link #setCacheDir(String, EnvironmentProvider)}
      * must be called again before using the default instance.
      */
     static synchronized void resetDefaultInstance() {
