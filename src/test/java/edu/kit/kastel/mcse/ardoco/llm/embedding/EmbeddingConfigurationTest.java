@@ -3,17 +3,27 @@ package edu.kit.kastel.mcse.ardoco.llm.embedding;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
  * Tests for the framework-neutral embedding configuration API and the mock creator.
  */
 @NullMarked
 class EmbeddingConfigurationTest {
+
+    @TempDir
+    private Path tempCacheDir;
 
     @Test
     @DisplayName("of() sets platform and model")
@@ -62,8 +72,9 @@ class EmbeddingConfigurationTest {
 
     @Test
     @DisplayName("create() requires ONNX file paths")
-    void testOnnxRequiresPaths() {
+    void testOnnxRequiresPaths() throws IOException {
+        CacheManager cacheManager = new CacheManager(tempCacheDir, new MapEnvironment(Map.of()));
         EmbeddingConfiguration incomplete = EmbeddingConfiguration.builder(EmbeddingPlatform.ONNX).modelName("m").build();
-        assertThrows(NullPointerException.class, () -> EmbeddingCreator.create(incomplete));
+        assertThrows(NullPointerException.class, () -> EmbeddingCreator.create(incomplete, cacheManager));
     }
 }

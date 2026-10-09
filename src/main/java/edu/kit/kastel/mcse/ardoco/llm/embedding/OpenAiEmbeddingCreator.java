@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.llm.embedding;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
+import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
@@ -24,11 +25,12 @@ public class OpenAiEmbeddingCreator extends CachedEmbeddingCreator {
     /**
      * Creates a new OpenAI embedding creator for the given model.
      *
-     * @param model       The name of the OpenAI embedding model to use
-     * @param environment The environment that supplies credentials and host URLs
+     * @param model        The name of the OpenAI embedding model to use
+     * @param environment  The environment that supplies credentials and host URLs
+     * @param cacheManager The cache manager that provides the embedding cache
      */
-    public OpenAiEmbeddingCreator(String model, EnvironmentProvider environment) {
-        super(model, THREADS, environment);
+    public OpenAiEmbeddingCreator(String model, EnvironmentProvider environment, CacheManager cacheManager) {
+        super(model, THREADS, environment, cacheManager);
     }
 
     /**

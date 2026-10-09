@@ -5,6 +5,7 @@ import java.time.Duration;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
+import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
@@ -23,11 +24,12 @@ public class OpenWebUiEmbeddingCreator extends CachedEmbeddingCreator {
     /**
      * Creates a new Open WebUI embedding creator for the given model.
      *
-     * @param model       The name of the Open WebUI embedding model to use
-     * @param environment The environment that supplies credentials and host URLs
+     * @param model        The name of the Open WebUI embedding model to use
+     * @param environment  The environment that supplies credentials and host URLs
+     * @param cacheManager The cache manager that provides the embedding cache
      */
-    public OpenWebUiEmbeddingCreator(String model, EnvironmentProvider environment) {
-        super(model, 1, environment);
+    public OpenWebUiEmbeddingCreator(String model, EnvironmentProvider environment, CacheManager cacheManager) {
+        super(model, 1, environment, cacheManager);
     }
 
     /**

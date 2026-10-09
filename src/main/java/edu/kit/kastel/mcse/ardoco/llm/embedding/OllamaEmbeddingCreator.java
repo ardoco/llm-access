@@ -8,6 +8,7 @@ import java.util.Map;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
@@ -27,11 +28,12 @@ public class OllamaEmbeddingCreator extends CachedEmbeddingCreator {
     /**
      * Creates a new Ollama embedding creator for the given model.
      *
-     * @param model       The name of the Ollama embedding model to use
-     * @param environment The environment that supplies credentials and host URLs
+     * @param model        The name of the Ollama embedding model to use
+     * @param environment  The environment that supplies credentials and host URLs
+     * @param cacheManager The cache manager that provides the embedding cache
      */
-    public OllamaEmbeddingCreator(String model, EnvironmentProvider environment) {
-        super(model, 1, environment);
+    public OllamaEmbeddingCreator(String model, EnvironmentProvider environment, CacheManager cacheManager) {
+        super(model, 1, environment, cacheManager);
     }
 
     /**
