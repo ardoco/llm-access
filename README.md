@@ -113,7 +113,7 @@ global environment. Two implementations are provided (package `edu.kit.kastel.mc
 
 - `SystemEnvironment` (the default): reads system environment variables and a `.env` file. `new SystemEnvironment()`
 uses the `.env` in the working directory (if present); `new SystemEnvironment(Path)` loads a specific file.
-The file is read on the first lookup, not on construction. System environment variables take precedence over
+The file is read when first needed (the first lookup not answered by a system variable), not on construction. System environment variables take precedence over
 `.env` entries. See [`sample.env`](sample.env) for a template.
 - `MapEnvironment`: serves values from an in-memory map, with no fallback to the system environment. Its
 `toString()` lists only the keys, so secrets do not leak into logs.

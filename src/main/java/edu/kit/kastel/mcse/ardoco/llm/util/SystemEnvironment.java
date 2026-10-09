@@ -27,7 +27,8 @@ import io.github.cdimascio.dotenv.DotenvEntry;
  * <p>
  * {@link #SystemEnvironment()} reads the .env file from the current working directory, while
  * {@link #SystemEnvironment(Path)} reads an explicitly given file. The path is resolved on construction, but the file
- * is read lazily on the first lookup and then kept for the lifetime of the instance, so creating an instance is cheap
+ * is read lazily when first needed (the first lookup not answered by a system environment variable, or a comparison)
+ * and then kept for the lifetime of the instance, so creating an instance is cheap
  * and a missing or malformed file only matters once a value is actually requested. The file should contain key-value
  * pairs in the format:
  * <pre>
@@ -45,7 +46,7 @@ public final class SystemEnvironment implements EnvironmentProvider {
     private final boolean explicit;
     /** Guards the lazy loading of {@link #dotenvValues} */
     private final Object loadLock = new Object();
-    /** The entries declared in the .env file (empty if there is no such file), or null until the first lookup */
+    /** The entries declared in the .env file (empty if there is no such file), or null until first needed */
     private volatile @Nullable Map<String, String> dotenvValues;
 
     /**
@@ -58,7 +59,7 @@ public final class SystemEnvironment implements EnvironmentProvider {
 
     /**
      * Creates an environment that reads system environment variables and the given {@code .env} file. If the file
-     * does not exist, a warning is logged on the first lookup and only system environment variables are used.
+     * does not exist, a warning is logged when the file is first needed and only system environment variables are used.
      *
      * @param dotenvFile The path to the .env file
      */
