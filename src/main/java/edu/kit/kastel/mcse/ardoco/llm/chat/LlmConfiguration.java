@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
  * @param modelName   The name of the model to use
  * @param seed        The seed value for model randomization
  * @param temperature The temperature setting for the model
- * @param environment The environment variables for the model
+ * @param environment The environment that supplies credentials and host URLs
  */
 public record LlmConfiguration(ChatModelPlatform platform, String modelName, int seed, double temperature, EnvironmentProvider environment) {
 
@@ -42,11 +42,12 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
      * @param modelName   The name of the model to use
      * @param seed        The seed value for model randomization
      * @param temperature The temperature setting for the model
-     * @param environment The environment variables for the model
+     * @param environment The environment that supplies credentials and host URLs
      */
     public LlmConfiguration {
         Objects.requireNonNull(platform, "platform must not be null");
         Objects.requireNonNull(modelName, "modelName must not be null");
+        Objects.requireNonNull(environment, "environment must not be null");
     }
 
     /**
@@ -72,7 +73,8 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
 
     /**
      * Builder for {@link LlmConfiguration}. The model name is required; the seed and temperature default to
-     * {@link #DEFAULT_SEED} and {@link #DEFAULT_TEMPERATURE}.
+     * {@link #DEFAULT_SEED} and {@link #DEFAULT_TEMPERATURE}, and the environment defaults to a
+     * {@link SystemEnvironment}.
      */
     public static final class Builder {
         private final ChatModelPlatform platform;
@@ -119,14 +121,14 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
         }
 
         /**
-         * Sets the environment to a non-empty {@link MapEnvironment} based on the parameter. If the environment
-         * parameter is empty, nothing happens.
+         * Sets the environment that supplies credentials and host URLs, for example a {@link MapEnvironment}.
+         * Defaults to a {@link SystemEnvironment}.
          *
-         * @param environment The environment key value mapping
+         * @param environment The environment provider to read credentials and host URLs from
          * @return This builder
          */
         public Builder environment(EnvironmentProvider environment) {
-            this.environment = environment;
+            this.environment = Objects.requireNonNull(environment, "environment must not be null");
             return this;
         }
 
