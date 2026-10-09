@@ -13,7 +13,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jspecify.annotations.NullMarked;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,6 @@ import dev.langchain4j.model.output.Response;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
-import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Tests the caching, ordering, and parameter-forwarding behaviour of {@link CachedEmbeddingCreator} through
@@ -35,20 +33,15 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 @NullMarked
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CachedEmbeddingCreatorTest {
-    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
+    private final EnvironmentProvider environment = new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL", "CACHE_REPLACEMENT_STRATEGY", "ERROR"));
     private static final EnvironmentProvider EMPTY_ENVIRONMENT = new MapEnvironment(Map.of());
 
     @TempDir
     private Path tempCacheDir;
 
-    @BeforeAll
-    void init() {
-        environment.overwrite(Path.of("src/test/resources/.env-test"));
-    }
-
     @BeforeEach
     void setup() throws IOException {
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
         RecordingEmbeddingCreator.embedCalls.set(0);
         RecordingEmbeddingCreator.paramsSeen.clear();
         RecordingEmbeddingCreator.environmentsSeen.clear();
@@ -94,7 +87,7 @@ class CachedEmbeddingCreatorTest {
         CacheManager.getDefaultInstance().flush();
 
         RecordingEmbeddingCreator.embedCalls.set(0);
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
         RecordingEmbeddingCreator reloaded = new RecordingEmbeddingCreator("persist-model", 1);
         float[] cached = reloaded.calculateEmbedding("hello");
 

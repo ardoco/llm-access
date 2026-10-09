@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
  * Tests for {@link CacheManager}: singleton lifecycle, cache naming and sanitization, conflict detection,
@@ -28,19 +29,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 @NullMarked
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CacheManagerTest {
-    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
+    private final EnvironmentProvider environment = new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL", "CACHE_REPLACEMENT_STRATEGY", "ERROR"));
 
     @TempDir
     private Path tempCacheDir;
 
-    @BeforeAll
-    void init() {
-        environment.overwrite(Path.of("src/test/resources/.env-test"));
-    }
-
     @BeforeEach
     void setup() throws IOException {
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
     }
 
     @AfterEach
@@ -117,6 +113,18 @@ class CacheManagerTest {
         Files.writeString(notADirectory, "x");
         assertThrows(IllegalArgumentException.class, () -> new CacheManager(notADirectory, CacheReplacementStrategy.NONE, List.of(CacheType.LOCAL),
                 environment));
+    }
+
+    @Test
+    @DisplayName("the cache configuration is read from the injected environment")
+    void readsConfigurationFromInjectedEnvironment() {
+        EnvironmentProvider invalidHierarchy = new MapEnvironment(Map.of("CACHE_HIERARCHY", "NOT_A_CACHE"));
+        assertThrows(IllegalArgumentException.class, () -> new CacheManager(tempCacheDir, invalidHierarchy));
+
+        EnvironmentProvider invalidStrategy = new MapEnvironment(Map.of("CACHE_REPLACEMENT_STRATEGY", "NOT_A_STRATEGY"));
+        assertThrows(IllegalArgumentException.class, () -> new CacheManager(tempCacheDir, invalidStrategy));
+
+        assertDoesNotThrow(() -> new CacheManager(tempCacheDir, new MapEnvironment(Map.of())), "unset variables fall back to the defaults");
     }
 
     /** A parameter with a constant identifier and default (identity) equality, used to force a name conflict. */

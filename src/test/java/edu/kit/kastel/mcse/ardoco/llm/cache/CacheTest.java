@@ -6,17 +6,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
-import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
  * Unit tests for the LocalCache implementation.
@@ -25,19 +26,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
  */
 @NullMarked
 class CacheTest {
-    private static final SystemEnvironment environment = SystemEnvironment.getInstance();
+    private final EnvironmentProvider environment = new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL", "CACHE_REPLACEMENT_STRATEGY", "ERROR"));
     @TempDir
     private Path tempCacheDir;
-
-    @BeforeAll
-    static void init() {
-        environment.overwrite(Path.of("src/test/resources/.env-test"));
-    }
 
     @BeforeEach
     void setup() throws IOException {
         // Reset the default cache manager singleton for each test
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
     }
 
     @AfterEach
