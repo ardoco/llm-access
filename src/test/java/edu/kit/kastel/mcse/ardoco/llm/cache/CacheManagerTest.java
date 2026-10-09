@@ -21,6 +21,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * Tests for {@link CacheManager}: singleton lifecycle, cache naming and sanitization, conflict detection,
@@ -125,6 +126,18 @@ class CacheManagerTest {
         assertThrows(IllegalArgumentException.class, () -> new CacheManager(tempCacheDir, invalidStrategy));
 
         assertDoesNotThrow(() -> new CacheManager(tempCacheDir, new MapEnvironment(Map.of())), "unset variables fall back to the defaults");
+    }
+
+    @Test
+    @DisplayName("getCache passes the injected environment on to the Redis cache")
+    void passesEnvironmentToRedisCache() throws IOException {
+        // Port 1 is never a Redis server: if REDIS_URL reaches the Redis cache, connecting to it must fail.
+        EnvironmentProvider unreachableRedis = new MapEnvironment(Map.of("CACHE_HIERARCHY", "REDIS", "REDIS_URL", "redis://127.0.0.1:1"));
+        CacheManager manager = new CacheManager(tempCacheDir, unreachableRedis);
+        ChatCacheParameter parameter = new ChatCacheParameter("m", 1, 0.0);
+
+        JedisConnectionException exception = assertThrows(JedisConnectionException.class, () -> manager.getCache(this, parameter));
+        assertTrue(exception.getMessage().contains("127.0.0.1:1"), "the connection must use the injected REDIS_URL");
     }
 
     /** A parameter with a constant identifier and default (identity) equality, used to force a name conflict. */
