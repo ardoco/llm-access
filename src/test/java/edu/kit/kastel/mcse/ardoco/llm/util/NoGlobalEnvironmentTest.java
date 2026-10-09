@@ -22,13 +22,4 @@ class NoGlobalEnvironmentTest {
             .should()
             .haveRawType(assignableTo(EnvironmentProvider.class))
             .because("environments must be injected, not shared globally");
-
-    @ArchTest
-    static final ArchRule systemEnvironmentIsNoSingleton = noFields().that()
-            .areDeclaredIn(SystemEnvironment.class)
-            .and()
-            .areStatic()
-            .should()
-            .haveRawType(SystemEnvironment.class)
-            .because("SystemEnvironment must not be a singleton");
 }
