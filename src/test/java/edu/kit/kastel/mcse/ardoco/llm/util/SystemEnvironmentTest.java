@@ -2,6 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.llm.util;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -139,5 +141,33 @@ class SystemEnvironmentTest {
         assertNotEquals(before, after);
         assertEquals(after, new SystemEnvironment(env));
         assertEquals(after.hashCode(), new SystemEnvironment(env).hashCode());
+    }
+
+    @Test
+    @DisplayName("system environment variables take precedence over .env entries")
+    void systemEnvironmentWinsOverDotEnv() throws IOException {
+        String systemPath = System.getenv("PATH");
+        assumeTrue(systemPath != null, "requires PATH to be set in the system environment");
+
+        SystemEnvironment environment = environmentWith(".env", "PATH=from-dotenv\nMY_TEST_KEY=my-value\n");
+        assertEquals(systemPath, environment.getenv("PATH"));
+        assertEquals("my-value", environment.getenv("MY_TEST_KEY"), "the .env file must have been loaded");
+    }
+
+    @Test
+    @DisplayName("the default constructor refers to the .env file in the working directory without reading it")
+    void defaultConstructorUsesWorkingDirectory() {
+        SystemEnvironment environment = assertDoesNotThrow(() -> new SystemEnvironment());
+        assertTrue(environment.toString().contains(Path.of(".env").toAbsolutePath().normalize().toString()));
+    }
+
+    @Test
+    @DisplayName("without a .env file in the working directory, the default constructor reads the system environment only")
+    void defaultConstructorWithoutDotEnv() {
+        assumeFalse(Files.exists(Path.of(".env")), "requires the working directory to have no .env file");
+
+        SystemEnvironment environment = new SystemEnvironment();
+        assertNull(environment.getenv("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
+        assertEquals(System.getenv("PATH"), environment.getenv("PATH"));
     }
 }
