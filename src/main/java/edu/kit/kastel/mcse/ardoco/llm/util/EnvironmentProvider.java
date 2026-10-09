@@ -4,17 +4,14 @@ package edu.kit.kastel.mcse.ardoco.llm.util;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Utility interface to manage environments.
+ * Source of configuration values such as API keys, host URLs, and cache settings.
+ * <p>
+ * Where the values come from is implementation-specific: {@link SystemEnvironment} reads the process environment
+ * and an optional {@code .env} file, while {@link MapEnvironment} serves values from an in-memory map.
  */
 public interface EnvironmentProvider {
     /**
-     * Retrieves an environment variable value.
-     * This method:
-     * <ol>
-     * <li>First checks the .env file for the variable</li>
-     * <li>If not found, falls back to system environment variables</li>
-     * <li>Returns null if the variable is not found in either location</li>
-     * </ol>
+     * Retrieves an environment variable value. The lookup source is implementation-specific.
      *
      * @param key The name of the environment variable to retrieve
      * @return The value of the environment variable, or null if not found
@@ -27,12 +24,18 @@ public interface EnvironmentProvider {
      * This method:
      * <ol>
      * <li>Attempts to retrieve the variable using {@link #getenv(String)}</li>
-     * <li>Throws an IllegalStateException if environment variable would be null</li>
+     * <li>Throws an IllegalStateException if the variable is not set</li>
      * </ol>
      *
      * @param key The name of the environment variable to retrieve
      * @return The value of the environment variable
-     * @throws IllegalStateException if the variable is not found and strict mode is enabled
+     * @throws IllegalStateException if the variable is not set
      */
-    String getenvNonNull(String key);
+    default String getenvNonNull(String key) {
+        String value = getenv(key);
+        if (value == null) {
+            throw new IllegalStateException("environment variable %s is missing, use '.env' or your system to set it up".formatted(key));
+        }
+        return value;
+    }
 }

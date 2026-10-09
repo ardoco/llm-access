@@ -24,13 +24,4 @@ public record MapEnvironment(Map<String, String> envMap) implements EnvironmentP
         return envMap.get(name);
     }
 
-    @Override
-    public String getenvNonNull(String key) {
-        String value = envMap.get(key);
-        if (value == null) {
-            throw new IllegalStateException("Environment variable %s is missing".formatted(key));
-        }
-        return value;
-    }
-
 }

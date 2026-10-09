@@ -81,15 +81,6 @@ public class SystemEnvironment implements EnvironmentProvider {
         return System.getenv(key);
     }
 
-    @Override
-    public String getenvNonNull(String key) {
-        String env = getenv(key);
-        if (env == null) {
-            throw new IllegalStateException("environment variable %s is missing, use '.env' or your system to set it up".formatted(key));
-        }
-        return env;
-    }
-
     /**
      * Loads the .env file configuration.
      * This method:
