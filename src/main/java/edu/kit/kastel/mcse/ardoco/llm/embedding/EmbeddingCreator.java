@@ -9,9 +9,10 @@ import java.util.Objects;
  * This class provides the interface for different embedding creation strategies,
  * which convert text into vector representations for similarity matching.
  * <p>
- * The framework supports multiple embedding creation backends (see {@link EmbeddingPlatform}):
+ * The framework supports multiple embedding creation backends (see {@link EmbeddingPlatform}). The environment variables
+ * named below are read from the {@link EmbeddingConfiguration#environment() environment} of the configuration:
  * <ul>
- * <li>Ollama: Local embedding generation using Ollama models
+ * <li>Ollama: Embedding generation using models served by an Ollama server
  * <ul>
  * <li>Requires OLLAMA_EMBEDDING_HOST environment variable</li>
  * <li>Optional authentication via OLLAMA_EMBEDDING_USER and OLLAMA_EMBEDDING_PASSWORD</li>
@@ -20,7 +21,7 @@ import java.util.Objects;
  * </li>
  * <li>OpenAI: Cloud-based embedding generation using OpenAI's API
  * <ul>
- * <li>Requires OPENAI_ORGANIZATION_ID and OPENAI_API_KEY environment variables</li>
+ * <li>Requires the OPENAI_API_KEY environment variable; OPENAI_ORGANIZATION_ID is optional</li>
  * <li>Default model: text-embedding-ada-002</li>
  * <li>Supports high-throughput with 40 parallel threads</li>
  * </ul>
@@ -31,7 +32,11 @@ import java.util.Objects;
  * <li>Uses mean pooling for embedding generation</li>
  * </ul>
  * </li>
- * <li>Open WebUI: Embedding generation via an Open WebUI server</li>
+ * <li>Open WebUI: Embedding generation via an Open WebUI server
+ * <ul>
+ * <li>Requires OPENWEBUI_URL and OPENWEBUI_API_KEY environment variables</li>
+ * </ul>
+ * </li>
  * <li>Mock: Testing implementation returning zero vectors for all inputs</li>
  * </ul>
  *

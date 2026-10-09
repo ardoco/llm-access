@@ -29,7 +29,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
     }
 
     /**
-     * Initiates the REST Redis connection using environment variables for configuration. The following environment variables are used:
+     * Initiates the REST Redis connection using variables of the given environment for configuration. The following environment variables are used:
      * <ul>
      * <li>{@code REST_REDIS_URI}: The URI of the REST Redis server (default: {@code http://localhost:8080})</li>
      * <li>{@code REST_REDIS_USERNAME}: The username for authentication (optional)</li>

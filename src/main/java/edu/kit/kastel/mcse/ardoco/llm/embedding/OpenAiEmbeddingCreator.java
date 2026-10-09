@@ -8,10 +8,10 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 /**
  * An embedding creator that uses OpenAI's embedding models for generating embeddings.
  * <p>
- * Required environment variables:
+ * Environment variables:
  * <ul>
- * <li>{@code OPENAI_ORGANIZATION_ID}: Your OpenAI organization ID</li>
  * <li>{@code OPENAI_API_KEY}: Your OpenAI API key</li>
+ * <li>{@code OPENAI_ORGANIZATION_ID}: (Optional) Your OpenAI organization ID, sent only when set</li>
  * </ul>
  *
  * The default model is "text-embedding-ada-002". The creator uses 40 threads by default for parallel
@@ -33,7 +33,7 @@ public class OpenAiEmbeddingCreator extends CachedEmbeddingCreator {
 
     /**
      * Creates an OpenAI embedding model instance with the specified parameters.
-     * The method requires both the organization ID and API key to be set in the environment variables.
+     * The method requires the API key to be set in the environment; the organization ID is optional.
      *
      * @param model  The name of the OpenAI model to use
      * @param params Additional parameters (not used in this implementation)

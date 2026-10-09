@@ -36,12 +36,13 @@ public class OllamaEmbeddingCreator extends CachedEmbeddingCreator {
 
     /**
      * Creates an Ollama embedding model instance with the specified parameters.
-     * The method configures the model with authentication if credentials are provided
-     * in the environment variables.
+     * The method configures the model with basic authentication if both user and password are set in the
+     * environment.
      *
      * @param model  The name of the Ollama model to use
      * @param params Additional parameters (not used in this implementation)
      * @return A configured Ollama embedding model instance
+     * @throws IllegalStateException If the {@code OLLAMA_EMBEDDING_HOST} environment variable is not set
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {

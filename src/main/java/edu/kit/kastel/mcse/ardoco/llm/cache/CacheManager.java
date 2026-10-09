@@ -80,7 +80,7 @@ public final class CacheManager {
     }
 
     /**
-     * Reads the cache replacement strategy from environment variables.
+     * Reads the cache replacement strategy from the given environment.
      * This method:
      * <ol>
      * <li>First checks the environment variable CACHE_REPLACEMENT_STRATEGY</li>
@@ -106,7 +106,7 @@ public final class CacheManager {
     }
 
     /**
-     * Reads the cache hierarchy configuration from environment variables or uses the default if it's not set.
+     * Reads the cache hierarchy configuration from the given environment or uses the default if it's not set.
      *
      * @param environment The environment provider to read configuration from
      * @return The cache hierarchy configuration string

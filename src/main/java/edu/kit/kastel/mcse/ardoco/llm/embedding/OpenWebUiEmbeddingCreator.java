@@ -36,6 +36,8 @@ public class OpenWebUiEmbeddingCreator extends CachedEmbeddingCreator {
      * @param model  The name of the Open WebUI model to use
      * @param params Additional parameters (not used in this implementation)
      * @return A configured Open WebUI embedding model instance
+     * @throws IllegalStateException If the {@code OPENWEBUI_URL} or {@code OPENWEBUI_API_KEY} environment variable is
+     *                               not set
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {
