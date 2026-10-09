@@ -4,6 +4,10 @@ package edu.kit.kastel.mcse.ardoco.llm.chat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -44,5 +48,25 @@ class LazyChatModelTest {
     @DisplayName("a null supplier is rejected")
     void nullSupplier() {
         assertThrows(NullPointerException.class, () -> new LazyChatModel(null));
+    }
+
+    @Test
+    @DisplayName("all non-static ChatModel methods are overridden by LazyChatModel")
+    void overridesAllChatModelMethods() {
+        List<String> missing = Arrays.stream(ChatModel.class.getMethods())
+                .filter(m -> !Modifier.isStatic(m.getModifiers()))
+                .filter(m -> !isDeclaredByLazyChatModel(m))
+                .map(Method::toGenericString)
+                .toList();
+        assertTrue(missing.isEmpty(), "LazyChatModel does not override: " + missing);
+    }
+
+    private boolean isDeclaredByLazyChatModel(Method interfaceMethod) {
+        try {
+            LazyChatModel.class.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+            return true;
+        } catch (NoSuchMethodException ignored) {
+            return false;
+        }
     }
 }
