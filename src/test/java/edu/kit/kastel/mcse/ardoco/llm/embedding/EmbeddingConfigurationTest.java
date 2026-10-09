@@ -14,13 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
- * Tests for the framework-neutral embedding configuration API and the mock creator.
+ * Tests for the framework-neutral embedding configuration API and the mock creator. The builders get a
+ * {@link MapEnvironment}, so the tests do not depend on the developer's system environment or {@code .env} file.
  */
 @NullMarked
 class EmbeddingConfigurationTest {
+    private final EnvironmentProvider environment = new MapEnvironment(Map.of());
 
     @TempDir
     private Path tempCacheDir;
@@ -36,9 +40,16 @@ class EmbeddingConfigurationTest {
     @Test
     @DisplayName("build requires a model name except for the mock platform")
     void testRequiresModel() {
-        assertThrows(IllegalArgumentException.class, () -> EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).build());
+        assertThrows(IllegalArgumentException.class, () -> EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).environment(environment).build());
         // The mock platform ignores the model, so it builds without one.
-        assertEquals(EmbeddingPlatform.MOCK, EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).build().platform());
+        assertEquals(EmbeddingPlatform.MOCK, EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).environment(environment).build().platform());
+    }
+
+    @Test
+    @DisplayName("builder uses the given environment and defaults to a new SystemEnvironment")
+    void testBuilderEnvironment() {
+        assertSame(environment, EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).modelName("m").environment(environment).build().environment());
+        assertInstanceOf(SystemEnvironment.class, EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).modelName("m").build().environment());
     }
 
     @Test
@@ -62,7 +73,7 @@ class EmbeddingConfigurationTest {
     @Test
     @DisplayName("create() builds a mock creator returning zero vectors")
     void testMockCreator() {
-        EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).build());
+        EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).environment(environment).build());
         List<float[]> embeddings = creator.calculateEmbeddings(List.of("a", "b"));
         assertEquals(2, embeddings.size());
         assertArrayEquals(new float[] { 0 }, embeddings.get(0));
@@ -73,8 +84,8 @@ class EmbeddingConfigurationTest {
     @Test
     @DisplayName("create() requires ONNX file paths")
     void testOnnxRequiresPaths() throws IOException {
-        CacheManager cacheManager = new CacheManager(tempCacheDir, new MapEnvironment(Map.of()));
-        EmbeddingConfiguration incomplete = EmbeddingConfiguration.builder(EmbeddingPlatform.ONNX).modelName("m").build();
+        CacheManager cacheManager = new CacheManager(tempCacheDir, environment);
+        EmbeddingConfiguration incomplete = EmbeddingConfiguration.builder(EmbeddingPlatform.ONNX).modelName("m").environment(environment).build();
         assertThrows(NullPointerException.class, () -> EmbeddingCreator.create(incomplete, cacheManager));
     }
 }
