@@ -123,4 +123,20 @@ class SystemEnvironmentTest {
 
         assertEquals("from-conf", new SystemEnvironment(env).getenv("MY_TEST_KEY"));
     }
+
+    @Test
+    @DisplayName("instances on the same file are unequal if they loaded different entries")
+    void equalityComparesLoadedEntries() throws IOException {
+        Path env = tempDir.resolve(".env");
+        Files.writeString(env, "MY_TEST_KEY=before\n");
+        SystemEnvironment before = new SystemEnvironment(env);
+        assertEquals("before", before.getenv("MY_TEST_KEY"));
+
+        Files.writeString(env, "MY_TEST_KEY=after\n");
+        SystemEnvironment after = new SystemEnvironment(env);
+
+        assertNotEquals(before, after);
+        assertEquals(after, new SystemEnvironment(env));
+        assertEquals(after.hashCode(), new SystemEnvironment(env).hashCode());
+    }
 }

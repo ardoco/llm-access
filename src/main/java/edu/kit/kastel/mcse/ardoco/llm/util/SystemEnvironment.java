@@ -128,14 +128,33 @@ public final class SystemEnvironment implements EnvironmentProvider {
         return dotenv.entries(Dotenv.Filter.DECLARED_IN_ENV_FILE).stream().collect(Collectors.toUnmodifiableMap(DotenvEntry::getKey, DotenvEntry::getValue));
     }
 
+    /**
+     * Two system environments are equal if they refer to the same .env file and have loaded the same entries from
+     * it. The system environment variables are not compared, as they are shared by all instances of a process. Both
+     * instances load their .env file for the comparison if they have not done so yet; as each instance keeps the
+     * entries it loaded first, instances created before and after a change of the file may differ.
+     *
+     * @param o The object to compare with
+     * @return {@code true} if {@code o} is a system environment with the same .env file and the same entries
+     * @throws io.github.cdimascio.dotenv.DotenvException if a .env file exists but cannot be read or parsed
+     */
     @Override
     public boolean equals(@Nullable Object o) {
-        return o instanceof SystemEnvironment other && dotenvFile.equals(other.dotenvFile);
+        if (this == o)
+            return true;
+        return o instanceof SystemEnvironment other && dotenvFile.equals(other.dotenvFile) && dotenvValues().equals(other.dotenvValues());
     }
 
+    /**
+     * Computes a hash code from the .env file path and its loaded entries, consistent with {@link #equals(Object)}.
+     * The .env file is loaded if this has not happened yet.
+     *
+     * @return The hash code of this environment
+     * @throws io.github.cdimascio.dotenv.DotenvException if the .env file exists but cannot be read or parsed
+     */
     @Override
     public int hashCode() {
-        return dotenvFile.hashCode();
+        return Objects.hash(dotenvFile, dotenvValues());
     }
 
     @Override
