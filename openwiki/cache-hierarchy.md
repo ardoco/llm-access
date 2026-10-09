@@ -33,23 +33,28 @@ what happens when two layers hold different values for the same key.
 
 ## CacheManager lifecycle
 
-- `CacheManager.setCacheDir(String)` — must be called once before `getDefaultInstance()`. It
-  constructs a new `CacheManager` over the directory (creating it if needed) and stores it as
-  the static default. Passing `null` uses `DEFAULT_CACHE_DIRECTORY = "cache"`.
+- `CacheManager.setCacheDir(String)` / `setCacheDir(String, EnvironmentProvider)` — must be
+  called once before `getDefaultInstance()`. It constructs a new `CacheManager` over the
+  directory (creating it if needed) and stores it as the static default. Passing `null` uses
+  `DEFAULT_CACHE_DIRECTORY = "cache"`. The one-argument form uses a new `SystemEnvironment`.
 - `CacheManager.getDefaultInstance()` — throws `IllegalStateException` ("Cache directory not
   set") until `setCacheDir` has been called.
 - `CacheManager.resetDefaultInstance()` — package-private, flushes and clears the default; used
   by tests for clean state between runs.
 
-The constructor reads configuration from [Environment](configuration.md) at construction time:
+Each `CacheManager` holds the [EnvironmentProvider](configuration.md) it was created with
+(an instance field; there is no global environment). `CacheManager(Path, EnvironmentProvider)`
+reads its configuration from that environment at construction time (`CacheManager(Path)` uses
+a new `SystemEnvironment`):
 
 - `CACHE_HIERARCHY` (default `LOCAL`) — comma-separated `CacheType` values, primary first.
   Parsing strips quotes/spaces and is case-insensitive; empty entries and unknown values throw.
 - `CACHE_REPLACEMENT_STRATEGY` (default `NONE`) — one of `NONE`, `ERROR`, `OVERWRITE`;
   invalid values throw with the list of valid options.
 
-The explicit constructor `CacheManager(Path, CacheReplacementStrategy, List<CacheType>)`
-validates that the path is a directory and the hierarchy is non-empty.
+The explicit constructor `CacheManager(Path, CacheReplacementStrategy, List<CacheType>, EnvironmentProvider)`
+validates that the path is a directory and the hierarchy is non-empty. In every form, the
+environment is passed on to the Redis-based backends for their connection settings.
 
 ## getCache and naming
 
@@ -62,7 +67,8 @@ validates that the path is a directory and the hierarchy is non-empty.
   `IllegalArgumentException` ("Cache with name ... already exists with different parameters").
 - Rejects null `origin` or `parameters`.
 
-`buildCacheHierarchy` creates one cache per `CacheType` via `Cache.createByType` (see
+`buildCacheHierarchy` creates one cache per `CacheType` via `Cache.createByType`, passing the
+manager's environment (see
 [Cache Core](cache-core.md)), then folds them left into `HierarchicalCache` instances with the
 configured `CacheReplacementStrategy`. A single-type hierarchy returns the backend directly
 with no layering. The `ObjectMapper` is created once per hierarchy build and shared by the

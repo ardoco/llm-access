@@ -16,7 +16,8 @@ openwiki:
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java
   invariants:
-    - EmbeddingCreator.create dispatches on EmbeddingPlatform; MOCK skips caching.
+    - EmbeddingCreator.create dispatches on EmbeddingPlatform and passes the configuration's EnvironmentProvider to every caching creator; MOCK skips caching.
+    - CachedEmbeddingCreator assigns its environment before calling createEmbeddingModel in its constructor.
     - CachedEmbeddingCreator obtains its Cache from CacheManager.getDefaultInstance() in the constructor (cache dir must be set first).
     - calculateEmbeddings returns a list in input order; empty input returns an empty list with no model call.
     - Long text exceeding MAX_TOKEN_LENGTH (8000) is binary-searched to a fitting prefix and cached under a _fixed_ key.
@@ -33,17 +34,22 @@ creator skips caching entirely.
 ## EmbeddingConfiguration and EmbeddingPlatform
 
 `EmbeddingConfiguration(EmbeddingPlatform platform, String modelName, @Nullable String pathToModel,
-@Nullable String pathToTokenizer)` is a record. `of(platform, modelName)` is the simple form;
-`onnx(model, pathToModel, pathToTokenizer)` creates an ONNX config with local file paths.
-The builder requires a non-blank `modelName` for all non-MOCK platforms (MOCK defaults to
-`"mock"` when blank).
+@Nullable String pathToTokenizer, EnvironmentProvider environment)` is a record. `of(platform, modelName)`
+is the simple form; `onnx(model, pathToModel, pathToTokenizer)` creates an ONNX config with local file
+paths. The builder requires a non-blank `modelName` for all non-MOCK platforms (MOCK defaults to
+`"mock"` when blank). `Builder.environment(env)` sets the
+[EnvironmentProvider](configuration.md) that supplies credentials and hosts; without it, `build()`
+creates a new `SystemEnvironment`.
 
 `EmbeddingPlatform` is an enum: `OLLAMA`, `OPENAI`, `ONNX`, `OPENWEBUI`, `MOCK`. `fromString`
 is case-insensitive and throws for unknown names.
 
 ## EmbeddingCreator factory
 
-`EmbeddingCreator.create(EmbeddingConfiguration)` dispatches on `platform()`:
+`EmbeddingCreator.create(EmbeddingConfiguration)` dispatches on `platform()` and passes
+`configuration.environment()` to every caching creator (`OllamaEmbeddingCreator(model, env)`,
+`OpenAiEmbeddingCreator(model, env)`, `OpenWebUiEmbeddingCreator(model, env)`,
+`OnnxEmbeddingCreator(model, pathToModel, pathToTokenizer, env)`; ONNX does not read it):
 
 | Platform | Creator | Threads | Notes |
 | --- | --- | --- | --- |
@@ -58,14 +64,18 @@ is case-insensitive and throws for unknown names.
 ## CachedEmbeddingCreator
 
 All real creators extend `CachedEmbeddingCreator`, an abstract template-method base that
-owns caching and parallelism. On construction it:
+owns caching and parallelism. Its constructor is
+`CachedEmbeddingCreator(String model, int threads, EnvironmentProvider environment, String... params)`;
+subclasses read credentials via the `protected environment()` accessor. On construction it:
 
-1. Builds `EmbeddingCacheParameter(model)` and obtains a `Cache<EmbeddingCacheKey>` from
+1. Stores the environment first, because step 3 calls the subclass's `createEmbeddingModel`,
+   which reads it.
+2. Builds `EmbeddingCacheParameter(model)` and obtains a `Cache<EmbeddingCacheKey>` from
    `CacheManager.getDefaultInstance().getCache(this, ...)` — so [CacheManager.setCacheDir](cache-hierarchy.md)
    must have been called first.
-2. Calls the abstract `createEmbeddingModel(model, params...)` to build the primary
+3. Calls the abstract `createEmbeddingModel(model, params...)` to build the primary
    `EmbeddingModel` eagerly.
-3. Clamps `threads` to at least 1.
+4. Clamps `threads` to at least 1.
 
 `calculateEmbeddings(List<String>)` is `final` and dispatches:
 
@@ -99,9 +109,10 @@ When an embed call fails, the fallback assumes the content exceeded the model to
 
 1. Add a constant to `EmbeddingPlatform`.
 2. Create a subclass of `CachedEmbeddingCreator` (or `EmbeddingCreator` for a non-caching
-   one) implementing `createEmbeddingModel`. Pass the desired thread count to the superclass
-   constructor; pass extra builder inputs as `params`.
-3. Add a `case` to `EmbeddingCreator.create` and read credentials via [Environment](configuration.md).
+   one) implementing `createEmbeddingModel`. Pass the desired thread count and the environment to
+   the superclass constructor; pass extra builder inputs as `params`.
+3. Add a `case` to `EmbeddingCreator.create` that passes `configuration.environment()`, and read
+   credentials via `environment()` (see [Configuration and Environment](configuration.md)).
 4. Extend `EmbeddingConfigurationTest` and `CachedEmbeddingCreatorTest` (the latter uses a
    `RecordingEmbeddingCreator` to assert caching, order, empty input, persistence, and that
    the parallel path forwards `params` to every per-thread model).
@@ -110,7 +121,10 @@ When an embed call fails, the fallback assumes the content exceeded the model to
 
 - `CachedEmbeddingCreatorTest` — `cachesEmbeddings` (second call is a cache hit),
   `preservesOrder`, `emptyInput` (no model call), `persistsAcrossReload` (flush + reload),
-  `parallelPathForwardsParameters` (per-thread models receive `["p1","p2"]`).
+  `parallelPathForwardsParameters` (per-thread models receive `["p1","p2"]`),
+  `injectedEnvironmentIsUsedDuringConstruction` (the environment is set before
+  `createEmbeddingModel` runs), `createUsesConfiguredEnvironment` and
+  `createPassesEnvironmentToOpenWebUi` (credentials come from the configured `MapEnvironment`).
 - `EmbeddingConfigurationTest` — `of`/`onnx`/builder validation, `fromString`, the MOCK
   creator path, and ONNX missing-paths failure.
 

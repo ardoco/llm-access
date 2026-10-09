@@ -64,7 +64,11 @@ Because the files are self-contained, the cache directory is the replication art
 `AutoCloseable` interface exposing only the operations the cache uses: `ping`, `exists`,
 `hget`, `hset`, `close`.
 
-**Fail-fast:** `RedisCache.createRedisConnection()` reads `REDIS_URL` (default
+Both Redis-based backends receive the `EnvironmentProvider` of their `CacheManager` as a
+constructor argument (`RedisCache(parameter, mapper, environment)`,
+`RestRedisCache(parameter, mapper, environment)`); they hold no static environment.
+
+**Fail-fast:** `RedisCache.createRedisConnection(environment)` reads `REDIS_URL` (default
 `redis://localhost:6379`), builds a `RedisAdapter` over `redis.clients.jedis.RedisClient`,
 and pings. If `PING` fails it closes the client and throws `IllegalStateException` ("Could not
 connect to Redis ..."). There is no silent fallback — pair a remote backend with `LOCAL`
@@ -78,7 +82,7 @@ connect to Redis ..."). There is no silent fallback — pair a remote backend wi
 setup. It is for clients that can reach Redis only over HTTP (firewall / HTTP-only egress),
 using `org.fuchss:rest-redis`'s `Client`.
 
-- Reads `REST_REDIS_URI` (default `http://localhost:8080`), `REST_REDIS_USERNAME`, and
+- Reads from the injected environment `REST_REDIS_URI` (default `http://localhost:8080`), `REST_REDIS_USERNAME`, and
   `REST_REDIS_PASSWORD` (optional; blank treated as null and not sent). The server itself has
   no auth/TLS — terminate them at a reverse proxy (see [Operations and Deployment](operations.md)).
 - Wraps the `Client` in a `RestRedisAdapter` (package-private) that delegates `ping`,
@@ -91,10 +95,11 @@ All storage behavior (hash key, fields, `data`/`timestamp`) is inherited from `R
 ## Adding a backend
 
 1. Add a `CacheType` constant and a `case` in `Cache.createByType` (construct the backend from
-   `CacheParameter` and, where needed, `cacheDir`/`mapper`).
+   `CacheParameter` and, where needed, `cacheDir`/`mapper`/`environment`).
 2. Implement `Cache<K>` (or extend an existing backend like `RestRedisCache` extends
    `RedisCache`).
-3. If it needs connection details, read them through [Environment](configuration.md) and
+3. If it needs connection details, read them from the injected
+   [EnvironmentProvider](configuration.md) (never a static one) and
    preserve the fail-fast PING contract so layering and conflict strategies remain safe.
 4. Add tests mirroring `RestRedisTest` (Testcontainers where a real server is needed; the
    `@Testcontainers(disabledWithoutDocker = true)` annotation skips gracefully without Docker).
@@ -103,7 +108,8 @@ All storage behavior (hash key, fields, `data`/`timestamp`) is inherited from `R
 
 - `CacheTest` — local backend round-trips and legacy-file backward compatibility (see
   [Cache Core](cache-core.md)).
-- `RestRedisTest` — Testcontainers-managed Redis plus an in-process `rest-redis` `Server`:
+- `RestRedisTest` — Testcontainers-managed Redis plus an in-process `rest-redis` `Server`, with
+  the connection settings injected as a `MapEnvironment`:
   connection, set/get/null, and `HierarchicalCache` conflict behavior (NONE returns primary
   and leaves secondary; OVERWRITE overwrites secondary; ERROR throws) across a local + REST-Redis
   pair. `@Testcontainers(disabledWithoutDocker = true)` skips the whole class without Docker.
