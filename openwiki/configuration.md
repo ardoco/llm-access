@@ -1,88 +1,51 @@
 ---
 type: Reference
 title: Configuration and Environment
-description: An injected EnvironmentProvider (SystemEnvironment for system env vars plus .env, MapEnvironment for in-memory values) is the source of credentials and hosts for chat, embedding, and cache; KeyGenerator produces stable content UUIDs for cache keys; Futures resolves parallel embedding futures.
+description: Environment loads .env over system env vars and is the single source of credentials and hosts; KeyGenerator produces stable content UUIDs for cache keys; Futures resolves parallel embedding futures.
 tags: [configuration, environment, utilities]
 openwiki:
   roles: [repository, integration]
   change_kinds: [public-api]
   source_paths:
-    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java
-    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/SystemEnvironment.java
-    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/MapEnvironment.java
+    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Environment.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Futures.java
     - sample.env
-  symbols: [EnvironmentProvider, EnvironmentProvider.getenv, EnvironmentProvider.getenvNonNull, SystemEnvironment, MapEnvironment, KeyGenerator, KeyGenerator.generateKey, Futures, Futures.getLogged]
+  symbols: [Environment, Environment.getenv, Environment.getenvNonNull, Environment.overwrite, KeyGenerator, KeyGenerator.generateKey, Futures, Futures.getLogged]
   test_paths:
-    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/SystemEnvironmentTest.java
-    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/MapEnvironmentTest.java
-    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/FuturesTest.java
   invariants:
-    - There is no global environment; an EnvironmentProvider is only ever a constructor parameter or an instance field (guarded by NoGlobalEnvironmentTest).
-    - SystemEnvironment precedence is system env vars, then .env values, then null.
-    - MapEnvironment is an immutable copy of its map, never falls back to system env vars, and its toString lists keys only.
-    - getenvNonNull throws IllegalStateException naming the missing key.
+    - Precedence is .env values then system env vars then null.
+    - Environment.overwrite replaces the Dotenv config; a missing path keeps the previous config.
     - KeyGenerator normalizes CRLF to LF before hashing and produces type-3 name UUIDs.
     - Futures.getLogged never throws a checked exception; failures become IllegalStateException.
-  validation_commands: ["mvn -q test -Dtest=SystemEnvironmentTest,MapEnvironmentTest,NoGlobalEnvironmentTest,KeyGeneratorTest,FuturesTest"]
+  validation_commands: ["mvn -q test -Dtest=EnvironmentTest,KeyGeneratorTest,FuturesTest"]
 ---
 
 # Configuration and Environment
 
 The library is framework-neutral: model settings come from configuration objects
 ([Chat Models](chat-models.md), [Embeddings](embeddings.md)), while credentials and hosts
-come from an `EnvironmentProvider` that is passed in explicitly. `KeyGenerator` and `Futures`
+come from the environment. `Environment` is the single accessor; `KeyGenerator` and `Futures`
 are small utilities used by the cache and embedding subsystems.
 
-## EnvironmentProvider
+## Environment
 
-`edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider` is the single abstraction for reading
-configuration values. Where the values come from is implementation-specific.
+`edu.kit.kastel.mcse.ardoco.llm.util.Environment` is a final utility class backed by
+`io.github.cdimascio.dotenv` (dotenv-java). On class load it tries to load a `.env` from the
+project root; otherwise it falls back to system environment variables.
 
-- `getenv(String key)` — the value, or `null` if the key is not set.
-- `getenvNonNull(String key)` — default method; throws `IllegalStateException` naming the
-  missing key. Used by creators/providers that require a value (e.g. `OLLAMA_EMBEDDING_HOST`).
+- `getenv(String key)` — `.env` value first, then `System.getenv`, then `null`.
+- `getenvNonNull(String key)` — throws `IllegalStateException` naming the missing key.
+  Used by creators/providers that require a value (e.g. `OLLAMA_EMBEDDING_HOST`).
+- `overwrite(Path path)` — `synchronized`; replaces the Dotenv configuration from a custom
+  path. If the file does not exist, it logs a warning and keeps the existing config (used by
+  tests to point at `src/test/resources/.env-test`).
 
-**There is no global environment.** An environment is always a constructor parameter or an
-instance field — never a static field or a singleton. `NoGlobalEnvironmentTest` (ArchUnit)
-fails the build if a static field in main code is assignable to `EnvironmentProvider`.
-**Do not read `.env` files or `System.getenv` directly;** use the injected provider.
-
-### Implementations
-
-- `SystemEnvironment` — backed by `io.github.cdimascio.dotenv` (dotenv-java).
-  `new SystemEnvironment()` loads `.env` from the current working directory if it exists;
-  `new SystemEnvironment(Path)` loads the given file (a missing file logs a warning and falls back
-  to system env vars). The file is loaded once in the constructor; instances are immutable and
-  independent. Precedence: **system env vars first, then `.env`, then `null`** — dotenv-java
-  resolves `System.getenv(key)` before the parsed file, so a `.env` entry is used only when the
-  variable is not exported.
-- `MapEnvironment` — a `final` class over an immutable `Map.copyOf` of the given map. Unknown keys
-  return `null`; there is no fallback to system env vars. `toString()` lists the keys only, so
-  secret values do not end up in logs.
-
-### Where the environment is injected
-
-| Consumer | How to pass it | Default when omitted |
-| --- | --- | --- |
-| Chat ([Chat Models](chat-models.md)) | `LlmConfiguration.builder(platform).environment(env)` → `ChatModelProvider` | `new SystemEnvironment()` per `build()` |
-| Embeddings ([Embeddings](embeddings.md)) | `EmbeddingConfiguration.builder(platform).environment(env)` → `EmbeddingCreator.create` → creator constructors | `new SystemEnvironment()` per `build()` |
-| Cache ([Cache Hierarchy and Manager](cache-hierarchy.md)) | `CacheManager.setCacheDir(dir, env)` or `new CacheManager(path, env)` → `Cache.createByType` → `RedisCache`/`RestRedisCache` | `new SystemEnvironment()` in `setCacheDir(dir)` / `new CacheManager(path)` |
-
-Usage:
-
-```java
-EnvironmentProvider environment = new MapEnvironment(Map.of("OPENAI_API_KEY", apiKey));
-
-LlmConfiguration configuration = LlmConfiguration.builder(ChatModelPlatform.OPENAI)
-        .modelName("gpt-4o-mini")
-        .environment(environment)
-        .build();
-ChatModel model = new ChatModelProvider(configuration).createChatModel();
-```
+`dotenv` is `volatile` and `load`/`overwrite` are `synchronized`, so publication is safe.
+**Do not read `.env` files directly;** use `Environment` or `getenv`/`getenvNonNull`.
 
 ### Environment variables
 
@@ -125,13 +88,9 @@ Used by the parallel path of `CachedEmbeddingCreator` (see [Embeddings](embeddin
 
 ## Focused tests
 
-- `SystemEnvironmentTest` — `readsFromDotEnv`, `fallsBackToSystemEnv` (reads `PATH`),
-  `unknownReturnsNull`, `nonNull`, `missingFileUsesSystemEnvironment`, `instancesAreIndependent`,
-  `equalityAndToString`. Each test writes its own `.env` into a `@TempDir`.
-- `MapEnvironmentTest` — `lookup`, `noSystemFallback`, `nonNull`, `defensiveCopy`,
-  `toStringHidesValues`, `equality`.
-- `NoGlobalEnvironmentTest` — ArchUnit rules: no static field in main code is assignable to
-  `EnvironmentProvider`, and `SystemEnvironment` declares no static field of its own type.
+- `EnvironmentTest` — `readsFromDotEnv`, `fallsBackToSystemEnv` (reads `PATH`),
+  `unknownReturnsNull`, `nonNullThrows`, `overwriteMissingKeepsPrevious`. Uses a `@TempDir`
+  `.env` and restores the baseline `.env-test` in `@AfterEach`.
 - `KeyGeneratorTest` — `deterministic`, `normalizesLineEndings`, `distinctInputs`,
   `stableUuidValue`, `nullInput`.
 - `FuturesTest` — `returnsValue` (completed future), `wrapsFailure` (failed future throws
@@ -139,9 +98,8 @@ Used by the parallel path of `CachedEmbeddingCreator` (see [Embeddings](embeddin
 
 ## Test environment
 
-Tests never depend on the developer's `.env` or system variables: they inject a
-`MapEnvironment` with deterministic dummy values, e.g.
-`CacheManager.setCacheDir(dir, new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL", "CACHE_REPLACEMENT_STRATEGY", "ERROR")))`
-or `LlmConfiguration.builder(...).environment(new MapEnvironment(Map.of("OPENAI_API_KEY", "DUMMY")))`.
-An empty `MapEnvironment` makes missing-credential tests deterministic. Do not commit real
-secrets to `.env`.
+Tests call `Environment.overwrite(Path.of("src/test/resources/.env-test"))` (in `@BeforeAll`
+or `@BeforeEach`) to load deterministic dummy values. The `.env-test` file provides
+`OPENAI_API_KEY=DUMMY`, `OPENAI_ORGANIZATION_ID=DUMMY`, `OLLAMA_HOST`/
+`OLLAMA_EMBEDDING_HOST` set to `http://localhost:11434`, and `CACHE_HIERARCHY=LOCAL` with
+`CACHE_REPLACEMENT_STRATEGY=ERROR`. Do not commit real secrets to `.env` or `.env-test`.

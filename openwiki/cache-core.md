@@ -45,12 +45,10 @@ caching are built on `Cache<K extends CacheKey>`; concrete backends are describe
   fallback: if deserialization fails and `clazz == String.class`, returns the raw string.
 
 `Cache.createByType(CacheType type, CacheParameter<K> parameters, @Nullable String cacheDir,
-@Nullable ObjectMapper mapper, EnvironmentProvider environment)` is the factory used by
-`CacheManager.buildCacheHierarchy`:
+@Nullable ObjectMapper mapper)` is the factory used by `CacheManager.buildCacheHierarchy`:
 
 - `LOCAL` requires a non-null `cacheDir` → `new LocalCache<>(cacheDir, parameters)`.
-- `REDIS` and `REST_REDIS` require a non-null `mapper` → `RedisCache` / `RestRedisCache`, which
-  read their connection settings from `environment` (see [Cache Backends](cache-backends.md)).
+- `REDIS` and `REST_REDIS` require a non-null `mapper` → `RedisCache` / `RestRedisCache`.
 
 ## CacheKey
 
@@ -98,7 +96,7 @@ classDiagram
         +containsKey(String) boolean
         +flush()
         +getCacheParameter() CacheParameter~K~
-        +createByType(CacheType, CacheParameter, cacheDir, mapper, environment) Cache
+        +createByType(CacheType, CacheParameter, cacheDir, mapper) Cache
     }
     class CacheKey {
         +MAPPER ObjectMapper

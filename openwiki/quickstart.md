@@ -14,8 +14,8 @@ openwiki:
 `llm-access` is a small, reusable Java 21 library for accessing Large Language Models (LLMs)
 and embedding models through [LangChain4j](https://docs.langchain4j.dev/), with a pluggable
 caching layer for LLM requests and embeddings. It is framework-neutral: model settings are
-passed as plain configuration objects, while credentials and hosts are read from an injected
-`EnvironmentProvider` (by default `.env` plus system env vars, or an in-memory `MapEnvironment`). It was extracted from the [LiSSA](https://github.com/ardoco/lissa)
+passed as plain configuration objects, while credentials and hosts are read from the
+environment (`.env` or system env vars). It was extracted from the [LiSSA](https://github.com/ardoco/lissa)
 project so LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one
 implementation. Coordinates: `io.github.ardoco:llm-access` (see `pom.xml`).
 
@@ -35,7 +35,7 @@ model, which makes runs reproducible and keeps API cost and latency down. See
 | Cache hierarchy | [Cache Hierarchy and Manager](cache-hierarchy.md) | `CacheManager`, `HierarchicalCache`, `CacheReplacementStrategy` |
 | Cache backends | [Cache Backends](cache-backends.md) | `LocalCache`, `RedisCache`, `RestRedisCache`, `UnifiedRedisClient` |
 | Cache keys | [Cache Keys](cache-keys.md) | `ChatCacheKey`/`ChatCacheParameter`, `EmbeddingCacheKey`/`EmbeddingCacheParameter` |
-| Configuration | [Configuration and Environment](configuration.md) | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `KeyGenerator`, `Futures`, env vars |
+| Configuration | [Configuration and Environment](configuration.md) | `Environment`, `KeyGenerator`, `Futures`, env vars |
 | Operations | [Operations and Deployment](operations.md) | Redis/REST-Redis deployment, replication packages, CI |
 
 ## Task routing table
@@ -48,7 +48,7 @@ model, which makes runs reproducible and keeps API cost and latency down. See
 | Change cache abstraction / key model | [Cache Core](cache-core.md), [Cache Keys](cache-keys.md) | `cache/Cache.java`, `cache/CacheKey.java`, `cache/chat/*`, `cache/embedding/*` | `Cache`, `CacheKey`, `CacheParameter`, `ChatCacheParameter` | `CacheTest`, `ChatCacheKeyTest`, `EmbeddingCacheKeyTest` | `mvn -q test -Dtest=CacheTest,ChatCacheKeyTest,EmbeddingCacheKeyTest` |
 | Change layering / conflict strategy | [Cache Hierarchy and Manager](cache-hierarchy.md) | `cache/CacheManager.java`, `cache/HierarchicalCache.java`, `cache/CacheReplacementStrategy.java` | `CacheManager`, `HierarchicalCache`, `CacheReplacementStrategy` | `CacheManagerTest`, `HierarchicalCacheTest`, `CacheReplacementStrategyTest` | `mvn -q test -Dtest=CacheManagerTest,HierarchicalCacheTest,CacheReplacementStrategyTest` |
 | Add or change a cache backend | [Cache Backends](cache-backends.md) | `cache/LocalCache.java`, `cache/RedisCache.java`, `cache/RestRedisCache.java`, `cache/UnifiedRedisClient.java` | `LocalCache`, `RedisCache`, `RestRedisCache`, `UnifiedRedisClient` | `CacheTest`, `RestRedisTest` | `mvn -q test -Dtest=CacheTest` (REST-Redis needs Docker) |
-| Change env/credential handling | [Configuration and Environment](configuration.md) | `util/EnvironmentProvider.java`, `util/SystemEnvironment.java`, `util/MapEnvironment.java`, `util/KeyGenerator.java`, `util/Futures.java` | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `KeyGenerator.generateKey`, `Futures.getLogged` | `SystemEnvironmentTest`, `MapEnvironmentTest`, `NoGlobalEnvironmentTest`, `KeyGeneratorTest`, `FuturesTest` | `mvn -q test -Dtest=SystemEnvironmentTest,MapEnvironmentTest,NoGlobalEnvironmentTest,KeyGeneratorTest,FuturesTest` |
+| Change env/credential handling | [Configuration and Environment](configuration.md) | `util/Environment.java`, `util/KeyGenerator.java`, `util/Futures.java` | `Environment`, `KeyGenerator.generateKey`, `Futures.getLogged` | `EnvironmentTest`, `KeyGeneratorTest`, `FuturesTest` | `mvn -q test -Dtest=EnvironmentTest,KeyGeneratorTest,FuturesTest` |
 | Deployment / CI / release | [Operations and Deployment](operations.md) | `README.md`, `.github/workflows/*`, `pom.xml` | `central-publishing-maven-plugin`, REST-Redis image | — | see workflows |
 
 ## Build and test

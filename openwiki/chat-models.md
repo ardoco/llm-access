@@ -20,8 +20,7 @@ openwiki:
     - createChatModel always returns a LazyChatModel wrapping a platform-specific supplier.
     - Required env vars missing at createChatModel time throw IllegalStateException.
     - LazyChatModel creates its delegate exactly once (thread-safe double-checked locking).
-    - LlmConfiguration requires non-null platform, environment, and a non-blank modelName.
-    - Credentials are read only from the configuration's injected EnvironmentProvider (default a new SystemEnvironment).
+    - LlmConfiguration requires non-null platform and non-blank modelName.
   validation_commands: ["mvn -q test -Dtest=ChatModelProviderTest,ChatConfigurationTest,LazyChatModelTest"]
 ---
 
@@ -38,14 +37,12 @@ obtain a matching cache (see [Cache Keys](cache-keys.md)).
 ## LlmConfiguration
 
 `edu.kit.kastel.mcse.ardoco.llm.chat.LlmConfiguration` is a record capturing `platform`,
-`modelName`, `seed`, `temperature`, and `environment` (an `EnvironmentProvider`, see
-[Configuration and Environment](configuration.md)). Use `LlmConfiguration.of(platform, modelName)` for
-defaults, or the builder to override `seed`/`temperature`/`environment`.
+`modelName`, `seed`, and `temperature`. Use `LlmConfiguration.of(platform, modelName)` for
+defaults, or the builder to override `seed`/`temperature`.
 
 Invariants:
 
-- Canonical constructor: `platform`, `modelName`, and `environment` must be non-null.
-- `Builder.environment(env)` rejects null; without it, `build()` creates a new `SystemEnvironment`.
+- Canonical constructor: `platform` and `modelName` must be non-null.
 - `Builder.build()` throws `IllegalArgumentException` if `modelName` is null or blank.
 - Defaults: `DEFAULT_SEED = 133742243`, `DEFAULT_TEMPERATURE = 0.0`.
 
@@ -61,10 +58,10 @@ identical prompts map to the same cache entry (see [Cache Core](cache-core.md)).
 
 ## ChatModelProvider
 
-`ChatModelProvider(LlmConfiguration)` stores the platform, model name, seed, temperature, and
-the configuration's environment. `createChatModel()` switches on the platform and delegates to
-private instance factory methods that read credentials and hosts from that
-[EnvironmentProvider](configuration.md) and each return a `LazyChatModel`.
+`ChatModelProvider(LlmConfiguration)` stores the platform, model name, seed, and
+temperature. `createChatModel()` switches on the platform and delegates to private factory
+methods that each return a `LazyChatModel`. Credentials and hosts are read through
+[Environment](configuration.md).
 
 | Platform | Env vars (required bold) | Notes |
 | --- | --- | --- |
@@ -97,16 +94,15 @@ LangChain4j builder, which is where missing credentials or unreachable hosts sur
 1. Add a constant to `ChatModelPlatform` (it is used by `fromString`, so keep it uppercase).
 2. Add a `case` in `ChatModelProvider.createChatModel()` and a private `createXyzChatModel`
    factory that returns a `LazyChatModel` wrapping the LangChain4j builder. Read credentials
-   eagerly through the provider's `environment.getenv`/`getenvNonNull` (see
-   [Configuration and Environment](configuration.md)).
-3. `ChatModelProviderTest.missingCredentialsThrow` covers every platform with an empty
-   `MapEnvironment`; add a positive case with a `MapEnvironment` holding the new variables.
+   through `Environment.getenv`/`getenvNonNull` (see [Configuration and Environment](configuration.md)).
+3. Extend `ChatModelProviderTest.missingCredentialsThrow` or `buildsOpenAiChatModel` to cover
+   the new branch; add the env var to `src/test/resources/.env-test` if the branch should
+   construct successfully in tests.
 
 ## Focused tests
 
 - `ChatModelProviderTest` — `exposesSettings`, `buildsOpenAiModel`, `missingCredentialsThrow`
-  (every platform throws with an empty `MapEnvironment`), `usesInjectedEnvironment` (credentials
-  come only from the injected environment).
+  (verifies the lazy model is returned and missing-credential branches throw).
 - `ChatConfigurationTest` — `LlmConfiguration` defaults/builder validation, `ChatModelPlatform.fromString`,
   and `cacheParameters()` file-identifier format (`gpt-4o_133742243` omits temperature when 0.0).
 - `LazyChatModelTest` — `lazyInitialization` (supplier runs once across two calls) and
@@ -117,7 +113,7 @@ sequenceDiagram
     participant Caller
     participant Provider as ChatModelProvider
     participant Lazy as LazyChatModel
-    participant Env as EnvironmentProvider
+    participant Env as Environment
     participant LC4J as LangChain4j Model
     Caller->>Provider: new ChatModelProvider(LlmConfiguration)
     Caller->>Provider: createChatModel()
