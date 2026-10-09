@@ -12,9 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import io.github.cdimascio.dotenv.DotenvException;
+
 /**
  * Tests for {@link SystemEnvironment}: loading an explicit {@code .env} file, the fallback to system environment
- * variables, and the independence of instances.
+ * variables, lazy loading, and the independence of instances.
  */
 @NullMarked
 class SystemEnvironmentTest {
@@ -87,5 +89,28 @@ class SystemEnvironmentTest {
         assertEquals(environment, new SystemEnvironment(env));
         assertEquals(environment.hashCode(), new SystemEnvironment(env).hashCode());
         assertFalse(environment.toString().contains("super-secret"));
+    }
+
+    @Test
+    @DisplayName("the .env file is read on the first lookup, not on construction, and then kept")
+    void loadsLazilyOnce() throws IOException {
+        Path env = tempDir.resolve("lazy.env");
+        SystemEnvironment environment = new SystemEnvironment(env);
+
+        Files.writeString(env, "MY_TEST_KEY=first\n");
+        assertEquals("first", environment.getenv("MY_TEST_KEY"), "the file must be read on the first lookup");
+
+        Files.writeString(env, "MY_TEST_KEY=second\n");
+        assertEquals("first", environment.getenv("MY_TEST_KEY"), "the loaded file must not be re-read");
+    }
+
+    @Test
+    @DisplayName("a malformed .env file does not fail construction, only the lookups that need it")
+    void malformedFileFailsOnLookupOnly() throws IOException {
+        Path env = tempDir.resolve("malformed.env");
+        Files.writeString(env, "this line is not a key-value pair\n");
+
+        SystemEnvironment environment = assertDoesNotThrow(() -> new SystemEnvironment(env));
+        assertThrows(DotenvException.class, () -> environment.getenv("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
     }
 }

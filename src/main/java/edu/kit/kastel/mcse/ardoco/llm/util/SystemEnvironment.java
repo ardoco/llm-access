@@ -3,13 +3,16 @@ package edu.kit.kastel.mcse.ardoco.llm.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvEntry;
 
 /**
  * An {@link EnvironmentProvider} that reads system environment variables and, optionally, a {@code .env} file.
@@ -19,25 +22,30 @@ import io.github.cdimascio.dotenv.Dotenv;
  * <li>Values from system environment variables</li>
  * <li>Values from the .env file (if it exists)</li>
  * </ol>
- * Note that the system environment wins: dotenv-java resolves {@code System.getenv(key)} first and only falls back
- * to the parsed .env file, so a .env entry is used only when that variable is not already exported.
+ * A .env entry is therefore used only when that variable is not already exported.
  * <p>
  * {@link #SystemEnvironment()} reads the .env file from the current working directory, while
- * {@link #SystemEnvironment(Path)} reads an explicitly given file. The file is loaded once on construction and
- * should contain key-value pairs in the format:
+ * {@link #SystemEnvironment(Path)} reads an explicitly given file. The path is resolved on construction, but the file
+ * is read lazily on the first lookup and then kept for the lifetime of the instance, so creating an instance is cheap
+ * and a missing or malformed file only matters once a value is actually requested. The file should contain key-value
+ * pairs in the format:
  * <pre>
  * KEY=value
  * </pre>
- * Instances are immutable and independent of each other; there is no shared global environment.
+ * Instances are thread-safe and independent of each other; there is no shared global environment.
  */
 public final class SystemEnvironment implements EnvironmentProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemEnvironment.class);
 
-    /** The absolute path of the loaded .env file, or null if no .env file was loaded */
-    private final @Nullable Path dotenvFile;
-    /** The loaded .env configuration, or null if no .env file was loaded */
-    private final @Nullable Dotenv dotenv;
+    /** The absolute path of the .env file to read */
+    private final Path dotenvFile;
+    /** Whether the file was given explicitly; a missing explicit file is logged as a warning */
+    private final boolean explicit;
+    /** Guards the lazy loading of {@link #dotenvValues} */
+    private final Object loadLock = new Object();
+    /** The entries declared in the .env file (empty if there is no such file), or null until the first lookup */
+    private volatile @Nullable Map<String, String> dotenvValues;
 
     /**
      * Creates an environment that reads system environment variables and the {@code .env} file in the current
@@ -49,7 +57,7 @@ public final class SystemEnvironment implements EnvironmentProvider {
 
     /**
      * Creates an environment that reads system environment variables and the given {@code .env} file. If the file
-     * does not exist, a warning is logged and only system environment variables are used.
+     * does not exist, a warning is logged on the first lookup and only system environment variables are used.
      *
      * @param dotenvFile The path to the .env file
      */
@@ -58,52 +66,73 @@ public final class SystemEnvironment implements EnvironmentProvider {
     }
 
     private SystemEnvironment(Path file, boolean explicit) {
-        if (Files.isRegularFile(file)) {
-            Path absolute = file.toAbsolutePath().normalize();
-            Path directory = Objects.requireNonNullElse(absolute.getParent(), absolute.getRoot());
-            this.dotenvFile = absolute;
-            this.dotenv = Dotenv.configure().directory(directory.toString()).filename(absolute.getFileName().toString()).load();
-        } else {
-            if (explicit) {
-                logger.warn("No .env file found at '{}', using system environment variables", file);
-            } else {
-                logger.debug("No .env file found in the working directory, using system environment variables");
-            }
-            this.dotenvFile = null;
-            this.dotenv = null;
-        }
+        this.dotenvFile = file.toAbsolutePath().normalize();
+        this.explicit = explicit;
     }
 
     /**
      * Retrieves an environment variable value.
      * This method:
      * <ol>
-     * <li>Queries the loaded .env handle, which itself resolves {@code System.getenv(key)}
-     * first and falls back to the parsed .env file</li>
-     * <li>If no .env is loaded, falls back to system environment variables</li>
+     * <li>Returns the system environment variable, if set</li>
+     * <li>Otherwise returns the entry of the .env file, loading the file on the first call</li>
      * <li>Returns null if the variable is not found in either location</li>
      * </ol>
-     * The effective precedence is therefore: system environment first, .env second.
      *
      * @param key The name of the environment variable to retrieve
      * @return The value of the environment variable, or null if not found
+     * @throws io.github.cdimascio.dotenv.DotenvException if the .env file exists but cannot be read or parsed
      */
     @Override
     public @Nullable String getenv(String key) {
-        String dotenvValue = dotenv == null ? null : dotenv.get(key);
-        if (dotenvValue != null)
-            return dotenvValue;
-        return System.getenv(key);
+        String systemValue = System.getenv(key);
+        if (systemValue != null)
+            return systemValue;
+        return dotenvValues().get(key);
+    }
+
+    /**
+     * Returns the entries declared in the .env file, loading the file on the first call. Concurrent first calls
+     * load the file only once; if loading fails, the next call tries again.
+     *
+     * @return The entries declared in the .env file, or an empty map if there is no such file
+     */
+    private Map<String, String> dotenvValues() {
+        Map<String, String> values = dotenvValues;
+        if (values == null) {
+            synchronized (loadLock) {
+                values = dotenvValues;
+                if (values == null) {
+                    values = loadDotenvValues();
+                    dotenvValues = values;
+                }
+            }
+        }
+        return values;
+    }
+
+    private Map<String, String> loadDotenvValues() {
+        if (!Files.isRegularFile(dotenvFile)) {
+            if (explicit) {
+                logger.warn("No .env file found at '{}', using system environment variables", dotenvFile);
+            } else {
+                logger.debug("No .env file found in the working directory, using system environment variables");
+            }
+            return Map.of();
+        }
+        Path directory = Objects.requireNonNullElse(dotenvFile.getParent(), dotenvFile.getRoot());
+        Dotenv dotenv = Dotenv.configure().directory(directory.toString()).filename(dotenvFile.getFileName().toString()).load();
+        return dotenv.entries(Dotenv.Filter.DECLARED_IN_ENV_FILE).stream().collect(Collectors.toUnmodifiableMap(DotenvEntry::getKey, DotenvEntry::getValue));
     }
 
     @Override
     public boolean equals(@Nullable Object o) {
-        return o instanceof SystemEnvironment other && Objects.equals(dotenvFile, other.dotenvFile);
+        return o instanceof SystemEnvironment other && dotenvFile.equals(other.dotenvFile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(dotenvFile);
+        return dotenvFile.hashCode();
     }
 
     @Override
