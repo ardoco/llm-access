@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.github.ardoco</groupId>
     <artifactId>parent</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
   </parent>
 
   <artifactId>llm-access</artifactId>
@@ -27,10 +27,10 @@
   </issueManagement>
 
   <properties>
-    <langchain4j.version>1.16.3</langchain4j.version>
+    <langchain4j.version>1.22.0</langchain4j.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <jtokkit.version>1.1.0</jtokkit.version>
-    <rest-redis.version>0.1.4</rest-redis.version>
+    <rest-redis.version>0.1.5</rest-redis.version>
     <dotenv.version>3.2.0</dotenv.version>
   </properties>
 
