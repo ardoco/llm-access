@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.Futures;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
-import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Abstract base class for embedding creators that implement caching functionality.
@@ -42,9 +41,9 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
     private static final Logger STATIC_LOGGER = LoggerFactory.getLogger(CachedEmbeddingCreator.class);
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
-     * The default .env environment
+     * The environment that supplies credentials and host URLs to {@link #createEmbeddingModel(String, String...)}.
      */
-    protected final EnvironmentProvider environment = SystemEnvironment.getInstance();
+    private final EnvironmentProvider environment;
     private final Cache<EmbeddingCacheKey> cache;
     private final EmbeddingModel embeddingModel;
     private final String rawNameOfModel;
@@ -55,11 +54,14 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
     /**
      * Creates a new cached embedding creator with the specified model and thread count.
      *
-     * @param model   The name of the embedding model to use
-     * @param threads The number of threads to use for parallel embedding generation
-     * @param params  Additional parameters for the embedding model
+     * @param model       The name of the embedding model to use
+     * @param threads     The number of threads to use for parallel embedding generation
+     * @param environment The environment that supplies credentials and host URLs
+     * @param params      Additional parameters for the embedding model
      */
-    protected CachedEmbeddingCreator(String model, int threads, String... params) {
+    protected CachedEmbeddingCreator(String model, int threads, EnvironmentProvider environment, String... params) {
+        // Assigned first: createEmbeddingModel (called below) is overridden by subclasses and reads the environment.
+        this.environment = Objects.requireNonNull(environment, "environment must not be null");
         this.embeddingCacheParameter = new EmbeddingCacheParameter(model);
         this.cache = CacheManager.getDefaultInstance().getCache(this, embeddingCacheParameter);
         this.embeddingModel = Objects.requireNonNull(createEmbeddingModel(model, params));
@@ -78,6 +80,15 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
      * @return A new instance of the embedding model
      */
     protected abstract EmbeddingModel createEmbeddingModel(String model, String... params);
+
+    /**
+     * Returns the environment that supplies credentials and host URLs for creating the embedding model.
+     *
+     * @return The environment provider of this creator
+     */
+    protected final EnvironmentProvider environment() {
+        return environment;
+    }
 
     /**
      * Calculates embeddings for a list of content strings, using either sequential or parallel processing

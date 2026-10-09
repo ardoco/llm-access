@@ -75,7 +75,8 @@ public abstract class EmbeddingCreator {
     public abstract List<float[]> calculateEmbeddings(List<String> contents);
 
     /**
-     * Creates an appropriate embedding creator based on the provided configuration.
+     * Creates an appropriate embedding creator based on the provided configuration. Credentials and host URLs are
+     * read from the configuration's {@link EmbeddingConfiguration#environment() environment}.
      *
      * @param configuration The configuration specifying which embedding creator to use
      * @return An instance of the appropriate embedding creator
@@ -83,11 +84,12 @@ public abstract class EmbeddingCreator {
     public static EmbeddingCreator create(EmbeddingConfiguration configuration) {
         Objects.requireNonNull(configuration);
         return switch (configuration.platform()) {
-            case OLLAMA -> new OllamaEmbeddingCreator(configuration.modelName());
-            case OPENAI -> new OpenAiEmbeddingCreator(configuration.modelName());
+            case OLLAMA -> new OllamaEmbeddingCreator(configuration.modelName(), configuration.environment());
+            case OPENAI -> new OpenAiEmbeddingCreator(configuration.modelName(), configuration.environment());
             case ONNX -> new OnnxEmbeddingCreator(configuration.modelName(), Objects.requireNonNull(configuration.pathToModel(),
-                    "pathToModel is required for ONNX"), Objects.requireNonNull(configuration.pathToTokenizer(), "pathToTokenizer is required for ONNX"));
-            case OPENWEBUI -> new OpenWebUiEmbeddingCreator(configuration.modelName());
+                    "pathToModel is required for ONNX"), Objects.requireNonNull(configuration.pathToTokenizer(), "pathToTokenizer is required for ONNX"),
+                    configuration.environment());
+            case OPENWEBUI -> new OpenWebUiEmbeddingCreator(configuration.modelName(), configuration.environment());
             case MOCK -> new MockEmbeddingCreator();
         };
     }

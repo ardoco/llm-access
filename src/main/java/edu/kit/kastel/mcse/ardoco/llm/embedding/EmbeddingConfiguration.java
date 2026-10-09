@@ -5,10 +5,15 @@ import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
+
 /**
  * Framework-neutral configuration for an embedding model.
  * <p>
- * Captures the platform, model name, and (for the ONNX platform) the local model and tokenizer file paths.
+ * Captures the platform, model name, (for the ONNX platform) the local model and tokenizer file paths, and the
+ * environment that supplies credentials and host URLs.
  * Use {@link #of(EmbeddingPlatform, String)} for the common case, {@link #onnx(String, String, String)} for
  * ONNX models, or {@link #builder(EmbeddingPlatform)} to set the file paths as well.
  *
@@ -16,8 +21,10 @@ import org.jspecify.annotations.Nullable;
  * @param modelName       The name of the embedding model
  * @param pathToModel     The path to the ONNX model file (only used by the ONNX platform)
  * @param pathToTokenizer The path to the ONNX tokenizer file (only used by the ONNX platform)
+ * @param environment     The environment that supplies credentials and host URLs
  */
-public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelName, @Nullable String pathToModel, @Nullable String pathToTokenizer) {
+public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelName, @Nullable String pathToModel, @Nullable String pathToTokenizer,
+                                     EnvironmentProvider environment) {
 
     /**
      * Canonical constructor validating the required arguments.
@@ -26,10 +33,12 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
      * @param modelName       The name of the embedding model
      * @param pathToModel     The path to the ONNX model file (only used by the ONNX platform)
      * @param pathToTokenizer The path to the ONNX tokenizer file (only used by the ONNX platform)
+     * @param environment     The environment that supplies credentials and host URLs
      */
     public EmbeddingConfiguration {
         Objects.requireNonNull(platform, "platform must not be null");
         Objects.requireNonNull(modelName, "modelName must not be null");
+        Objects.requireNonNull(environment, "environment must not be null");
     }
 
     /**
@@ -67,13 +76,14 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
 
     /**
      * Builder for {@link EmbeddingConfiguration}. The model name is required for every platform except
-     * {@link EmbeddingPlatform#MOCK}, which ignores it.
+     * {@link EmbeddingPlatform#MOCK}, which ignores it. The environment defaults to a {@link SystemEnvironment}.
      */
     public static final class Builder {
         private final EmbeddingPlatform platform;
         private @Nullable String modelName;
         private @Nullable String pathToModel;
         private @Nullable String pathToTokenizer;
+        private EnvironmentProvider environment = SystemEnvironment.getInstance();
 
         private Builder(EmbeddingPlatform platform) {
             this.platform = Objects.requireNonNull(platform, "platform must not be null");
@@ -113,6 +123,18 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
         }
 
         /**
+         * Sets the environment that supplies credentials and host URLs, for example a {@link MapEnvironment}.
+         * Defaults to a {@link SystemEnvironment}.
+         *
+         * @param environment The environment provider to read credentials and host URLs from
+         * @return This builder
+         */
+        public Builder environment(EnvironmentProvider environment) {
+            this.environment = Objects.requireNonNull(environment, "environment must not be null");
+            return this;
+        }
+
+        /**
          * Builds the configuration.
          *
          * @return The configuration
@@ -128,7 +150,7 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
                 }
                 resolvedModel = "mock";
             }
-            return new EmbeddingConfiguration(platform, resolvedModel, pathToModel, pathToTokenizer);
+            return new EmbeddingConfiguration(platform, resolvedModel, pathToModel, pathToTokenizer, environment);
         }
     }
 }

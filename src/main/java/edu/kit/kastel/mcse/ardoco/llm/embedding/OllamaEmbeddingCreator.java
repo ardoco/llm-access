@@ -8,6 +8,7 @@ import java.util.Map;
 
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
  * An embedding creator that uses Ollama for generating embeddings.
@@ -26,10 +27,11 @@ public class OllamaEmbeddingCreator extends CachedEmbeddingCreator {
     /**
      * Creates a new Ollama embedding creator for the given model.
      *
-     * @param model The name of the Ollama embedding model to use
+     * @param model       The name of the Ollama embedding model to use
+     * @param environment The environment that supplies credentials and host URLs
      */
-    public OllamaEmbeddingCreator(String model) {
-        super(model, 1);
+    public OllamaEmbeddingCreator(String model, EnvironmentProvider environment) {
+        super(model, 1, environment);
     }
 
     /**
@@ -43,9 +45,9 @@ public class OllamaEmbeddingCreator extends CachedEmbeddingCreator {
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {
-        String host = environment.getenvNonNull("OLLAMA_EMBEDDING_HOST");
-        String user = environment.getenv("OLLAMA_EMBEDDING_USER");
-        String password = environment.getenv("OLLAMA_EMBEDDING_PASSWORD");
+        String host = environment().getenvNonNull("OLLAMA_EMBEDDING_HOST");
+        String user = environment().getenv("OLLAMA_EMBEDDING_USER");
+        String password = environment().getenv("OLLAMA_EMBEDDING_PASSWORD");
 
         var ollamaEmbedding = new OllamaEmbeddingModel.OllamaEmbeddingModelBuilder().baseUrl(host).modelName(model).timeout(Duration.ofMinutes(5));
         if (user != null && password != null && !user.isEmpty() && !password.isEmpty()) {

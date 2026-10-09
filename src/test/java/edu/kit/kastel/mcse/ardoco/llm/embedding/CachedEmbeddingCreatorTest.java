@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,6 +24,8 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
@@ -33,6 +36,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CachedEmbeddingCreatorTest {
     private static final SystemEnvironment environment = SystemEnvironment.getInstance();
+    private static final EnvironmentProvider EMPTY_ENVIRONMENT = new MapEnvironment(Map.of());
 
     @TempDir
     private Path tempCacheDir;
@@ -47,6 +51,7 @@ class CachedEmbeddingCreatorTest {
         CacheManager.setCacheDir(tempCacheDir.toString());
         RecordingEmbeddingCreator.embedCalls.set(0);
         RecordingEmbeddingCreator.paramsSeen.clear();
+        RecordingEmbeddingCreator.environmentsSeen.clear();
     }
 
     @Test
@@ -110,6 +115,42 @@ class CachedEmbeddingCreatorTest {
         }
     }
 
+    @Test
+    @DisplayName("the injected environment is available while the superclass constructor builds the model")
+    void injectedEnvironmentIsUsedDuringConstruction() {
+        EnvironmentProvider injected = new MapEnvironment(Map.of("SOME_KEY", "some-value"));
+        RecordingEmbeddingCreator creator = new RecordingEmbeddingCreator("env-model", 1, injected);
+
+        assertSame(injected, creator.environment());
+        assertEquals(List.of(injected), RecordingEmbeddingCreator.environmentsSeen, "createEmbeddingModel must see the injected environment");
+    }
+
+    @Test
+    @DisplayName("EmbeddingCreator.create reads credentials from the configured environment")
+    void createUsesConfiguredEnvironment() {
+        EmbeddingConfiguration withoutKey = EmbeddingConfiguration.builder(EmbeddingPlatform.OPENAI)
+                .modelName("text-embedding-3-small")
+                .environment(EMPTY_ENVIRONMENT)
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(withoutKey));
+
+        EmbeddingConfiguration withKey = EmbeddingConfiguration.builder(EmbeddingPlatform.OPENAI)
+                .modelName("text-embedding-3-small")
+                .environment(new MapEnvironment(Map.of("OPENAI_API_KEY", "dummy")))
+                .build();
+        assertInstanceOf(OpenAiEmbeddingCreator.class, EmbeddingCreator.create(withKey));
+    }
+
+    @Test
+    @DisplayName("EmbeddingCreator.create passes the configured environment to the Open WebUI creator")
+    void createPassesEnvironmentToOpenWebUi() {
+        EmbeddingConfiguration configuration = EmbeddingConfiguration.builder(EmbeddingPlatform.OPENWEBUI)
+                .modelName("nomic-embed-text:v1.5")
+                .environment(EMPTY_ENVIRONMENT)
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(configuration));
+    }
+
     /**
      * A concrete {@link CachedEmbeddingCreator} whose model is a stub: it counts embedding calls, records the
      * parameters passed to {@link #createEmbeddingModel}, and returns a deterministic vector derived from the
@@ -118,14 +159,20 @@ class CachedEmbeddingCreatorTest {
     private static final class RecordingEmbeddingCreator extends CachedEmbeddingCreator {
         static final AtomicInteger embedCalls = new AtomicInteger();
         static final List<String[]> paramsSeen = new CopyOnWriteArrayList<>();
+        static final List<EnvironmentProvider> environmentsSeen = new CopyOnWriteArrayList<>();
 
         RecordingEmbeddingCreator(String model, int threads, String... params) {
-            super(model, threads, params);
+            this(model, threads, EMPTY_ENVIRONMENT, params);
+        }
+
+        RecordingEmbeddingCreator(String model, int threads, EnvironmentProvider environment, String... params) {
+            super(model, threads, environment, params);
         }
 
         @Override
         protected EmbeddingModel createEmbeddingModel(String model, String... params) {
             paramsSeen.add(params);
+            environmentsSeen.add(environment());
             EmbeddingModel embeddingModel = mock(EmbeddingModel.class);
             when(embeddingModel.embed(anyString())).thenAnswer(invocation -> {
                 embedCalls.incrementAndGet();
