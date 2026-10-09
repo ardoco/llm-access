@@ -1,6 +1,7 @@
 /* Licensed under MIT 2026. */
 package edu.kit.kastel.mcse.ardoco.llm.util;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -121,7 +122,9 @@ public final class SystemEnvironment implements EnvironmentProvider {
             return Map.of();
         }
         Path directory = Objects.requireNonNullElse(dotenvFile.getParent(), dotenvFile.getRoot());
-        Dotenv dotenv = Dotenv.configure().directory(directory.toString()).filename(dotenvFile.getFileName().toString()).load();
+        // dotenv-java strips a trailing ".env" from the directory (e.g. "conf.env" becomes "conf"); a trailing
+        // separator keeps such directory names intact.
+        Dotenv dotenv = Dotenv.configure().directory(directory + File.separator).filename(dotenvFile.getFileName().toString()).load();
         return dotenv.entries(Dotenv.Filter.DECLARED_IN_ENV_FILE).stream().collect(Collectors.toUnmodifiableMap(DotenvEntry::getKey, DotenvEntry::getValue));
     }
 

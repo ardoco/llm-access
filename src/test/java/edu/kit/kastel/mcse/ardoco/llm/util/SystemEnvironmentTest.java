@@ -113,4 +113,14 @@ class SystemEnvironmentTest {
         SystemEnvironment environment = assertDoesNotThrow(() -> new SystemEnvironment(env));
         assertThrows(DotenvException.class, () -> environment.getenv("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
     }
+
+    @Test
+    @DisplayName("a .env file inside a directory whose name ends with .env is loaded")
+    void loadsFromDirectoryEndingWithDotEnv() throws IOException {
+        Path directory = Files.createDirectory(tempDir.resolve("conf.env"));
+        Path env = directory.resolve(".env");
+        Files.writeString(env, "MY_TEST_KEY=from-conf\n");
+
+        assertEquals("from-conf", new SystemEnvironment(env).getenv("MY_TEST_KEY"));
+    }
 }
