@@ -96,6 +96,9 @@ float[] vector = creator.calculateEmbedding("some text");
 var vectors = creator.calculateEmbeddings(List.of("a", "b", "c"));
 ```
 
+`EmbeddingCreator.create(configuration)` caches in the default `CacheManager` (the mock platform needs no cache). To use
+a specific cache manager instead, pass it explicitly: `EmbeddingCreator.create(configuration, cacheManager)`.
+
 ONNX models need local files:
 
 ```java
@@ -110,27 +113,29 @@ global environment. Two implementations are provided (package `edu.kit.kastel.mc
 
 - `SystemEnvironment` (the default): reads system environment variables and a `.env` file. `new SystemEnvironment()`
 uses the `.env` in the working directory (if present); `new SystemEnvironment(Path)` loads a specific file.
-System environment variables take precedence over `.env` entries. See [`sample.env`](sample.env) for a template.
+The file is read on the first lookup, not on construction. System environment variables take precedence over
+`.env` entries. See [`sample.env`](sample.env) for a template.
 - `MapEnvironment`: serves values from an in-memory map, with no fallback to the system environment. Its
 `toString()` lists only the keys, so secrets do not leak into logs.
 
 `LlmConfiguration`, `EmbeddingConfiguration`, and `CacheManager` each take an environment; when none is given they
-create a new `SystemEnvironment`. To supply credentials in code instead of through `.env` or system variables:
+create a new `SystemEnvironment`. The configurations supply the model credentials and hosts, while the `CacheManager`
+supplies the cache settings. To supply all of them in code instead of through `.env` or system variables:
 
 ```java
-EnvironmentProvider environment = new MapEnvironment(Map.of("OPENAI_API_KEY", apiKey));
+EnvironmentProvider environment = new MapEnvironment(Map.of("OPENAI_API_KEY", apiKey, "CACHE_HIERARCHY", "LOCAL"));
+CacheManager cacheManager = new CacheManager(Path.of("cache"), environment);
 
-ChatModel model = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.OPENAI)
+ChatModelProvider provider = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.OPENAI)
 		.modelName("gpt-4o-mini")
 		.environment(environment)
-		.build()).createChatModel();
+		.build());
+ChatModel model = new CachingChatModel(provider.createChatModel(), cacheManager.getCache(provider, provider.cacheParameters()));
 
 EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.builder(EmbeddingPlatform.OPENAI)
 		.modelName("text-embedding-3-large")
 		.environment(environment)
-		.build());
-
-CacheManager.setCacheDir("cache", new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL")));
+		.build(), cacheManager);
 ```
 
 The variables each platform reads:
@@ -157,9 +162,13 @@ Before using the default manager, set the cache directory once:
 CacheManager.setCacheDir("cache"); // getDefaultInstance() throws until this is called
 ```
 
+Alternatively, create a manager with `new CacheManager(Path.of("cache"), environment)` and pass it on, e.g. to
+`EmbeddingCreator.create(configuration, cacheManager)`.
+
 All cache behaviour (which backends, layering, conflict handling, connection details) is driven by
 environment variables, read from the `CacheManager`'s environment (`setCacheDir(dir)` uses a new
-`SystemEnvironment`, `setCacheDir(dir, environment)` the given one) when the `CacheManager` is constructed.
+`SystemEnvironment`, `setCacheDir(dir, environment)` the given one). The hierarchy and the replacement strategy are
+read when the `CacheManager` is constructed, the connection details when a cache is first requested from it.
 
 ### How entries are identified
 
