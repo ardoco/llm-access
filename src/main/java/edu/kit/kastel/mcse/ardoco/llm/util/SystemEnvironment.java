@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.llm.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -11,52 +12,66 @@ import org.slf4j.LoggerFactory;
 import io.github.cdimascio.dotenv.Dotenv;
 
 /**
- * A utility class for managing environment variables in the application.
- * This class provides functionality to:
- * <ul>
- * <li>Load environment variables from a .env file</li>
- * <li>Fall back to system environment variables if .env is not available</li>
- * <li>Retrieve environment variables with or without null checks</li>
- * </ul>
- *
- * The class uses the following precedence for environment variables:
+ * An {@link EnvironmentProvider} that reads system environment variables and, optionally, a {@code .env} file.
+ * <p>
+ * The following precedence is used for environment variables:
  * <ol>
  * <li>Values from system environment variables</li>
  * <li>Values from the .env file (if it exists)</li>
  * </ol>
- *
- * Note that the system environment wins: dotenv-java resolves {@code System.getenv(key)}
- * first and only falls back to the parsed .env file, so a .env entry is used only when
- * that variable is not already exported.
- *
- * The .env file is read from the current working directory and should
- * contain key-value pairs in the format:
+ * Note that the system environment wins: dotenv-java resolves {@code System.getenv(key)} first and only falls back
+ * to the parsed .env file, so a .env entry is used only when that variable is not already exported.
+ * <p>
+ * {@link #SystemEnvironment()} reads the .env file from the current working directory, while
+ * {@link #SystemEnvironment(Path)} reads an explicitly given file. The file is loaded once on construction and
+ * should contain key-value pairs in the format:
  * <pre>
  * KEY=value
  * </pre>
+ * Instances are immutable and independent of each other; there is no shared global environment.
  */
-public class SystemEnvironment implements EnvironmentProvider {
-
-    private static SystemEnvironment INSTANCE = null;
+public final class SystemEnvironment implements EnvironmentProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemEnvironment.class);
-    /** The loaded .env configuration, or null if no .env file exists */
-    private @Nullable Dotenv dotenv;
 
-    private SystemEnvironment() {
-        dotenv = load();
+    /** The absolute path of the loaded .env file, or null if no .env file was loaded */
+    private final @Nullable Path dotenvFile;
+    /** The loaded .env configuration, or null if no .env file was loaded */
+    private final @Nullable Dotenv dotenv;
+
+    /**
+     * Creates an environment that reads system environment variables and the {@code .env} file in the current
+     * working directory, if present.
+     */
+    public SystemEnvironment() {
+        this(Path.of(".env"), false);
     }
 
     /**
-     * Returns the singleton instance of the SystemEnvironment class.
+     * Creates an environment that reads system environment variables and the given {@code .env} file. If the file
+     * does not exist, a warning is logged and only system environment variables are used.
      *
-     * @return The singleton instance
+     * @param dotenvFile The path to the .env file
      */
-    public static SystemEnvironment getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new SystemEnvironment();
+    public SystemEnvironment(Path dotenvFile) {
+        this(Objects.requireNonNull(dotenvFile, "dotenvFile must not be null"), true);
+    }
+
+    private SystemEnvironment(Path file, boolean explicit) {
+        if (Files.isRegularFile(file)) {
+            Path absolute = file.toAbsolutePath().normalize();
+            Path directory = Objects.requireNonNullElse(absolute.getParent(), absolute.getRoot());
+            this.dotenvFile = absolute;
+            this.dotenv = Dotenv.configure().directory(directory.toString()).filename(absolute.getFileName().toString()).load();
+        } else {
+            if (explicit) {
+                logger.warn("No .env file found at '{}', using system environment variables", file);
+            } else {
+                logger.debug("No .env file found in the working directory, using system environment variables");
+            }
+            this.dotenvFile = null;
+            this.dotenv = null;
         }
-        return INSTANCE;
     }
 
     /**
@@ -81,57 +96,18 @@ public class SystemEnvironment implements EnvironmentProvider {
         return System.getenv(key);
     }
 
-    /**
-     * Loads the .env file configuration.
-     * This method:
-     * <ol>
-     * <li>Checks if a .env file exists in the project root</li>
-     * <li>If found, loads and returns the configuration</li>
-     * <li>If not found, logs a message and returns null</li>
-     * </ol>
-     *
-     * The method is synchronized to ensure thread safety during the initial loading.
-     *
-     * @return The loaded Dotenv configuration, or null if no .env file exists
-     */
-    private synchronized @Nullable Dotenv load() {
-        if (dotenv != null) {
-            return dotenv;
-        }
-
-        if (Files.exists(Path.of(".env"))) {
-            return Dotenv.configure().load();
-        } else {
-            logger.info("No .env file found, using system environment variables");
-            return null;
-        }
+    @Override
+    public boolean equals(@Nullable Object o) {
+        return o instanceof SystemEnvironment other && Objects.equals(dotenvFile, other.dotenvFile);
     }
 
-    /**
-     * Overwrites the current .env configuration with a new one from the specified path.
-     * This method:
-     * <ol>
-     * <li>Checks if a .env file exists at the given path</li>
-     * <li>If found, loads and sets the new configuration</li>
-     * <li>If not found, logs a warning and retains the existing configuration</li>
-     * </ol>
-     *
-     * The method is synchronized to ensure thread safety when updating the configuration.
-     *
-     * @param path The path to the new .env file
-     */
-    public synchronized void overwrite(Path path) {
-        if (Files.exists(path)) {
-            String directory;
-            if (path.getParent() != null) {
-                directory = path.getParent().toAbsolutePath().toString();
-            } else {
-                directory = Path.of("").toAbsolutePath().toString();
-            }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dotenvFile);
+    }
 
-            dotenv = Dotenv.configure().directory(directory).filename(path.getFileName().toString()).load();
-        } else {
-            logger.warn("No .env file found at '{}', using system environment variables", path);
-        }
+    @Override
+    public String toString() {
+        return "SystemEnvironment[dotenvFile=" + dotenvFile + "]";
     }
 }

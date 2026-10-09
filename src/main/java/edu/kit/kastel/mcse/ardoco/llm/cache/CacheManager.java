@@ -56,14 +56,14 @@ public final class CacheManager {
 
     /**
      * Sets the cache directory for the default cache manager instance, reading the cache configuration and the
-     * Redis connection settings from a {@link SystemEnvironment}.
+     * Redis connection settings from a new {@link SystemEnvironment}.
      * This method must be called before using the default instance.
      *
      * @param directory The path to the cache directory, or null to use the default directory
      * @throws IOException If the cache directory cannot be created
      */
     public static synchronized void setCacheDir(@Nullable String directory) throws IOException {
-        setCacheDir(directory, SystemEnvironment.getInstance());
+        setCacheDir(directory, new SystemEnvironment());
     }
 
     /**
@@ -121,7 +121,7 @@ public final class CacheManager {
 
     /**
      * Creates a new cache manager instance using the specified cache directory, reading the cache configuration and
-     * the Redis connection settings from a {@link SystemEnvironment}.
+     * the Redis connection settings from a new {@link SystemEnvironment}.
      * The directory will be created if it doesn't exist.
      *
      * @param cacheDir The path to the cache directory
@@ -129,7 +129,7 @@ public final class CacheManager {
      * @throws IllegalArgumentException If the path exists but is not a directory
      */
     public CacheManager(Path cacheDir) throws IOException {
-        this(cacheDir, SystemEnvironment.getInstance());
+        this(cacheDir, new SystemEnvironment());
     }
 
     /**

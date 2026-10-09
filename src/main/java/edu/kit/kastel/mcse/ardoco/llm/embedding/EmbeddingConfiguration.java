@@ -76,14 +76,14 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
 
     /**
      * Builder for {@link EmbeddingConfiguration}. The model name is required for every platform except
-     * {@link EmbeddingPlatform#MOCK}, which ignores it. The environment defaults to a {@link SystemEnvironment}.
+     * {@link EmbeddingPlatform#MOCK}, which ignores it. The environment defaults to a new {@link SystemEnvironment}.
      */
     public static final class Builder {
         private final EmbeddingPlatform platform;
         private @Nullable String modelName;
         private @Nullable String pathToModel;
         private @Nullable String pathToTokenizer;
-        private EnvironmentProvider environment = SystemEnvironment.getInstance();
+        private @Nullable EnvironmentProvider environment;
 
         private Builder(EmbeddingPlatform platform) {
             this.platform = Objects.requireNonNull(platform, "platform must not be null");
@@ -124,7 +124,7 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
 
         /**
          * Sets the environment that supplies credentials and host URLs, for example a {@link MapEnvironment}.
-         * Defaults to a {@link SystemEnvironment}.
+         * If no environment is set, {@link #build()} creates a new {@link SystemEnvironment}.
          *
          * @param environment The environment provider to read credentials and host URLs from
          * @return This builder
@@ -150,7 +150,8 @@ public record EmbeddingConfiguration(EmbeddingPlatform platform, String modelNam
                 }
                 resolvedModel = "mock";
             }
-            return new EmbeddingConfiguration(platform, resolvedModel, pathToModel, pathToTokenizer, environment);
+            EnvironmentProvider resolvedEnvironment = environment != null ? environment : new SystemEnvironment();
+            return new EmbeddingConfiguration(platform, resolvedModel, pathToModel, pathToTokenizer, resolvedEnvironment);
         }
     }
 }

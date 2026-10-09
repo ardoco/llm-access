@@ -74,14 +74,14 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
     /**
      * Builder for {@link LlmConfiguration}. The model name is required; the seed and temperature default to
      * {@link #DEFAULT_SEED} and {@link #DEFAULT_TEMPERATURE}, and the environment defaults to a
-     * {@link SystemEnvironment}.
+     * new {@link SystemEnvironment}.
      */
     public static final class Builder {
         private final ChatModelPlatform platform;
         private @Nullable String modelName;
         private int seed = DEFAULT_SEED;
         private double temperature = DEFAULT_TEMPERATURE;
-        private EnvironmentProvider environment = SystemEnvironment.getInstance();
+        private @Nullable EnvironmentProvider environment;
 
         private Builder(ChatModelPlatform platform) {
             this.platform = Objects.requireNonNull(platform, "platform must not be null");
@@ -122,7 +122,7 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
 
         /**
          * Sets the environment that supplies credentials and host URLs, for example a {@link MapEnvironment}.
-         * Defaults to a {@link SystemEnvironment}.
+         * If no environment is set, {@link #build()} creates a new {@link SystemEnvironment}.
          *
          * @param environment The environment provider to read credentials and host URLs from
          * @return This builder
@@ -142,7 +142,8 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
             if (modelName == null || modelName.isBlank()) {
                 throw new IllegalArgumentException("A model name must be set for platform " + platform);
             }
-            return new LlmConfiguration(platform, modelName, seed, temperature, environment);
+            EnvironmentProvider resolvedEnvironment = environment != null ? environment : new SystemEnvironment();
+            return new LlmConfiguration(platform, modelName, seed, temperature, resolvedEnvironment);
         }
     }
 }

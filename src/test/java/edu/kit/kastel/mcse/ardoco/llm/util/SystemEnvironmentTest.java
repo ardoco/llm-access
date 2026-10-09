@@ -8,47 +8,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.jspecify.annotations.NullMarked;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Tests for {@link SystemEnvironment}: {@code .env} loading, the fallback to system environment variables, and
- * {@link SystemEnvironment#overwrite}. The environment is process-global, so the shared test {@code .env} is
- * restored after each test.
+ * Tests for {@link SystemEnvironment}: loading an explicit {@code .env} file, the fallback to system environment
+ * variables, and the independence of instances.
  */
 @NullMarked
 class SystemEnvironmentTest {
 
-    private SystemEnvironment environment = SystemEnvironment.getInstance();
-
     @TempDir
     private Path tempDir;
 
-    @AfterEach
-    void restore() {
-        environment.overwrite(Path.of("src/test/resources/.env-test"));
-    }
-
-    private Path writeEnv(String content) throws IOException {
-        Path env = tempDir.resolve(".env");
+    private SystemEnvironment environmentWith(String fileName, String content) throws IOException {
+        Path env = tempDir.resolve(fileName);
         Files.writeString(env, content);
-        environment.overwrite(env);
-        return env;
+        return new SystemEnvironment(env);
     }
 
     @Test
-    @DisplayName("values are read from the loaded .env file")
+    @DisplayName("values are read from the given .env file")
     void readsFromDotEnv() throws IOException {
-        writeEnv("MY_TEST_KEY=my-value\n");
+        SystemEnvironment environment = environmentWith(".env", "MY_TEST_KEY=my-value\n");
         assertEquals("my-value", environment.getenv("MY_TEST_KEY"));
     }
 
     @Test
     @DisplayName("getenv falls back to the system environment for keys absent from .env")
     void fallsBackToSystemEnv() throws IOException {
-        writeEnv("MY_TEST_KEY=my-value\n");
+        SystemEnvironment environment = environmentWith(".env", "MY_TEST_KEY=my-value\n");
         // PATH is not defined in the .env, so getenv must yield the system value (null or otherwise).
         assertEquals(System.getenv("PATH"), environment.getenv("PATH"));
     }
@@ -56,22 +46,46 @@ class SystemEnvironmentTest {
     @Test
     @DisplayName("getenv returns null for a completely unknown variable")
     void unknownReturnsNull() throws IOException {
-        writeEnv("MY_TEST_KEY=my-value\n");
+        SystemEnvironment environment = environmentWith(".env", "MY_TEST_KEY=my-value\n");
         assertNull(environment.getenv("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
     }
 
     @Test
-    @DisplayName("getenvNonNull throws for a missing variable")
-    void nonNullThrows() throws IOException {
-        writeEnv("MY_TEST_KEY=my-value\n");
+    @DisplayName("getenvNonNull returns present values and throws for a missing variable")
+    void nonNull() throws IOException {
+        SystemEnvironment environment = environmentWith(".env", "MY_TEST_KEY=my-value\n");
+        assertEquals("my-value", environment.getenvNonNull("MY_TEST_KEY"));
         assertThrows(IllegalStateException.class, () -> environment.getenvNonNull("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
     }
 
     @Test
-    @DisplayName("overwrite with a non-existent path keeps the previous configuration")
-    void overwriteMissingKeepsPrevious() throws IOException {
-        writeEnv("MY_TEST_KEY=keep-me\n");
-        environment.overwrite(tempDir.resolve("does-not-exist.env"));
-        assertEquals("keep-me", environment.getenv("MY_TEST_KEY"));
+    @DisplayName("a non-existent .env file falls back to the system environment only")
+    void missingFileUsesSystemEnvironment() {
+        SystemEnvironment environment = new SystemEnvironment(tempDir.resolve("does-not-exist.env"));
+        assertNull(environment.getenv("MY_TEST_KEY"));
+        assertEquals(System.getenv("PATH"), environment.getenv("PATH"));
+    }
+
+    @Test
+    @DisplayName("instances loading different files are independent of each other")
+    void instancesAreIndependent() throws IOException {
+        SystemEnvironment first = environmentWith("first.env", "MY_TEST_KEY=first\n");
+        SystemEnvironment second = environmentWith("second.env", "MY_TEST_KEY=second\n");
+
+        assertEquals("first", first.getenv("MY_TEST_KEY"));
+        assertEquals("second", second.getenv("MY_TEST_KEY"));
+        assertNotEquals(first, second);
+    }
+
+    @Test
+    @DisplayName("instances loading the same file are equal and do not expose values in toString")
+    void equalityAndToString() throws IOException {
+        Path env = tempDir.resolve(".env");
+        Files.writeString(env, "MY_SECRET_KEY=super-secret\n");
+
+        SystemEnvironment environment = new SystemEnvironment(env);
+        assertEquals(environment, new SystemEnvironment(env));
+        assertEquals(environment.hashCode(), new SystemEnvironment(env).hashCode());
+        assertFalse(environment.toString().contains("super-secret"));
     }
 }
