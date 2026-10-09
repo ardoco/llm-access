@@ -6,6 +6,8 @@ import org.jspecify.annotations.Nullable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+
 /**
  * Interface for cache implementations.
  * This interface defines the contract for caching mechanisms that store and retrieve
@@ -127,15 +129,17 @@ public interface Cache<K extends CacheKey> {
      *
      * @see CacheType
      *
-     * @param <K>        The type of cache key
-     * @param type       The cache type name (case-insensitive)
-     * @param cacheDir   The directory for local cache storage
-     * @param parameters The cache parameters
-     * @param mapper     The ObjectMapper for JSON operations
+     * @param <K>         The type of cache key
+     * @param type        The cache type name (case-insensitive)
+     * @param cacheDir    The directory for local cache storage
+     * @param parameters  The cache parameters
+     * @param mapper      The ObjectMapper for JSON operations
+     * @param environment The environment that supplies the connection settings of the Redis-based caches
      * @return A cache instance of the specified type
      * @throws IllegalArgumentException If the type is not recognized or the cache cannot be created
      */
-    static <K extends CacheKey> Cache<K> createByType(CacheType type, CacheParameter<K> parameters, @Nullable String cacheDir, @Nullable ObjectMapper mapper) {
+    static <K extends CacheKey> Cache<K> createByType(CacheType type, CacheParameter<K> parameters, @Nullable String cacheDir, @Nullable ObjectMapper mapper,
+            EnvironmentProvider environment) {
         return switch (type) {
             case LOCAL -> {
                 if (cacheDir == null) {
@@ -147,13 +151,13 @@ public interface Cache<K extends CacheKey> {
                 if (mapper == null) {
                     throw new IllegalArgumentException("An ObjectMapper is required for the REDIS cache type");
                 }
-                yield new RedisCache<>(parameters, mapper);
+                yield new RedisCache<>(parameters, mapper, environment);
             }
             case REST_REDIS -> {
                 if (mapper == null) {
                     throw new IllegalArgumentException("An ObjectMapper is required for the REST_REDIS cache type");
                 }
-                yield new RestRedisCache<>(parameters, mapper);
+                yield new RestRedisCache<>(parameters, mapper, environment);
             }
         };
     }

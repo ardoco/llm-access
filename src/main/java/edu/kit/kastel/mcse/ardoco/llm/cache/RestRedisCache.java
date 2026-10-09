@@ -7,7 +7,6 @@ import org.fuchss.restredis.client.ClientConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
-import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Implements a Redis-based cache for storing and retrieving values using a REST interface.
@@ -16,18 +15,17 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
  */
 /*package-private*/ class RestRedisCache<K extends CacheKey> extends RedisCache<K> {
 
-    private static final EnvironmentProvider environment = SystemEnvironment.getInstance();
-
     /**
      * Creates a new Rest Redis cache instance.
      * This constructor will throw an exception if Rest Redis is unavailable.
      *
      * @param cacheParameter The cache parameter configuration
      * @param mapper         The ObjectMapper for JSON operations
-     * @throws IllegalArgumentException If Redis connection cannot be established
+     * @param environment    The environment to read the REST Redis connection settings from
+     * @throws IllegalStateException If Redis connection cannot be established
      */
-    /*package-private*/ RestRedisCache(CacheParameter<K> cacheParameter, ObjectMapper mapper) {
-        super(cacheParameter, mapper, createRedisConnection());
+    /*package-private*/ RestRedisCache(CacheParameter<K> cacheParameter, ObjectMapper mapper, EnvironmentProvider environment) {
+        super(cacheParameter, mapper, createRedisConnection(environment));
     }
 
     /**
@@ -37,8 +35,12 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
      * <li>{@code REST_REDIS_USERNAME}: The username for authentication (optional)</li>
      * <li>{@code REST_REDIS_PASSWORD}: The password for authentication (optional)</li>
      * </ul>
+     *
+     * @param environment The environment to read the connection settings from
+     * @return The connected REST Redis client
+     * @throws IllegalStateException If the REST Redis server cannot be reached
      */
-    private static UnifiedRedisClient createRedisConnection() {
+    private static UnifiedRedisClient createRedisConnection(EnvironmentProvider environment) {
         String restRedisUri = "http://localhost:8080";
         String restRedisUriEnv = environment.getenv("REST_REDIS_URI");
         if (restRedisUriEnv != null && !restRedisUriEnv.isBlank()) {

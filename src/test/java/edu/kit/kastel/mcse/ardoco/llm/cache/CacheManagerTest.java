@@ -111,11 +111,12 @@ class CacheManagerTest {
     @Test
     @DisplayName("the multi-argument constructor validates its inputs")
     void constructorValidation() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> new CacheManager(tempCacheDir, CacheReplacementStrategy.NONE, List.of()));
+        assertThrows(IllegalArgumentException.class, () -> new CacheManager(tempCacheDir, CacheReplacementStrategy.NONE, List.of(), environment));
 
         Path notADirectory = tempCacheDir.resolve("not-a-directory.txt");
         Files.writeString(notADirectory, "x");
-        assertThrows(IllegalArgumentException.class, () -> new CacheManager(notADirectory, CacheReplacementStrategy.NONE, List.of(CacheType.LOCAL)));
+        assertThrows(IllegalArgumentException.class, () -> new CacheManager(notADirectory, CacheReplacementStrategy.NONE, List.of(CacheType.LOCAL),
+                environment));
     }
 
     /** A parameter with a constant identifier and default (identity) equality, used to force a name conflict. */

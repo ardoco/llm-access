@@ -25,6 +25,9 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
  * This class provides a centralized way to create and access caches for different purposes,
  * such as storing embeddings or chat responses. It supports local file-based caching, Redis caching,
  * and Redis over a REST API, layered according to the {@code CACHE_HIERARCHY} environment variable.
+ * <p>
+ * Each cache manager holds the {@link EnvironmentProvider} it was created with; it reads the cache configuration
+ * from it and passes it on to the Redis-based caches for their connection settings.
  */
 public final class CacheManager {
     /**
@@ -46,12 +49,14 @@ public final class CacheManager {
     private final Path directoryOfCaches;
     private final CacheReplacementStrategy replacementStrategy;
     private final List<CacheType> hierarchyConfig;
+    private final EnvironmentProvider environment;
     private final Map<String, Cache<?>> caches = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(CacheManager.class);
 
     /**
-     * Sets the cache directory for the default cache manager instance.
+     * Sets the cache directory for the default cache manager instance, reading the cache configuration and the
+     * Redis connection settings from a {@link SystemEnvironment}.
      * This method must be called before using the default instance.
      *
      * @param directory The path to the cache directory, or null to use the default directory
@@ -62,7 +67,8 @@ public final class CacheManager {
     }
 
     /**
-     * Sets the cache directory for the default cache manager instance.
+     * Sets the cache directory for the default cache manager instance, reading the cache configuration and the
+     * Redis connection settings from the given environment.
      * This method must be called before using the default instance.
      *
      * @param directory   The path to the cache directory, or null to use the default directory
@@ -114,15 +120,31 @@ public final class CacheManager {
     }
 
     /**
-     * Creates a new cache manager instance using the specified cache directory.
+     * Creates a new cache manager instance using the specified cache directory, reading the cache configuration and
+     * the Redis connection settings from a {@link SystemEnvironment}.
      * The directory will be created if it doesn't exist.
      *
      * @param cacheDir The path to the cache directory
      * @throws IOException              If the cache directory cannot be created
      * @throws IllegalArgumentException If the path exists but is not a directory
      */
+    public CacheManager(Path cacheDir) throws IOException {
+        this(cacheDir, SystemEnvironment.getInstance());
+    }
+
+    /**
+     * Creates a new cache manager instance using the specified cache directory. The replacement strategy
+     * ({@code CACHE_REPLACEMENT_STRATEGY}), the hierarchy ({@code CACHE_HIERARCHY}), and the Redis connection
+     * settings are read from the given environment.
+     * The directory will be created if it doesn't exist.
+     *
+     * @param cacheDir    The path to the cache directory
+     * @param environment The environment provider to read configuration from
+     * @throws IOException              If the cache directory cannot be created
+     * @throws IllegalArgumentException If the path exists but is not a directory
+     */
     public CacheManager(Path cacheDir, EnvironmentProvider environment) throws IOException {
-        this(cacheDir, readCacheReplacementStrategy(environment), parseCacheHierarchy(readHierarchyString(environment)));
+        this(cacheDir, readCacheReplacementStrategy(environment), parseCacheHierarchy(readHierarchyString(environment)), environment);
     }
 
     /**
@@ -133,10 +155,12 @@ public final class CacheManager {
      * @param cacheDir            The path to the cache directory
      * @param replacementStrategy The strategy for handling conflicts between cache layers
      * @param hierarchyConfig     Non-empty list of cache types in the hierarchy order.
+     * @param environment         The environment provider that supplies the Redis connection settings
      * @throws IOException              If the cache directory cannot be created
      * @throws IllegalArgumentException If the path exists but is not a directory
      */
-    public CacheManager(Path cacheDir, CacheReplacementStrategy replacementStrategy, List<CacheType> hierarchyConfig) throws IOException {
+    public CacheManager(Path cacheDir, CacheReplacementStrategy replacementStrategy, List<CacheType> hierarchyConfig, EnvironmentProvider environment)
+            throws IOException {
         if (!Files.exists(cacheDir))
             Files.createDirectories(cacheDir);
         if (!Files.isDirectory(cacheDir)) {
@@ -149,6 +173,7 @@ public final class CacheManager {
             throw new IllegalArgumentException("Cache hierarchy configuration must contain at least one cache type");
         }
         this.hierarchyConfig = hierarchyConfig;
+        this.environment = Objects.requireNonNull(environment);
     }
 
     /**
@@ -207,7 +232,7 @@ public final class CacheManager {
 
     /**
      * Builds a cache hierarchy based on the configured cache types.
-     * The hierarchy is read from the CACHE_HIERARCHY environment variable.
+     * The hierarchy was read from the CACHE_HIERARCHY environment variable or passed explicitly at construction.
      * Caches are layered in the order specified: the first cache is the primary layer,
      * the second is the secondary layer, etc.
      * If only one cache type is specified, it is returned directly without layering.
@@ -222,7 +247,7 @@ public final class CacheManager {
         String cacheFilePath = directoryOfCaches.resolve(cacheName + ".json").toString();
         List<Cache<K>> createdCaches = new ArrayList<>();
         for (CacheType cacheType : hierarchyConfig) {
-            Cache<K> cache = Cache.createByType(cacheType, parameters, cacheFilePath, mapper);
+            Cache<K> cache = Cache.createByType(cacheType, parameters, cacheFilePath, mapper, environment);
             createdCaches.add(cache);
             logger.debug("Created cache type: {}", cacheType);
         }

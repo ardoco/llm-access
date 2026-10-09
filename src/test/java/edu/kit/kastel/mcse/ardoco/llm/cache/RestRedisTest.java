@@ -103,7 +103,7 @@ public class RestRedisTest {
     @BeforeEach
     public void setup() {
         environment.overwrite(envFile);
-        restCache = new RestRedisCache<>(cacheParameter, new ObjectMapper());
+        restCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
     }
 
     /**
@@ -112,7 +112,7 @@ public class RestRedisTest {
     @Test
     @DisplayName("Test REST Redis client connection")
     void testRestRedisConnection() {
-        Cache.createByType(CacheType.REST_REDIS, new ChatCacheParameter("test", 1, 0.0), null, new ObjectMapper());
+        Cache.createByType(CacheType.REST_REDIS, new ChatCacheParameter("test", 1, 0.0), null, new ObjectMapper(), environment);
     }
 
     /**
@@ -137,7 +137,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache with local and REST Redis cache")
     void testHierarchicalCacheWithLocalAndRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("hierarchical_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper());
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
 
         String testKey = "conflict-key";
         String localValue = "local-value";
@@ -162,7 +162,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache OVERWRITE strategy with REST Redis")
     void testHierarchicalCacheOverwriteStrategyWithRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("overwrite_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper());
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
 
         String testKey = "overwrite-key";
         String primaryValue = "primary-value";
@@ -189,7 +189,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache ERROR strategy detects conflicts with REST Redis")
     void testHierarchicalCacheErrorStrategyWithRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("error_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper());
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
 
         String testKey = "error-key";
         String localValue = "local-value";
@@ -213,7 +213,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache backfill with REST Redis cache")
     void testHierarchicalCacheBackfillWithRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("backfill_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper());
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
 
         String testKey = "backfill-key";
         String redisValue = "redis-only-value";

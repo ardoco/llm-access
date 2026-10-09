@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
-import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 import redis.clients.jedis.RedisClient;
 
 /**
@@ -31,18 +30,17 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
      */
     private final UnifiedRedisClient redis;
 
-    private static final EnvironmentProvider environment = SystemEnvironment.getInstance();
-
     /**
      * Creates a new Redis cache instance.
      * This constructor will throw an exception if Redis is unavailable.
      *
      * @param cacheParameter The cache parameter configuration
      * @param mapper         The ObjectMapper for JSON operations
+     * @param environment    The environment to read the Redis URL ({@code REDIS_URL}) from
      * @throws IllegalStateException If Redis connection cannot be established
      */
-    RedisCache(CacheParameter<K> cacheParameter, ObjectMapper mapper) {
-        this(cacheParameter, mapper, createRedisConnection());
+    RedisCache(CacheParameter<K> cacheParameter, ObjectMapper mapper, EnvironmentProvider environment) {
+        this(cacheParameter, mapper, createRedisConnection(environment));
     }
 
     /**
@@ -73,9 +71,11 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
      * Establishes a connection to the Redis server.
      * The Redis URL can be configured through the REDIS_URL environment variable.
      *
+     * @param environment The environment to read the Redis URL from
+     * @return The connected Redis client
      * @throws IllegalStateException if Redis connection could not be established
      */
-    private static RedisAdapter createRedisConnection() {
+    private static RedisAdapter createRedisConnection(EnvironmentProvider environment) {
         String redisUrl = "redis://localhost:6379";
         String redisUrlEnv = environment.getenv("REDIS_URL");
         if (redisUrlEnv != null && !redisUrlEnv.isBlank()) {
