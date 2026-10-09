@@ -37,7 +37,9 @@ class MapEnvironmentTest {
     void nonNull() {
         MapEnvironment environment = new MapEnvironment(Map.of("API_KEY", "secret"));
         assertEquals("secret", environment.getenvNonNull("API_KEY"));
-        assertThrows(IllegalStateException.class, () -> environment.getenvNonNull("OTHER_KEY"));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> environment.getenvNonNull("OTHER_KEY"));
+        assertTrue(exception.getMessage().contains("OTHER_KEY"));
+        assertFalse(exception.getMessage().contains(".env"), "a map environment has nothing to do with .env files");
     }
 
     @Test

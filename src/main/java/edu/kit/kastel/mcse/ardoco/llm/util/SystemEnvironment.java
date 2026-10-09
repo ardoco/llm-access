@@ -93,6 +93,23 @@ public final class SystemEnvironment implements EnvironmentProvider {
     }
 
     /**
+     * Retrieves an environment variable value, requiring it to be non-null. In contrast to the default
+     * implementation, the exception message names the system environment and the .env file as places to set it.
+     *
+     * @param key The name of the environment variable to retrieve
+     * @return The value of the environment variable
+     * @throws IllegalStateException if the variable is not set
+     */
+    @Override
+    public String getenvNonNull(String key) {
+        String value = getenv(key);
+        if (value == null) {
+            throw new IllegalStateException("environment variable %s is missing, set it in the system environment or in '%s'".formatted(key, dotenvFile));
+        }
+        return value;
+    }
+
+    /**
      * Returns the entries declared in the .env file, loading the file on the first call. Concurrent first calls
      * load the file only once; if loading fails, the next call tries again.
      *

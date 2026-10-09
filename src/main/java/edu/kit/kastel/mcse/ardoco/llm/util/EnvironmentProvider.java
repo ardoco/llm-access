@@ -26,6 +26,7 @@ public interface EnvironmentProvider {
      * <li>Attempts to retrieve the variable using {@link #getenv(String)}</li>
      * <li>Throws an IllegalStateException if the variable is not set</li>
      * </ol>
+     * Implementations may override this method to add a hint on where to set the variable to the message.
      *
      * @param key The name of the environment variable to retrieve
      * @return The value of the environment variable
@@ -34,7 +35,7 @@ public interface EnvironmentProvider {
     default String getenvNonNull(String key) {
         String value = getenv(key);
         if (value == null) {
-            throw new IllegalStateException("environment variable %s is missing, use '.env' or your system to set it up".formatted(key));
+            throw new IllegalStateException("environment variable %s is missing".formatted(key));
         }
         return value;
     }

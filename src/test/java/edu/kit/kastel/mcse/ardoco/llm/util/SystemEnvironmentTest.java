@@ -57,7 +57,8 @@ class SystemEnvironmentTest {
     void nonNull() throws IOException {
         SystemEnvironment environment = environmentWith(".env", "MY_TEST_KEY=my-value\n");
         assertEquals("my-value", environment.getenvNonNull("MY_TEST_KEY"));
-        assertThrows(IllegalStateException.class, () -> environment.getenvNonNull("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> environment.getenvNonNull("LLM_ACCESS_DEFINITELY_UNSET_VARIABLE"));
+        assertTrue(exception.getMessage().contains(tempDir.resolve(".env").toString()), "the message should point to the .env file");
     }
 
     @Test
