@@ -6,6 +6,8 @@ import java.io.File;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.OnnxEmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.PoolingMode;
+import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
  * An embedding creator that uses ONNX models for generating embeddings.
@@ -22,9 +24,11 @@ public class OnnxEmbeddingCreator extends CachedEmbeddingCreator {
      * @param model           The name of the model (used for tokenizer selection and cache identification)
      * @param pathToModel     The path to the ONNX model file
      * @param pathToTokenizer The path to the tokenizer file
+     * @param environment     The environment of this creator (currently not read by the ONNX backend)
+     * @param cacheManager    The cache manager that provides the embedding cache
      */
-    public OnnxEmbeddingCreator(String model, String pathToModel, String pathToTokenizer) {
-        super(model, 1, pathToModel, pathToTokenizer);
+    public OnnxEmbeddingCreator(String model, String pathToModel, String pathToTokenizer, EnvironmentProvider environment, CacheManager cacheManager) {
+        super(model, 1, environment, cacheManager, pathToModel, pathToTokenizer);
     }
 
     /**

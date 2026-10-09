@@ -5,7 +5,8 @@ A small, reusable Java library for accessing Large Language Models (LLMs) and em
 embeddings.
 
 It is framework-neutral. Model settings are passed as plain configuration objects,
-while credentials and hosts are read from the environment. The
+while credentials and hosts are read from an injectable environment (by default the system environment
+and an optional `.env` file). The
 code was extracted and generalized from the [LiSSA](https://github.com/ardoco/lissa) project so that
 LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one implementation.
 
@@ -95,6 +96,9 @@ float[] vector = creator.calculateEmbedding("some text");
 var vectors = creator.calculateEmbeddings(List.of("a", "b", "c"));
 ```
 
+`EmbeddingCreator.create(configuration)` caches in the default `CacheManager` (the mock platform needs no cache). To use
+a specific cache manager instead, pass it explicitly: `EmbeddingCreator.create(configuration, cacheManager)`.
+
 ONNX models need local files:
 
 ```java
@@ -104,8 +108,37 @@ EmbeddingCreator creator = EmbeddingCreator.create(
 
 ## Configuration
 
-Credentials and hosts are read via `Environment`, which loads a `.env` file from the working directory
-(falling back to system environment variables). See [`sample.env`](sample.env) for a template.
+Credentials and hosts are read from an `EnvironmentProvider` that is passed in explicitly; there is no
+global environment. Two implementations are provided (package `edu.kit.kastel.mcse.ardoco.llm.util`):
+
+- `SystemEnvironment` (the default): reads system environment variables and a `.env` file. `new SystemEnvironment()`
+uses the `.env` in the working directory (if present); `new SystemEnvironment(Path)` loads a specific file.
+The file is read when first needed (the first lookup not answered by a system variable), not on construction. System environment variables take precedence over
+`.env` entries. See [`sample.env`](sample.env) for a template.
+- `MapEnvironment`: serves values from an in-memory map, with no fallback to the system environment. Its
+`toString()` lists only the keys, so secrets do not leak into logs.
+
+`LlmConfiguration`, `EmbeddingConfiguration`, and `CacheManager` each take an environment; when none is given they
+create a new `SystemEnvironment`. The configurations supply the model credentials and hosts, while the `CacheManager`
+supplies the cache settings. To supply all of them in code instead of through `.env` or system variables:
+
+```java
+EnvironmentProvider environment = new MapEnvironment(Map.of("OPENAI_API_KEY", apiKey, "CACHE_HIERARCHY", "LOCAL"));
+CacheManager cacheManager = new CacheManager(Path.of("cache"), environment);
+
+ChatModelProvider provider = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.OPENAI)
+		.modelName("gpt-4o-mini")
+		.environment(environment)
+		.build());
+ChatModel model = new CachingChatModel(provider.createChatModel(), cacheManager.getCache(provider, provider.cacheParameters()));
+
+EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.builder(EmbeddingPlatform.OPENAI)
+		.modelName("text-embedding-3-large")
+		.environment(environment)
+		.build(), cacheManager);
+```
+
+The variables each platform reads:
 
 | Platform   | Chat env vars                                                      | Embedding env vars                                                |
 | ---------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
@@ -129,8 +162,13 @@ Before using the default manager, set the cache directory once:
 CacheManager.setCacheDir("cache"); // getDefaultInstance() throws until this is called
 ```
 
+Alternatively, create a manager with `new CacheManager(Path.of("cache"), environment)` and pass it on, e.g. to
+`EmbeddingCreator.create(configuration, cacheManager)`.
+
 All cache behaviour (which backends, layering, conflict handling, connection details) is driven by
-environment variables, read when the `CacheManager` is constructed.
+environment variables, read from the `CacheManager`'s environment (`setCacheDir(dir)` uses a new
+`SystemEnvironment`, `setCacheDir(dir, environment)` the given one). The hierarchy and the replacement strategy are
+read when the `CacheManager` is constructed, the connection details when a cache is first requested from it.
 
 ### How entries are identified
 
@@ -330,14 +368,14 @@ directory as the replication package. Replicators unpack it, set `CACHE_HIERARCH
 
 ## Package overview
 
-| Package                                          | Contents                                                     |
-| ------------------------------------------------ | ------------------------------------------------------------ |
-| `edu.kit.kastel.mcse.ardoco.llm.chat`            | Chat model providers, platforms, lazy model, cached requests |
-| `edu.kit.kastel.mcse.ardoco.llm.embedding`       | Embedding creators and configuration                         |
-| `edu.kit.kastel.mcse.ardoco.llm.cache`           | Cache abstraction, backends, hierarchy, and manager          |
-| `edu.kit.kastel.mcse.ardoco.llm.cache.chat`      | Typed cache keys/parameters for chat requests                |
-| `edu.kit.kastel.mcse.ardoco.llm.cache.embedding` | Typed cache keys/parameters for embeddings                   |
-| `edu.kit.kastel.mcse.ardoco.llm.util`            | Environment/.env access, key generation, helpers             |
+| Package                                          | Contents                                                          |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| `edu.kit.kastel.mcse.ardoco.llm.chat`            | Chat model providers, platforms, lazy model, cached requests      |
+| `edu.kit.kastel.mcse.ardoco.llm.embedding`       | Embedding creators and configuration                              |
+| `edu.kit.kastel.mcse.ardoco.llm.cache`           | Cache abstraction, backends, hierarchy, and manager               |
+| `edu.kit.kastel.mcse.ardoco.llm.cache.chat`      | Typed cache keys/parameters for chat requests                     |
+| `edu.kit.kastel.mcse.ardoco.llm.cache.embedding` | Typed cache keys/parameters for embeddings                        |
+| `edu.kit.kastel.mcse.ardoco.llm.util`            | `EnvironmentProvider` (system/.env, map), key generation, helpers |
 
 ## Building
 

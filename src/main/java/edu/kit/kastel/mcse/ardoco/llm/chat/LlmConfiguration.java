@@ -5,6 +5,10 @@ import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
+
 /**
  * Framework-neutral configuration for a chat language model.
  * <p>
@@ -17,8 +21,9 @@ import org.jspecify.annotations.Nullable;
  * @param modelName   The name of the model to use
  * @param seed        The seed value for model randomization
  * @param temperature The temperature setting for the model
+ * @param environment The environment that supplies credentials and host URLs
  */
-public record LlmConfiguration(ChatModelPlatform platform, String modelName, int seed, double temperature) {
+public record LlmConfiguration(ChatModelPlatform platform, String modelName, int seed, double temperature, EnvironmentProvider environment) {
 
     /**
      * Default seed value for models.
@@ -37,10 +42,12 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
      * @param modelName   The name of the model to use
      * @param seed        The seed value for model randomization
      * @param temperature The temperature setting for the model
+     * @param environment The environment that supplies credentials and host URLs
      */
     public LlmConfiguration {
         Objects.requireNonNull(platform, "platform must not be null");
         Objects.requireNonNull(modelName, "modelName must not be null");
+        Objects.requireNonNull(environment, "environment must not be null");
     }
 
     /**
@@ -66,13 +73,15 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
 
     /**
      * Builder for {@link LlmConfiguration}. The model name is required; the seed and temperature default to
-     * {@link #DEFAULT_SEED} and {@link #DEFAULT_TEMPERATURE}.
+     * {@link #DEFAULT_SEED} and {@link #DEFAULT_TEMPERATURE}, and the environment defaults to a
+     * new {@link SystemEnvironment}.
      */
     public static final class Builder {
         private final ChatModelPlatform platform;
         private @Nullable String modelName;
         private int seed = DEFAULT_SEED;
         private double temperature = DEFAULT_TEMPERATURE;
+        private @Nullable EnvironmentProvider environment;
 
         private Builder(ChatModelPlatform platform) {
             this.platform = Objects.requireNonNull(platform, "platform must not be null");
@@ -112,6 +121,18 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
         }
 
         /**
+         * Sets the environment that supplies credentials and host URLs, for example a {@link MapEnvironment}.
+         * If no environment is set, {@link #build()} creates a new {@link SystemEnvironment}.
+         *
+         * @param environment The environment provider to read credentials and host URLs from
+         * @return This builder
+         */
+        public Builder environment(EnvironmentProvider environment) {
+            this.environment = Objects.requireNonNull(environment, "environment must not be null");
+            return this;
+        }
+
+        /**
          * Builds the configuration.
          *
          * @return The configuration
@@ -121,7 +142,8 @@ public record LlmConfiguration(ChatModelPlatform platform, String modelName, int
             if (modelName == null || modelName.isBlank()) {
                 throw new IllegalArgumentException("A model name must be set for platform " + platform);
             }
-            return new LlmConfiguration(platform, modelName, seed, temperature);
+            EnvironmentProvider resolvedEnvironment = environment != null ? environment : new SystemEnvironment();
+            return new LlmConfiguration(platform, modelName, seed, temperature, resolvedEnvironment);
         }
     }
 }

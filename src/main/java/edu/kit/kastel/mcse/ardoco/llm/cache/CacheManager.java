@@ -17,13 +17,17 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Manages caching operations.
  * This class provides a centralized way to create and access caches for different purposes,
  * such as storing embeddings or chat responses. It supports local file-based caching, Redis caching,
  * and Redis over a REST API, layered according to the {@code CACHE_HIERARCHY} environment variable.
+ * <p>
+ * Each cache manager holds the {@link EnvironmentProvider} it was created with; it reads the cache configuration
+ * from it and passes it on to the Redis-based caches for their connection settings.
  */
 public final class CacheManager {
     /**
@@ -45,34 +49,50 @@ public final class CacheManager {
     private final Path directoryOfCaches;
     private final CacheReplacementStrategy replacementStrategy;
     private final List<CacheType> hierarchyConfig;
+    private final EnvironmentProvider environment;
     private final Map<String, Cache<?>> caches = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(CacheManager.class);
 
     /**
-     * Sets the cache directory for the default cache manager instance.
+     * Sets the cache directory for the default cache manager instance, reading the cache configuration and the
+     * Redis connection settings from a new {@link SystemEnvironment}.
      * This method must be called before using the default instance.
      *
      * @param directory The path to the cache directory, or null to use the default directory
      * @throws IOException If the cache directory cannot be created
      */
     public static synchronized void setCacheDir(@Nullable String directory) throws IOException {
-        defaultInstanceManager = new CacheManager(Path.of(directory == null ? DEFAULT_CACHE_DIRECTORY : directory));
+        setCacheDir(directory, new SystemEnvironment());
     }
 
     /**
-     * Reads the cache replacement strategy from environment variables.
+     * Sets the cache directory for the default cache manager instance, reading the cache configuration and the
+     * Redis connection settings from the given environment.
+     * This method must be called before using the default instance.
+     *
+     * @param directory   The path to the cache directory, or null to use the default directory
+     * @param environment The environment provider to read configuration from
+     * @throws IOException If the cache directory cannot be created
+     */
+    public static synchronized void setCacheDir(@Nullable String directory, EnvironmentProvider environment) throws IOException {
+        defaultInstanceManager = new CacheManager(Path.of(directory == null ? DEFAULT_CACHE_DIRECTORY : directory), environment);
+    }
+
+    /**
+     * Reads the cache replacement strategy from the given environment.
      * This method:
      * <ol>
      * <li>First checks the environment variable CACHE_REPLACEMENT_STRATEGY</li>
      * <li>If not found, uses the default strategy ({@link #DEFAULT_REPLACEMENT_STRATEGY})</li>
      * </ol>
      *
+     * @param environment The environment provider to read configuration from
      * @return The cache replacement strategy
      * @throws IllegalArgumentException If the environment variable value is set but invalid
      */
-    private static CacheReplacementStrategy readCacheReplacementStrategy() {
-        String strategyValue = Environment.getenv("CACHE_REPLACEMENT_STRATEGY");
+    private static CacheReplacementStrategy readCacheReplacementStrategy(EnvironmentProvider environment) {
+        String strategyValue = environment.getenv("CACHE_REPLACEMENT_STRATEGY");
         if (strategyValue == null) {
             return DEFAULT_REPLACEMENT_STRATEGY;
         }
@@ -86,12 +106,13 @@ public final class CacheManager {
     }
 
     /**
-     * Reads the cache hierarchy configuration from environment variables or uses the default if it's not set.
+     * Reads the cache hierarchy configuration from the given environment or uses the default if it's not set.
      *
+     * @param environment The environment provider to read configuration from
      * @return The cache hierarchy configuration string
      */
-    private static String readHierarchyString() {
-        String hierarchyString = Environment.getenv("CACHE_HIERARCHY");
+    private static String readHierarchyString(EnvironmentProvider environment) {
+        String hierarchyString = environment.getenv("CACHE_HIERARCHY");
         if (hierarchyString == null) {
             return DEFAULT_CACHE_HIERARCHY;
         }
@@ -99,7 +120,8 @@ public final class CacheManager {
     }
 
     /**
-     * Creates a new cache manager instance using the specified cache directory.
+     * Creates a new cache manager instance using the specified cache directory, reading the cache configuration and
+     * the Redis connection settings from a new {@link SystemEnvironment}.
      * The directory will be created if it doesn't exist.
      *
      * @param cacheDir The path to the cache directory
@@ -107,7 +129,22 @@ public final class CacheManager {
      * @throws IllegalArgumentException If the path exists but is not a directory
      */
     public CacheManager(Path cacheDir) throws IOException {
-        this(cacheDir, readCacheReplacementStrategy(), parseCacheHierarchy(readHierarchyString()));
+        this(cacheDir, new SystemEnvironment());
+    }
+
+    /**
+     * Creates a new cache manager instance using the specified cache directory. The replacement strategy
+     * ({@code CACHE_REPLACEMENT_STRATEGY}), the hierarchy ({@code CACHE_HIERARCHY}), and the Redis connection
+     * settings are read from the given environment.
+     * The directory will be created if it doesn't exist.
+     *
+     * @param cacheDir    The path to the cache directory
+     * @param environment The environment provider to read configuration from
+     * @throws IOException              If the cache directory cannot be created
+     * @throws IllegalArgumentException If the path exists but is not a directory
+     */
+    public CacheManager(Path cacheDir, EnvironmentProvider environment) throws IOException {
+        this(cacheDir, readCacheReplacementStrategy(environment), parseCacheHierarchy(readHierarchyString(environment)), environment);
     }
 
     /**
@@ -118,10 +155,12 @@ public final class CacheManager {
      * @param cacheDir            The path to the cache directory
      * @param replacementStrategy The strategy for handling conflicts between cache layers
      * @param hierarchyConfig     Non-empty list of cache types in the hierarchy order.
+     * @param environment         The environment provider that supplies the Redis connection settings
      * @throws IOException              If the cache directory cannot be created
      * @throws IllegalArgumentException If the path exists but is not a directory
      */
-    public CacheManager(Path cacheDir, CacheReplacementStrategy replacementStrategy, List<CacheType> hierarchyConfig) throws IOException {
+    public CacheManager(Path cacheDir, CacheReplacementStrategy replacementStrategy, List<CacheType> hierarchyConfig, EnvironmentProvider environment)
+            throws IOException {
         if (!Files.exists(cacheDir))
             Files.createDirectories(cacheDir);
         if (!Files.isDirectory(cacheDir)) {
@@ -134,11 +173,12 @@ public final class CacheManager {
             throw new IllegalArgumentException("Cache hierarchy configuration must contain at least one cache type");
         }
         this.hierarchyConfig = hierarchyConfig;
+        this.environment = Objects.requireNonNull(environment);
     }
 
     /**
      * Gets the default cache manager instance.
-     * The cache directory must be set using {@link #setCacheDir(String)} before calling this method.
+     * The cache directory must be set using {@link #setCacheDir(String, EnvironmentProvider)} before calling this method.
      *
      * @return The default cache manager instance
      * @throws IllegalStateException If the cache directory has not been set
@@ -192,7 +232,7 @@ public final class CacheManager {
 
     /**
      * Builds a cache hierarchy based on the configured cache types.
-     * The hierarchy is read from the CACHE_HIERARCHY environment variable.
+     * The hierarchy was read from the CACHE_HIERARCHY environment variable or passed explicitly at construction.
      * Caches are layered in the order specified: the first cache is the primary layer,
      * the second is the secondary layer, etc.
      * If only one cache type is specified, it is returned directly without layering.
@@ -207,7 +247,7 @@ public final class CacheManager {
         String cacheFilePath = directoryOfCaches.resolve(cacheName + ".json").toString();
         List<Cache<K>> createdCaches = new ArrayList<>();
         for (CacheType cacheType : hierarchyConfig) {
-            Cache<K> cache = Cache.createByType(cacheType, parameters, cacheFilePath, mapper);
+            Cache<K> cache = Cache.createByType(cacheType, parameters, cacheFilePath, mapper, environment);
             createdCaches.add(cache);
             logger.debug("Created cache type: {}", cacheType);
         }
@@ -260,7 +300,7 @@ public final class CacheManager {
     /**
      * Resets the default cache manager instance.
      * This method is intended for testing purposes only to allow clean state between tests.
-     * After calling this method, {@link #setCacheDir(String)}
+     * After calling this method, {@link #setCacheDir(String, EnvironmentProvider)}
      * must be called again before using the default instance.
      */
     static synchronized void resetDefaultInstance() {

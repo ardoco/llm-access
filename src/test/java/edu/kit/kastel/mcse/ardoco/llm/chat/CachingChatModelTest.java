@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,8 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
  * Tests for {@link CachingChatModel} using a real local cache and a recording delegate model.
@@ -37,18 +38,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 @NullMarked
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CachingChatModelTest {
+    private final EnvironmentProvider environment = new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL", "CACHE_REPLACEMENT_STRATEGY", "ERROR"));
 
     @TempDir
     private Path tempCacheDir;
 
-    @BeforeAll
-    void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
-    }
-
     @BeforeEach
     void setup() throws IOException {
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
     }
 
     private Cache<ChatCacheKey> cache() {
@@ -117,7 +114,7 @@ class CachingChatModelTest {
         assertEquals(1, delegate.calls);
 
         // Recreate the manager so the cache is read fresh from disk instead of from memory.
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
 
         RecordingChatModel reloadedDelegate = new RecordingChatModel();
         String afterReload = new CachingChatModel(reloadedDelegate, cache()).chat("ping");

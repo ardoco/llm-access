@@ -7,9 +7,9 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,8 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
-import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
  * Tests for {@link ChatModelUtils} caching behavior using a real local cache and a mocked chat model.
@@ -28,17 +29,14 @@ import edu.kit.kastel.mcse.ardoco.llm.util.Environment;
 @NullMarked
 class ChatModelUtilsTest {
 
+    private final EnvironmentProvider environment = new MapEnvironment(Map.of("CACHE_HIERARCHY", "LOCAL", "CACHE_REPLACEMENT_STRATEGY", "ERROR"));
+
     @TempDir
     private Path tempCacheDir;
 
-    @BeforeAll
-    static void init() {
-        Environment.overwrite(Path.of("src/test/resources/.env-test"));
-    }
-
     @BeforeEach
     void setup() throws IOException {
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
     }
 
     private Cache<ChatCacheKey> cache() {
@@ -85,7 +83,7 @@ class ChatModelUtilsTest {
         CacheManager.getDefaultInstance().flush();
 
         // Fresh manager reading the same directory must return the cached value without a model call
-        CacheManager.setCacheDir(tempCacheDir.toString());
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
         ChatModel llm2 = mock(ChatModel.class);
         assertEquals("stored", ChatModelUtils.cachedRequest("persist", llm2, cache()));
         verifyNoInteractions(llm2);

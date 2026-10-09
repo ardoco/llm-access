@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.Futures;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
 
@@ -29,8 +30,8 @@ import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
  * <li>Fallback mechanisms for failed embedding generation</li>
  * </ul>
  *
- * The class uses a cache (obtained from the default {@link CacheManager}) to store previously generated
- * embeddings and implements a mechanism to handle texts that exceed the maximum token length
+ * The class uses a cache (obtained from the {@link CacheManager} passed to the constructor) to store previously
+ * generated embeddings and implements a mechanism to handle texts that exceed the maximum token length
  * of the underlying embedding model.
  */
 abstract class CachedEmbeddingCreator extends EmbeddingCreator {
@@ -39,6 +40,10 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
 
     private static final Logger STATIC_LOGGER = LoggerFactory.getLogger(CachedEmbeddingCreator.class);
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    /**
+     * The environment that supplies credentials and host URLs to {@link #createEmbeddingModel(String, String...)}.
+     */
+    private final EnvironmentProvider environment;
     private final Cache<EmbeddingCacheKey> cache;
     private final EmbeddingModel embeddingModel;
     private final String rawNameOfModel;
@@ -49,13 +54,18 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
     /**
      * Creates a new cached embedding creator with the specified model and thread count.
      *
-     * @param model   The name of the embedding model to use
-     * @param threads The number of threads to use for parallel embedding generation
-     * @param params  Additional parameters for the embedding model
+     * @param model        The name of the embedding model to use
+     * @param threads      The number of threads to use for parallel embedding generation
+     * @param environment  The environment that supplies credentials and host URLs
+     * @param cacheManager The cache manager that provides the embedding cache
+     * @param params       Additional parameters for the embedding model
      */
-    protected CachedEmbeddingCreator(String model, int threads, String... params) {
+    protected CachedEmbeddingCreator(String model, int threads, EnvironmentProvider environment, CacheManager cacheManager, String... params) {
+        // Assigned first: createEmbeddingModel (called below) is overridden by subclasses and reads the environment.
+        this.environment = Objects.requireNonNull(environment, "environment must not be null");
+        Objects.requireNonNull(cacheManager, "cacheManager must not be null");
         this.embeddingCacheParameter = new EmbeddingCacheParameter(model);
-        this.cache = CacheManager.getDefaultInstance().getCache(this, embeddingCacheParameter);
+        this.cache = cacheManager.getCache(this, embeddingCacheParameter);
         this.embeddingModel = Objects.requireNonNull(createEmbeddingModel(model, params));
         this.rawNameOfModel = model;
         this.params = params;
@@ -72,6 +82,15 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
      * @return A new instance of the embedding model
      */
     protected abstract EmbeddingModel createEmbeddingModel(String model, String... params);
+
+    /**
+     * Returns the environment that supplies credentials and host URLs for creating the embedding model.
+     *
+     * @return The environment provider of this creator
+     */
+    protected final EnvironmentProvider environment() {
+        return environment;
+    }
 
     /**
      * Calculates embeddings for a list of content strings, using either sequential or parallel processing
