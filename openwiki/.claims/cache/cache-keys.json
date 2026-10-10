@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e119f4a217110c2bdc49340648ee1dd0bb6cf99b341c47055df2d75bce9ff268",
+  "claims": [
+    {
+      "id": "claim_79c66cfaf63940b1945fc0b0fdba4db5",
+      "statement": "KeyGenerator.generateKey normalizes CRLF to LF and returns a deterministic type-3 (name-based) UUID over the UTF-8 bytes of the normalized input, throwing IllegalArgumentException for null input; the concrete UUID value is pinned by KeyGeneratorTest.stableUuidValue (generateKey(\"test\") == 098f6bcd-4621-3373-8ade-4e832627b4f6) because it is part of the on-disk cache format and must stay stable across releases.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java#L43-L50",
+          "version": "repo-lines-v1:sha256:95f2220f3c12761b8caa6cb63cfbd14c5c8c92a41467b51d3c1ebfecdb6bc13d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ3YjQzYzYyOGNhZGZiZGYzNjRiZmY4NDc0MDMwZDI2M2ZhYTlmMjY3YTJkZjRlYTgyMWNhYzIxNDM3NDUzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTIyNDE2YjEzMjQ3MDM4NmIyN2MzOWRhYmQyMTdhYzkzN2EzZDk3YjE4NDYwYzViMTJmOGU2ZmRmODAzMWUxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java#L35-L46",
+          "version": "repo-lines-v1:sha256:f5eeaba6ddfa348605fc87b84cffebdece0bb350a98ddf65055c8f3043d900dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5NDE1OWFiNDFlY2RlYTdjM2JlMTA3N2Y3Mjc3YmQ5ZWZkZTc3ODFlN2UxZGIxNzE2MWEyMTM0ZDQzMWVlYTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_589636ac220042cbab1eb792eafc669c",
+      "statement": "KeyGenerator feeds both cache addressing surfaces: ChatCacheKey.of and EmbeddingCacheKey.of derive localKey via generateKey(content), which is how LocalCache maps identical content to the same entry inside its file, and CachedEmbeddingCreator logs generateKey(content) when calculating or failing to calculate an embedding so log lines reference exactly the file-cache identifier.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java#L123-L128",
+          "version": "repo-lines-v1:sha256:7e3c77ff01832006fd3fb82641ffc5debae35815d6c134c9aec36b5610d5d059:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWRkNTgwNmM1MTZlMjg3YjAzNzlkYTE2YmNiYWU2NzM4NjZjODJjZTkxNTQ2OTZiODU2ZTYwYmM2MTMyNjg5ZCJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java#L60-L63",
+          "version": "repo-lines-v1:sha256:0dc0a10e3929a8d440956648a885a17faa59177d41f03e8ca6a2fd7deb9718f2:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDllNTk1YTgyYzJkNzkzN2Y1NDVjYzA1M2Q2ODJlOTlhZTEyZGFlM2VjZjBkYzk4MTQ3OTg4OTg5MDc1YjA0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTRhYTIyYWNiMTQzMjQ3ZjQ4OWJlOTliNWY3NDJkZGRiZmQ0Njg0YTM3NjdhZDZlZmQ4MzYzMTc1MTRlMDgxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2RhYjllZjJmYTJiODdlN2I0OWU0ODQ3YTIwYjZmNGZhMTRmMTljOGZmMDI1MzRhMTY0NzRlYzIyMGJmNGNjZiJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java#L61-L63",
+          "version": "repo-lines-v1:sha256:208e89284cd9cbf57de3bc6a778c422db9c0e4d212b7c47be68caaacdfd1146f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUzOWIzODE4M2VhZTdiOWY2OWZlNjIwYjJlNmU4NzNlZWQxOGQxNWU4ODMyZTdmZjczYzY1NDM4ZDc4YTU3YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTcxOGRhNWI5MzlkNWRiZjEyMGQ4NTY3Y2Y1NzQ3MDQzN2IwOTlhZDM0NTEzN2YwNzY3MmZiNGYwODNhMjJkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWMwMjkzZGE3NGU5NjcxMWRjZTZkNDdmNjczZGQzZGM0N2RkYzk1Nzc5MzNmMzZiZjM2OGQzNzQxMGI1MDdmNSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L180-L193",
+          "version": "repo-lines-v1:sha256:88319d9c3a6ae6592be3ff43e26eb9bb947cc90d05d85ff7f9aa13bacc588882:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlOGFiMjVlZTk2YmQ0MThhNzQzZDg5MTVmMjdlNmM4OWQ0MDE0OWJlYjhlNjI1NTFkOGFkNDc4MDk5N2IzMjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdkNGViZWI5NWQ0YzhmYzZjZjg2MTk3ZDEyMjRjZTFhYzQ5NjU5ZmY5YTNhMjlhOGNhMTIzZmYyNzQ4MmFjNWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6fdb1a6569054192af6db5ccab257f96",
+      "statement": "ChatCacheParameter.parameters() joins model name and seed with '_' and omits the temperature component when it is 0.0 (e.g. gpt-4o_42 vs gpt-4o_42_0.5) — the LiSSA file-name compatibility rule, since CacheManager composes the LocalCache file name from the origin class name plus parameters() as <Origin>_<parameters>.json and unconditionally appending 0.0 would rename existing temperature-0.0 cache files.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java#L16-L24",
+          "version": "repo-lines-v1:sha256:ea5a2153a0bc2ed543813198b0df08678d8bd0e2de519c3cbec9fad209787867:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjRlNjYzY2QzYWY4NDczYjYwZDI0ODllZGU0MDIwMTE5YTEzYjcxNzM5MWMyZDlhY2NmY2E5YTRmNjRiMTRjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGEwMTI0ZDg2OTkyMWYyNDgzYzY3N2FjNmM0NjYxNjY5NjRkMWUwNDM2MDhlOWYxYTUxN2JkZDE4ZTRjMjg3MCJ9"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java#L19-L29",
+          "version": "repo-lines-v1:sha256:8164602c0a3bb5677123f9f2b4aae1b86c0f6f7de9ea6d91c0b060f558a674b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlYjczMWQ0ZDdkMDBlNjgxYmM3NDA2Y2U0YjFjMGU0MWFkMTA3NTE1MTYwMzI0YjcwOGI5OTZlNTY0ZmM4MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExMmM5OTFmMGM2YjBiMWYyN2IwNDc3ZDZkN2EyMmQ0NTMyOGU4OWM4ZjQ1ZTFmNWFhNzQxY2M5MmY4NjZhNDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a0a1db344e5d4b00945022ee6578c610",
+      "statement": "ChatCacheKey carries model, seed, temperature, CHAT mode, content, and a localKey; instances are created only through the package-private ChatCacheKey.of (the constructor is private), which pins the mode to LargeLanguageModelCacheMode.CHAT and derives localKey from KeyGenerator.generateKey(content); localKey is @JsonIgnore'd out of toJsonKey() but is included in equals/hashCode.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java#L101-L122",
+          "version": "repo-lines-v1:sha256:66dbb2f14dc4031a90c1395da8b37a58a7dd422f51abc0a4eadeca2141d6051f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmYzg4Y2JlNjliMjZiZTc1OTVmMWE1YWZlYjMwMGU1OGQ0NDBiNDYxY2M1YTAyOGUxYWM0NjBlYTllMjA2MjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzYzhlZjczOGFjNGUyNzNlMWU2MjY2YjMxYTdkMTg0NDRiMWUxOTA5MjQyNjUxOGE1OTM4MGYwOTg3OGJkNWYifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java#L21-L32",
+          "version": "repo-lines-v1:sha256:2e9f2342b8406a30f927ac30032bd8893ffc0a20edb1012b7c1be0d72f8adc70:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYzMwZmI4OTlmNDYzMTQ3ZTNhMjA3ZWQ5YzM0NmQzMjhmYmRlZDBlMDcwNDJkNDdkNzdhNTRmNjc5YTAxMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE5ZWE4MzNhNzg5ZWVhZTUzYjZjNTA2OWI5NzVjMWQ1MDZhNGJmYjYzZDdjM2U2MGJlYTkwZjQ0OTUxNWJiOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEyOTVkMWEyMWY2ODAyOTI4ODAwNzc1ZjFlOTRiMjIxOWEzZjRiNTg1N2IxNjAzNDhiYWY1ZjNhMDQ0NWNkMDYifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java#L52-L63",
+          "version": "repo-lines-v1:sha256:f4250239c657476a0de509c1311d7e176892807215a7ef2e31fb8ab9c9703fb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzkwYWFjNDBmODY4MzQ1YTZiOTdjNGJmOWY5MmI5NDk2OWM3NDZlOGRjMTFkYjNiNWQ0Yzk4MGE0MzExOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkYWI5ZWYyZmEyYjg3ZTdiNDllNDg0N2EyMGI2ZjRmYTE0ZjE5YzhmZjAyNTM0YTE2NDc0ZWMyMjBiZjRjY2YifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java#L41-L57",
+          "version": "repo-lines-v1:sha256:f85573732bdb1082e65a8fdffcb19214edd016e52884812514d7ff8b9558f6f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZWY0MTBiZTQ4NDY1NDZhNDA5ZmM3NGU2YWVlYWVkOGVlNGJiYTdhYzk5ZGU2NjRkYzI1MmNhNzU1MjgzMGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4ZWFmM2UxZGIyODRmNmE2ZmQ0ZTA2NmFlMmZiNjU0YWU2OGZkZmNmM2U3ZTRkY2E0YzJkZDIxNGE0OWI5ZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e6ef335d301c479b81bb7ac83d06c6c3",
+      "statement": "EmbeddingCacheParameter.parameters() returns the bare model name and createCacheKey delegates to EmbeddingCacheKey.of, because embeddings are deterministic and the model name alone identifies the cache configuration.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheParameter.java#L13-L23",
+          "version": "repo-lines-v1:sha256:645777594b7757dc367972715c7897e3a58c2b76cd7c00d6462c72ea0d8ec7b2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2NTE4MmZjMjc2MTU0NmE4YjkxM2M3YTg3YmE1N2I0ZjM5OTM5OWRkNDg0NDA0NGQ3YTFhNTg3OWI4NDdjYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzYWEzZjc1OWZmMWYyOWU4MTgyM2JkOGUxMzg2Zjg5ZGI5NGFkNWE4YzY0OWZhY2JiNDJlNWU0NWUxYzYyMTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java#L18-L31",
+          "version": "repo-lines-v1:sha256:4f10b3134d79905b83f6f8d8314847181945ce00e960a99eef874c7813206bfd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzODhkNjc4MjMwYTkwNzk4ZDYwZGRhY2Y4ZjdhYTI3YTJhYzkzM2IwYzM2MGZmOWQyNzdmN2ExNzdhNTdkNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE0MmQ2YjJmNjQ0YmUyZGI1MTU0MjNkYzNlNGU0MDIxNDMxNDEzMDk3OWMyZThkNWQ0YjYxMzYyZDJiZmY3MGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a88fc72a93f43d6a6f01ffe826bd569",
+      "statement": "EmbeddingCacheKey.of pins seed and temperature to -1 and the mode to EMBEDDING; the -1 values carry no information (embeddings have no seed/temperature) and exist purely as backward-compatibility markers, and the serialized JSON key contains EMBEDDING but not the localKey.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java#L53-L63",
+          "version": "repo-lines-v1:sha256:791c1733dbd10955d0a984b96f9e8f8e85a0d10e4aaca52c7b9d68887977266a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY2MzkwYWFjNDBmODY4MzQ1YTZiOTdjNGJmOWY5MmI5NDk2OWM3NDZlOGRjMTFkYjNiNWQ0Yzk4MGE0MzExOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjljMDI5M2RhNzRlOTY3MTFkY2U2ZDQ3ZjY3M2RkM2RjNDdkZGM5NTc3OTMzZjM2YmYzNjhkMzc0MTBiNTA3ZjUifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java#L33-L41",
+          "version": "repo-lines-v1:sha256:1480d4d3a1e9ac3fbcbf8d0299dc097e2916e1cab2c883dae73d77f29dcce1d8:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNmMDllYjBjNTc0NGZiOTczMzFiOThmZjNmYmYwNWE2MDJiYTNmN2Y2N2U1ZGE1YmU5MDk1MDMzZjYyNTgyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjZiZDRiNGQ0NWVjMDU2NjBiM2VmODkxNjM3M2E5NDYxNDZhZjI1YTZiYjc4ZTcyOTNkNDFiZWY4MDJkYjQxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTAzZmRlYmMwOTE3NGU4ZGQ4YjZjZjFkYWM5YzZjM2FhOTg1YzcwMDA0NmI3MTU0ODg1NmNhMWJlN2I4YjAzZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a2a6c83937a4d0c8fd2618c7dfb2ac4",
+      "statement": "The deprecated EmbeddingCacheKey.ofRaw(model, content, localKey) exists only for keys with a custom local key; its single production call site is CachedEmbeddingCreator.tryToFixWithLength, which addresses the truncated-prefix recovery entry under the custom local key <original localKey>_fixed_8000 with content \"(FIXED::8000): …\" through the equally deprecated Cache.getViaInternalKey, and EmbeddingCacheKeyTest.ofRawCustomLocalKey guards that the custom local key is preserved.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java#L65-L79",
+          "version": "repo-lines-v1:sha256:f87cee0d6cf3618a13fc6040fbb27345f349fb1ed24f48d48e672bde9be37a19:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyODdkNDQ2YTc1Y2VmNjlkYzFkOWFlYmFkOGY2ZjA1N2ZiYmQ4ODc3NTI0OWNkZmU3ZDE5MTdkNzA0NjliOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkYWI5ZWYyZmEyYjg3ZTdiNDllNDg0N2EyMGI2ZjRmYTE0ZjE5YzhmZjAyNTM0YTE2NDc0ZWMyMjBiZjRjY2YifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L209-L218",
+          "version": "repo-lines-v1:sha256:d1a4e2e8ba5c956e4c5f363bcab935113e3c8cfb7fc808b6ad84ff6366d22af1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMGZkMzk0Zjc3YjkyOGJjOTA4MmZhYmQ1NjA1NmIxMGY3YTkzNTkyYTYxZWE2MjAwNmExNjYyMDRkNTk3MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3NGUyZWI5YzQ0NjVhODMyMzg1MjhhMmQ5ZTgyMWY0MTZmODAzYmUxN2VmNDJmMzNhOTY0ZWE2MDc4ZmFmZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNzM4YTUxOWU3MDYyY2VhZjcxYTY0ZWEzOThmMTM0Y2QzOWJhMTU2ODA5YjMyNjhmYzVjNzViYmY5NGUyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyNjYyM2YzNzAxMjJhM2IwMGNhMGQ5ODUxYzZkOTYzMTk3NDliZDY3NzVlMDhiMGZmMjJiYWJlYWI1OTE1YzkifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java#L43-L49",
+          "version": "repo-lines-v1:sha256:9e209a8eb3c1faae704740c2b3ddd2fe17a40d75a0855e23d4f4f227025bf2f5:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNmMDllYjBjNTc0NGZiOTczMzFiOThmZjNmYmYwNWE2MDJiYTNmN2Y2N2U1ZGE1YmU5MDk1MDMzZjYyNTgyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWJhNDJlOTllYTk3ZGJmNDU5MDA1MTFmNDU5NzdiMDkyYmY1YTE1ZDU3MjVmMDc5OGRlNzZkYjcwNjk0NTdlYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTkxYWJiNTYwM2NkNGM5NzY4ZWYzNDU0NmU4MGQ0NGIyNTAxOTJiYWIxMDFiMjcyNTczOWY3YWU0OTVkMjU3MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2e5e039817c84c11a81346ca61eaa7dd",
+      "statement": "Cache entries cannot collide across domains or configurations: LargeLanguageModelCacheMode (CHAT vs EMBEDDING) is a serialized field of every concrete key, so toJsonKey() — the hash key RedisCache addresses entries by — differs across domains and configurations even for identical model and content, while distinct configurations are additionally isolated per LocalCache file because CacheManager embeds parameters() in the file name and LocalCache keys entries within a file by the content-only localKey.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LargeLanguageModelCacheMode.java#L7-L17",
+          "version": "repo-lines-v1:sha256:8ca346bb08eb89757408152761d272107f1de949c7a7d96db455f173d4710fa7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNhNzdhOGM2ZTg2N2U2ODcyZjY1Y2E0NmEzNzdiZWEyZjFjOWU0Y2IxMGFjNzY0NzAwZmE1MzQzZDEwOTI2YzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmMmQwZDRiN2E3ZWQ3MmE0MGYzNTExMjA4ZDk0NjhjZGQyZTVkZmQxOWE5MjFhODAzODNjMTE0ZjE0ODY4NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java#L123-L128",
+          "version": "repo-lines-v1:sha256:7e3c77ff01832006fd3fb82641ffc5debae35815d6c134c9aec36b5610d5d059:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWRkNTgwNmM1MTZlMjg3YjAzNzlkYTE2YmNiYWU2NzM4NjZjODJjZTkxNTQ2OTZiODU2ZTYwYmM2MTMyNjg5ZCJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L101-L128",
+          "version": "repo-lines-v1:sha256:fcc834d8dea17ffaca2cc12df0f3a75f1137bf802aa3d12509783625fd44143f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhNDE1NjQ4Y2IzOWU3YWU2ZjhkNTRjMWNiZmM0NDIyNDk1MzFiZWJiNDY0ZWYzMTkzNGQwOGUxN2IxNzcxNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2MDk0OWZmZTdjOWQ3MzZhMzVmYWMwNDc1ZWU2NzY1ODcwMzU0OGJmYTczMWNiZWZhOWY3ZDBmMDViN2MyMWUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-09T23:10:07.903Z"
+  }
+}

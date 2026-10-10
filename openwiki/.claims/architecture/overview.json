@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:aab7b917484eaab93a007193b31222f72d815746f46036fa16849edd9c414e28",
+  "claims": [
+    {
+      "id": "claim_bf23446d81314d1083ee2afba138eb2e",
+      "statement": "The chat and embedding subsystems build on the cache subsystem: ChatModelProvider exposes its settings as a ChatCacheParameter and CachingChatModel/ChatModelUtils operate on Cache<ChatCacheKey>, while every real embedding creator receives a CacheManager and stores into Cache<EmbeddingCacheKey>; the cache backends read connection settings from a util-layer EnvironmentProvider, and the util layer depends on no internal packages.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L78-L91",
+          "version": "repo-lines-v1:sha256:095f7d9fbbc80c76d2ce1c89f0ac4a747616c2a01e7353a2d77109a70dffa93c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Yzk4ZDdiNGZlMzRlMzg2NzkxM2I4ODUxZmQzOGE0M2YxYTI3ODNjZDM0MDUxZDNjMzdjMTFkY2ExN2Y2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkNjcyYWIzYzkzZTI5MmM4ZGJhZWI2YTg3N2RkNGIxMWJhZTUzMTIyZDcwMDk1YTdjMjI4ZjkzNjIwOGQzNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlZGNkMDRlNjNkNWRjMmJhNTlkYTNlZGI4NGRhZDM4YjVjM2EyMzM1NTg5MGJjNGY3MzFjOTlkOWU1NWRhNDEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java#L32-L46",
+          "version": "repo-lines-v1:sha256:a2e35d217a79505df3746a1799b85120d62f15fdbc306204be5e5619c1984016:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5Njg4NzVkZWI4NmMwYWIwM2VjZTQ1MjMwODViNWNkZDk5MzBhNDkyMzMzY2ZjMThkOTE2MmMzY2FjYzZiYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxZjlkMWIwZDAyY2EwMDBmNWZlOTAyMTc4MDA2OGE4YWU4MmI3OThjZGFmNWY5NjY1M2VmYTkyYzY2NTkzYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkNjgzNjAzNzQ0YWI0M2FjYjVjNDJkNDA5YjA4YmEzODcxYmQzZTJjNmEwNzNhYTFlMjkyYjVmZWIwYjUzNzIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L266-L274",
+          "version": "repo-lines-v1:sha256:9967545e7869be67968c684735511f20992247c69fb5fc00ae013d84bdc9b764:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzljYmJjNjU0NjlkYjFjYTI4NDJlZmQ5N2RmN2VlMmNlNmNjMTU3MTQ4MmQwMWExOGI3OTBhMTBjN2M1MTBmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWVmNWI5MzE1ZGY2ODA4ZTA3MjQyODJkMDdlNDRiMTIxY2EwYzJkNjQ0OWIwNmUyNDVmM2E1OTIyOTk5MzRkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L63-L73",
+          "version": "repo-lines-v1:sha256:4dcf69062e324e4c2083b51c35cb9721007efc7a40da4a09ae6819c31eff2847:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1YTdkZGJmYjI3N2QyODkxMDk4NWU0NTJmMDhiMTBhMTMwNDE1Njg0MjgzNTRjMTlkNzIwM2ZlZjcwZGE2MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyYmQxNTc0ZDQwZWY3M2VlZDUwMmYyZjA5N2VhMjM1YTI1ODlkOGUxZWMxZWJjYmRkMjljMjEwNzRhNTdmZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNGUyMDY4M2Q4NTE4Y2JhMmE1MjhmOGM1NmE3YWJjYmFjMzMzYmYzY2NkZmU3NTc5M2I0ZTNkMTY1NTVkZjAifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L93-L105",
+          "version": "repo-lines-v1:sha256:663e990f979a128236be63f27ed64455dd01c18c0ef2e10a85ee40693fbd81dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjZhZTU1YTY3Yjg5NDg1YTNiZDkxZmMyMzBiNTk4N2M4YjdmNmNmYzBiZjYwZjY2Y2MwNTU3MWFiMGUxOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhODQxNWJlNjkwOTdmOTY1ZGQwYmI0NDc2MDI4ZWI4NjUwN2Y4NjU0ZDQ5NjgxMjUwOTI1MDcwMTY5MmI4YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwYjRkYWIyNjQxMmVhOTc1OTEwMGZlMzA4OTE0ZjQxYzQyNDZhMjQyNmFjMjViZGM1OTAxNWEyNmY3YjI3MDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e951ff2b09da422084a5d5b4c90d2b7d",
+      "statement": "Model settings travel as the framework-neutral records LlmConfiguration (platform, modelName, seed, temperature, environment) and EmbeddingConfiguration (platform, modelName, optional ONNX model/tokenizer paths, environment); platform endpoints are read from the environment (OLLAMA_HOST, OPENWEBUI_URL) or hardcoded per platform in ChatModelProvider, so nothing in the library depends on an application-specific configuration object.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L163-L187",
+          "version": "repo-lines-v1:sha256:2bb70c2a957e151bebefcc8def6a2e56a92638a335b11978c14d7eb7b6f478fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMTM1N2QzMWYxMjkwODVmYzdkMzcyZDVjNmY3NzdkNzI2YTMyMzFhNTg0MTNhMmJmMzlmNzc0OTk5OTNiZTcifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L216-L243",
+          "version": "repo-lines-v1:sha256:0e19b17e056f0810245d488aa9cdc433329d0252abb570df4c63fb9fc53b692f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOGRmMzg4NzNlYWYxMjkxODliYmY0ODkyMzkyMDdlZWNmODJhYjY1ZjM3OTVhYjljMGVmYzMyYzk3ZTliYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5MWEwYjMwYTU1MjdmMzgzZjkwMjEzYzEzNDdkNzRlMTE5ZGZmYjUwZjU5NjJkZjJhYTcxNjhhZjRhZjdiZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ZWE4YmVjMzU0NWFkYzczYTUxMTY1ODcwODJmZmVhYTI3OGY3ZGRlNjE1ZDYwY2ZjYjg4YmIzOTYyMTMzMjYifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java#L26-L51",
+          "version": "repo-lines-v1:sha256:cbe9f6732f87c38f709e274c91f5e0f5257fa13e4f967bee7870f4684e530b4e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwOTU1MWY3NWIzYmEwZWMxNzllYjgxN2M2MGQwZDE5ZjIxYTdhZjAyMWRhMzA0MzI0ZjliNjEyMjRkM2Q0ODgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4OTA3ZWY5NDBiZWM3NmU3ZmUxNjAwZWRmMGIyMWNmOGVkNWFkMmQ0ODRhZjliZWQzMDVmZDhiZTBiZGM3MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMjhlZTQ2YjkwMjRkOTkwNjRiNGY0ZGE1NDMzMmY4NDljNzk3YTU5OTY1ZjBhM2RiZjgzYWMxZGE1YjkyMWIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfiguration.java#L26-L42",
+          "version": "repo-lines-v1:sha256:40544bb6d840fcb25376138546182a8093cbc46c94d580f4201cbc2f14cbc2e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2OWVjNjZhMjdlODBjNmE4MDcxN2MyNDAyYWI4MmZmN2U5MDI1MmYzNTEyOWQ5ZGZiYzdjMWQzNjdlNDgxZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzM2Q0NTJiZGNkZDdlYjRiZjdmODc1ZmQzOWE0OGM0Yjk0ZjI0NWJhNGY1MTMxM2JkNWU2OTc2NWE0YWY1ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1MzUwMzhmNjY1OGVjODAyZDM4YjdiZjIyZDcyODc3ZjgzZmM0NTNkZTMzOTRiNTYyYzUxNWZlNWY1M2MyZDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_12bac1bba4854682b2b0ab8fd003365d",
+      "statement": "Chat cache identity is ChatCacheParameter(modelName, seed, temperature) and every ChatCacheKey embeds model, seed, temperature, the CHAT mode, and the request content, so with a fixed seed and temperature identical requests are served from cache instead of being re-sent to the model (cost/latency reduction and reproducible runs); EmbeddingCacheKey pins seed and temperature to -1 and uses the EMBEDDING mode, so chat and embedding entries never collide and different models, seeds, and temperatures stay apart.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L151-L158",
+          "version": "repo-lines-v1:sha256:ac0f23759bb6decdeefcb7eea93744f2a7973e482e93aa2a210e992d23e203c5:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjdmMWMyYzRmZGI4YzY2MDEyMDgyOGM1NTlkZDBlMjMzYTViODczNzY1M2M3MTMzMmIzNTVlOTU2NjNkZTgwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRjMDcxZTlkYzQ1NjM1OWY5ZTI4MmUyNTM5OGY3ZGEyYzk4N2FmYWQwZjhjM2ExYTU2YjRhMWMzNzZiZWRiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGM4M2NiMWQxMmE1MzI2NDA5OWQzYzJmNTM2NmNmN2MwNjJkMTEyODRiYThjNGYwNzYzYjViZTllYWE3NTEzYyJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java#L60-L63",
+          "version": "repo-lines-v1:sha256:0dc0a10e3929a8d440956648a885a17faa59177d41f03e8ca6a2fd7deb9718f2:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDllNTk1YTgyYzJkNzkzN2Y1NDVjYzA1M2Q2ODJlOTlhZTEyZGFlM2VjZjBkYzk4MTQ3OTg4OTg5MDc1YjA0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTRhYTIyYWNiMTQzMjQ3ZjQ4OWJlOTliNWY3NDJkZGRiZmQ0Njg0YTM3NjdhZDZlZmQ4MzYzMTc1MTRlMDgxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2RhYjllZjJmYTJiODdlN2I0OWU0ODQ3YTIwYjZmNGZhMTRmMTljOGZmMDI1MzRhMTY0NzRlYzIyMGJmNGNjZiJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java#L15-L29",
+          "version": "repo-lines-v1:sha256:dc3eb84409e5e5bd66e98113eb891c5c06f556c7433d5db70dde7bcd78b5c160:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4OTU3NTE3ZGJkOTc5ZjZhNDQ5MjRmNjJiMzNiZjJmMThjYTA2MWYxOWVmN2I4MTE4YmRjY2Q1ZTJkZDVkOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3ZTIwZDk2YjJhM2NhNWViZmIzOGIwNzhlMzVmYzMxMzYwYmY3ZGUwZWI3YzkzOGQzM2Q1ZDVjNzdmZTMwNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java#L61-L63",
+          "version": "repo-lines-v1:sha256:208e89284cd9cbf57de3bc6a778c422db9c0e4d212b7c47be68caaacdfd1146f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDUzOWIzODE4M2VhZTdiOWY2OWZlNjIwYjJlNmU4NzNlZWQxOGQxNWU4ODMyZTdmZjczYzY1NDM4ZDc4YTU3YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTcxOGRhNWI5MzlkNWRiZjEyMGQ4NTY3Y2Y1NzQ3MDQzN2IwOTlhZDM0NTEzN2YwNzY3MmZiNGYwODNhMjJkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWMwMjkzZGE3NGU5NjcxMWRjZTZkNDdmNjczZGQzZGM0N2RkYzk1Nzc5MzNmMzZiZjM2OGQzNzQxMGI1MDdmNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f02cc53574754d31a3a63cd9f02fc8a2",
+      "statement": "CachingChatModel implements caching once in doChat, the single point through which all ChatModel overloads are routed by the default interface methods: a cache hit returns the stored response without contacting the delegate; a miss delegates, caches the response text keyed by the string form of the messages, and flushes immediately so file-backed caches persist incrementally.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java#L19-L64",
+          "version": "repo-lines-v1:sha256:504ad0151a1d82dd7cba2657ad351cc758f46c7d996694fdf1bd0909b5e113d0:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJjYzI5MzZmMzk5MzRjNmU0YTYxOTE1OTYwYzEyZTQ2OWMyMzg1NzFmNWZiNmQ3YzUyZjBmZGI1MmE1ZjU0ZDgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmZDA0NDg0NjNjNjJkNDIxZWVlYWRkOTEwMjk4OGEzYTVhZjE2ODMwMWExM2I2ZDY3NmVmYTM1MGZhMmQyNmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b869c396933748f5a943708d36f3d334",
+      "statement": "CachedEmbeddingCreator caches every embedding under a content-derived key, parallelizes batches with per-platform thread counts (OpenAI uses 40 threads; Ollama, ONNX, and Open WebUI use 1), and recovers from over-long inputs by jtokkit-driven binary-search truncation to MAX_TOKEN_LENGTH 8000 whose result is cached under a separate _fixed_ key.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L102-L139",
+          "version": "repo-lines-v1:sha256:d17d7779a9994c6ae54130ce082a6e92a666f9ac8b0ea836d2f63fd82ecf8c98:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0YjdjMDM3ZmJjY2E4MjljZDRlYjUwNDhhZTY3MGQyYTE4N2FmNmM2MjRhODA2ZTlhMDUwZGI2YjZjMmY2ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NGI2MGE0YzUyMjgyOGZjMDA4Y2ZkNjJiMjEzOTZhYmE5ZDBlMTYxZjM2NjY1Nzc4NDk5MTIzZmE3NDljZTcifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L209-L250",
+          "version": "repo-lines-v1:sha256:3609441115da5d22216ef052ae54453cfbd38f8a4464cd21b290f001b3f6cfa3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMGZkMzk0Zjc3YjkyOGJjOTA4MmZhYmQ1NjA1NmIxMGY3YTkzNTkyYTYxZWE2MjAwNmExNjYyMDRkNTk3MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YWNmOWQ4Mzc0NTUyMGQzMjNjZDc5ZGI5NmNmNGVjNzQyMzZjNzE0ZDFjMmFkNGE4ZmU0YmE2NjU1ODQ0NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNzM4YTUxOWU3MDYyY2VhZjcxYTY0ZWEzOThmMTM0Y2QzOWJhMTU2ODA5YjMyNjhmYzVjNzViYmY5NGUyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L37-L73",
+          "version": "repo-lines-v1:sha256:c0a72db39cbcb116b94f6731dfdb861d060124f0725723f80499b50bbd806b0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwNzEwOWM4ZmMzY2YyZjYxMzVkNmNmNjc2NjRhMzk3YjUwMzNmNGYyMjcxMjExNDVhMzNmNmNmNTBkMjFhNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NzVjMmM4MzZjMzNkZTIxOWFjM2VjMWQxY2FiYTcyZjM1ZWI0YjBkNzRjYzUzMTgzZGFlNmIwMjBhMmY2YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNGUyMDY4M2Q4NTE4Y2JhMmE1MjhmOGM1NmE3YWJjYmFjMzMzYmYzY2NkZmU3NTc5M2I0ZTNkMTY1NTVkZjAifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java#L21-L34",
+          "version": "repo-lines-v1:sha256:c66a8e7339236038aa6c9c481c8eb9739c3150ac99269fa139776e7bfcb99c03:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4NWMwZDJlODliN2JjZmNjYjMzOTNkODNlOTJlNmQ4NzVlOTNhYmMxMDNhZDJjMmUyNmQwNGQ5MTcyOTJmYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmOWMyYTRhNmMyOGI2ZjU3MDk5N2M5NGE1N2M2NjQ1YWZlZDFiNzA4N2I1MTUzNWJlOGIxMjY2YTA4MjY5N2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzYzI2YTUxNzVkY2U0NTc1MjY1ZGEwM2RkYTNiODJkNDEwZjg4ZDczYjdiY2U2MjhhZDNmZTBiNTlkMDNlZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4cead8da1fcd421e981c3c424b499ae6",
+      "statement": "The no-global-environment invariant is enforced by two ArchUnit rules in NoGlobalEnvironmentTest over all non-test classes of edu.kit.kastel.mcse.ardoco.llm: no static field may have a type assignable to EnvironmentProvider, and CacheManager.getDefaultInstance() may be called only from EmbeddingCreator.create(EmbeddingConfiguration) — everywhere else the cache manager, and with it the cache environment, must be injected.",
+      "evidence": [
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java#L28-L50",
+          "version": "repo-lines-v1:sha256:0d21012dbdd607138316ff78ff1c2cb2116537a57b4c7776acfb442f88d192ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MGZiYTgxMzNmZTUyMTE0NDYzNjJkOWI3MDZjY2RhZDgyZTM1N2IxNjUzZjkwNTkzZTQ1MTA2MDJiNmI3YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwN2NmZDczOWI5YzVlNzU5NTNiMzUzZTY2OWFjYTUxNmZmMWIwNjEzYjg0ZTIwNzk5ZmYyMjNhODhmNWVlOGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0YmVhOWEyZTJjZWRlZDA5ZjFkZDM4Y2Y2ZGNhNzk0ZDAyNjIzOGFhNzg1N2FjNjNiMzkyNDg5OTdkZThjZGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_02a547d8820246a782faf43634389287",
+      "statement": "EmbeddingCreator.create(configuration) resolves the default CacheManager only for caching platforms: for the MOCK platform it returns a MockEmbeddingCreator (zero vectors of length 1, no cache, no environment reads) before the manager is touched, so a mock creator requires no cache setup.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L117-L123",
+          "version": "repo-lines-v1:sha256:692b1a8a54a7ab201ba8ebce16f2a1fe0d28c1f1bb495bfe008543fe89467fc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWNhN2M2NDJkZmQ3Zjk2YjI5ZDMxYjJkM2U5NTZkZTQyOWYxOTI3MjhmM2ZhNGUzN2E0ZjE4MmJmYTY1OTY2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDBmNGY5MTkxYTkxODRhMTY3N2QwZjI4N2M2NzVlZTFlODI2MTYwNTA4ODI1ZTE4MWIzYzkxOTU3OTg5ZTIwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/MockEmbeddingCreator.java#L29-L32",
+          "version": "repo-lines-v1:sha256:3658ec12650ffeccbb8c8d25dd6fff94f81c809954768060f32efc924877303a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTY0ZDMxOTE5NGM5NmM5YzQxODA2ZjVkZThiNzRmYzMyZjBjM2NkNjlkN2YyZmE2ZjEyNjk4MmNjOWQwMjI1NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_382c63df2245492d8375d998f505e39e",
+      "statement": "Chat model creation is fail-fast but lazy: createChatModel() reads the required platform credentials eagerly from the configuration's environment (missing variables throw IllegalStateException before any model object exists, for every platform), while each platform branch returns a LazyChatModel that constructs the real LangChain4j client on first use via thread-safe double-checked locking.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L109-L117",
+          "version": "repo-lines-v1:sha256:3976b79ff35d66dfd72b7571e3b5f47164fa3d680185e6e54e161ec6aba8ff43:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E5Njg0MWQ3YTQ0MmQxMDlmN2YzMmJhNDQ0ZDAwOTFmZGUxYWY4MTQxZGY1NDQ3ODE3ZmYzNjkwYTQ2MTdkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZiMTJhODMwODllNTIwZDc1MGFmMjBiNTRlOTIxNTBjNGIxZWM1OWJjOWVlMjY3NjE4ZWNiNmQzM2FiYzdkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGMxZDI1ZDg1NTZmYWJkNDFiMWVkMmQ2OGM4NjQ5M2FiOGM1NmFlZDRhYzQ5YjU3ODRjMWMzYWNlZGY1OWU4MiJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L163-L187",
+          "version": "repo-lines-v1:sha256:2bb70c2a957e151bebefcc8def6a2e56a92638a335b11978c14d7eb7b6f478fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMTM1N2QzMWYxMjkwODVmYzdkMzcyZDVjNmY3NzdkNzI2YTMyMzFhNTg0MTNhMmJmMzlmNzc0OTk5OTNiZTcifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java#L43-L53",
+          "version": "repo-lines-v1:sha256:2aa1fa3e1615c68bdd5ec1e8ada1d13d9f7b34925186056fbc0ccbda304d4c62:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwMmU1NDIyZmMyMmRlNDE0MGJiNDZjMWFlMjRkYjdhM2ZiNTIxNjA4ODBmZjVkMmE0MDZmNzI3ZTc1Mzc4NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZDA0YmEyYjIwNmUzZDE3MTc0NDczN2VkZTAwNDc0Y2I2M2MwZmU0NzRmMTE1NDhmMTZiNTEwYTBlOTcxZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlNDY2NDg3Mzk2NTc2OTNjY2I0MmQxMDdhZTNiOWE4Y2I1Y2I1ZWRlZjg2ZTIxNTdkYmViZGUwOWFkMjJhNTMifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L55-L62",
+          "version": "repo-lines-v1:sha256:38e559dd026b6b0a718a9cfbcbba5dac8d81fc08091b59de0b4138825912b3e2:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNmMDllYjBjNTc0NGZiOTczMzFiOThmZjNmYmYwNWE2MDJiYTNmN2Y2N2U1ZGE1YmU5MDk1MDMzZjYyNTgyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDI0ZTliYmExYWIyMmNmNjBmOTA1MzFjYzE0MzExOThhNzk1OGIzNWYyYTBmZDdlMDg4MDliNjdkNTU1OWZjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDRkY2JiYTA4Mjc0MjFjZjVhYmM5YWZlNDRjMjZiYjc2N2ZkODk4ZjI2MDk3ZDNmNWNjYTdkMTMyNjNkYjFlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_c5ea60671ab3493c982fb17ec184d06d",
+      "statement": "CacheManager is the cache entry point: setCacheDir(dir[, environment]) must run before getDefaultInstance() (which throws IllegalStateException until then), getCache(origin, parameters) memoizes caches by sanitized name and rejects reuse with unequal parameters, builds the backend stack from CACHE_HIERARCHY (default LOCAL) folding multiple CacheTypes into HierarchicalCache with the CACHE_REPLACEMENT_STRATEGY (default NONE), and flush() persists every managed cache.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L186-L231",
+          "version": "repo-lines-v1:sha256:ac150f6de5ad5f77198ab5fed49cecbec52e27469b648b1faf1c35199b8be5e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNTg2ZmYxMDI5MGFmYzRhZTQ3YmQxYzk4NTNjOTEwNmQ0ZjFlNjg0YzExZDdiNWYwNGRjYTY5NmJjNzgyNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxNTk3MTk3MWMxMzU4NjAzZmQyNmE0MjMzZjM0NmUzMGYxM2E1MDIzOGI0ZmMzODhmOWJkNjVjNWMxMTYyNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmZjRiZjFlMTAwMjRjNzg2MjEwYWZiNDRlOTBkYjJiMzRjOTE2OWQ0Y2JlMGZmMzQ2NDU2YzUyZjdhMWQ0NGIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L245-L260",
+          "version": "repo-lines-v1:sha256:12f6ca99bd4232b3fb99969134b3cbd75f2fe890931405a401813620cd1e2dfa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MmYxZTgxNGE1YzY3MjQ0MDg3ZGFhN2Q5NDQxNjMzMDAyYjQxODUwNzJiOWI3YTBiYTVjMTMxYmQ3ZTEyM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4N2Q1OTcwZTU2NGI4MjM1NTQ2YTA5YWM3YzE2Nzk1NDhkYzBmMTgzOGIxODljOTQxMmY5Y2E0ODk2NDQ4OWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyNTU0M2MzZTIzN2UxNTA2ZWU3YmE4MWRlMmJhZThjZGI4NDdiYjRjZGNhMDZiMWIxNTE3ZWM0NTgwMmZhYTAifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L294-L298",
+          "version": "repo-lines-v1:sha256:16c5918286a8d49303674f2f8757af63f44b5fe5ea0cf3d6d6fa478b8448f6ae:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4ODQ0NTE1MDIyNDMwOGFiZjA4MDM1OGJkMzAwM2FkNDJmM2U4MjI2MTZjNWYwZGUyZGJkNzM4NDViNGE3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjczYmYxZGEyNzVhNjk2YmEyYTQxMzNkOGMxMTllNDdkNTYzYWE5MmJmMDFiY2NmODQwODU5MGU5OTFiMjNjNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTRlZThlOWRkYWQyZTg4NGFiZjc3NTQ1MWU1YThjZmE2ZDYwYmExNWJhMjRjYTBmYTE5Y2YzZmZiMDc0YjNhNyJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L65-L80",
+          "version": "repo-lines-v1:sha256:d297a8ba1033cedeec4a8d72aac6c8f7be00a73a48a7bd53947c64df7f2ba656:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlOWUwMDNkYzNhOWE1M2I2MjIwMmQ1MzEzYjNhY2VlZWYwZTMxYWNmODEyMGE2YzYxNTQxMWI4OGY0ODQ4NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2NDFmNTg2OGRkNzg2NTI0OGYwYzc1OWY3NGJkYWM0Y2U4MTA1MDQ1NTA1NzAzOTUyYjYzNjVlY2ViNGMxNTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0YTczN2MyZjIxNzUwMDVlZTFmZmYyYjZhNmE0ZTlkY2I0MWQyNTg5ZDEzNjdkY2ZkMzdkMzgyNDk2NGEyYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf79ecd685174cb8bc840ba4be9670fc",
+      "statement": "Each CacheManager holds the EnvironmentProvider it was created with, reads CACHE_HIERARCHY and CACHE_REPLACEMENT_STRATEGY from it at construction, and passes it to the Redis-based backends: RedisCache reads REDIS_URL (default redis://localhost:6379) and RestRedisCache reads REST_REDIS_URI with optional REST_REDIS_USERNAME/REST_REDIS_PASSWORD, both failing fast with IllegalStateException when the backend PING fails.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L29-L31",
+          "version": "repo-lines-v1:sha256:e4799860d63a37b6e8d6c8468fa08c1d5777af6f05b0c431bf1121dc297ad628:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQxMGY0ZDUwYjM0N2U3Y2FmOWM2MWRjMDRjNGMyMGMxYmI3MzBhNGM2Zjg2ZjRhMjMxZGYzN2Q2MDYwMTYwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcyYTQyOTM4MmIyZTE0NzE4ZTBlMzdiMDU3MGE4YTE3MDI5OTFmY2Q4NDk4Y2Q4NDA2MGE4YmY0ZjA1MDE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmVjYjYwOWQ4NTE4YjVlMWMxOWMxODZmZjIxMmJlNmM3YmQ5OTdlZWNiOTI4NjVjYzY2OGQ2YjVmYzE5OGQxYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTYxMmVhOWNhYTU1MTJlYzg2NmY2OTZhZWRhNmU1ODEzY2Q3N2IxMTgyOTRlMzAyMmQ0OWZlMGQ0NjBmM2JjNiJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L94-L120",
+          "version": "repo-lines-v1:sha256:71967fcfbc6841be7f570de59026878f11a8d78eab70942d030016401f3d4ddd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmZGU5ODU1NjU1ODM5YWQ3NjM4NGJhOTI2MWFmYmM4MDhlOWI0ZmE1NDA1ZjViYThiNzZkNTA3MDEwNzM5YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjZDg5YjJjZDQ0OTFjMjE4OGVlNTE0NjhjMGNiYWI2YmVhMjE0Y2RmZmExMjRmYWM0NmFmZTdlMWRjNGEyN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4NTQ1NzZjYmU3NTY1OWUzYWFlMjY0YjQzYzEzMmJhYzBmNmEyZWJjY2Q2ZWU5ZWQ4MTlhMDk3N2EzODIzYTEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L78-L91",
+          "version": "repo-lines-v1:sha256:095f7d9fbbc80c76d2ce1c89f0ac4a747616c2a01e7353a2d77109a70dffa93c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Yzk4ZDdiNGZlMzRlMzg2NzkxM2I4ODUxZmQzOGE0M2YxYTI3ODNjZDM0MDUxZDNjMzdjMTFkY2ExN2Y2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkNjcyYWIzYzkzZTI5MmM4ZGJhZWI2YTg3N2RkNGIxMWJhZTUzMTIyZDcwMDk1YTdjMjI4ZjkzNjIwOGQzNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlZGNkMDRlNjNkNWRjMmJhNTlkYTNlZGI4NGRhZDM4YjVjM2EyMzM1NTg5MGJjNGY3MzFjOTlkOWU1NWRhNDEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L43-L68",
+          "version": "repo-lines-v1:sha256:1d1fd2aac1ffce78f4c4cdc239d43f3cb7a9fa84151e62fa58f822449402e98f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlMTBiZmE4Mzg2ZTcwOTY5OGQ0N2Y1NTkwNzVhZjY0OTU3NTI0MjA3OGY3MWZjNjNlN2JjMDY2M2ZkYTBkNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkYTY2Njk0Yzc4YzZhNDIzNWY3NTY3MDllN2I4ZDhiYWVkMjIyODY4ZTk4NTAxNzUxZjcwOWJkODk5NjlhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_74734fb2e98f4b40b6a601e95f440710",
+      "statement": "The LOCAL backend stores one self-contained JSON file per caller and model configuration named <Origin>_<model>_<seed>[_<temperature>].json (the temperature component is omitted when it is 0.0 for backward compatibility with LiSSA's existing caches), which makes a cache directory an offline replication package: layer LOCAL under REDIS/REST_REDIS while experimenting, flush at the end, ship the directory, and replicators re-run with CACHE_HIERARCHY=LOCAL without API keys or model access.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L344-L360",
+          "version": "repo-lines-v1:sha256:5369d3657c36ec902a63d41c0be4e0d93a75b7a75c86b7e4529badd1aaa448cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZDA3MDkyMTI0NzI3Y2VmZGVhOWNiMGM0ZjVjNGM1MGQ0MDUzZGZkMTA3N2U1YzA1ZWMxYzIwZmY5OWIxZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MTliZWQxY2QxOTI3ZTNkM2IzODM4MmJhOTlkNDRiYzZiZjMxNTQyMWZhZTZiODg1MmE4MmEyYWVkNDJlZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5NmU4OTk5NjY4N2MzZjcxOGRhZDc0MzdkMzRhNjkwOGQ5MDNmYTk5ZWFiYjk0NDg3YjI5OTQ2MWVmZDY5NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5Yzc1OTBhMTY3NGVlNzk1MWE2OTkxZWE1NWRiM2I0ZDFhZTcyODA2YjRmZDQ5OTc4ZDQ4ZGQ1NzdmMjA3MDYifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java#L16-L24",
+          "version": "repo-lines-v1:sha256:ea5a2153a0bc2ed543813198b0df08678d8bd0e2de519c3cbec9fad209787867:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjRlNjYzY2QzYWY4NDczYjYwZDI0ODllZGU0MDIwMTE5YTEzYjcxNzM5MWMyZDlhY2NmY2E5YTRmNjRiMTRjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGEwMTI0ZDg2OTkyMWYyNDgzYzY3N2FjNmM0NjYxNjY5NjRkMWUwNDM2MDhlOWYxYTUxN2JkZDE4ZTRjMjg3MCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1c220db2a20b45c8a6d06688939cdef0",
+      "statement": "The library builds on Java 21 with the io.github.ardoco:parent 2.1.0 parent POM and LangChain4j 1.22.0 imported as a BOM, using jtokkit 1.1.0 for token counting, org.fuchss:rest-redis 0.1.5 for the REST-Redis client, dotenv-java 3.2.0 for .env support, and Testcontainers (2.0.5 BOM, test scope) for the Docker-gated integration test; flatten-maven-plugin is pinned to 1.7.3 because the ardoco parent references it unversioned and 1.8.0 has an NPE regression in its CI-friendly interpolator, and central-publishing overrides deploymentName to ardoco-llm-access with autoPublish and waitUntil published.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L23-L26",
+          "version": "repo-lines-v1:sha256:12f74cb58e198c00022abda7b66b954397f73169f9b234e3621faeee98bfa96f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg0MTZmMTg2M2NlNTI5MGYwZjQxZmE1MzNmYjllMTBmZWY1ZDQwNWMxMzAwYzAzZTI3NmEwYTg5NDM4MmI2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWYyNjBkNzE0NzE3M2ZjYTY3NTdmMWE0NmY4N2U4MTU1MjJlY2EzMDk5ZjhjYjg1NzQwZWE5ZGVhNTk3MTBmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY3ZjhmNzc4ZDk0YjAyMjBlMmJmMzE2ZjExYzY3MDkzYTNlYzkxYjRiMzVkZDk5MjI3Yjc5ZTQ3OWQwODkwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQwMDI0ZDkwNzViNDM4Y2ZiOWNkNTcwNzI2MGIzYjExNjZmY2ZiZWYxYTdjNzJjZmJmNTE3OWE1OGVlODNiNCJ9"
+        },
+        {
+          "resource": "repo://pom.xml#L122-L148",
+          "version": "repo-lines-v1:sha256:00addb994e8cccb4d096c7d2d2879d8f2d6f3d95a5afe691a10e5de52364f9a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiZjlkNmFmMmVmOTY1Y2ZiNGI0ZmMwZmU2Mzg3NmMwOTVjYzgzYzljYmZmZTlhMTk5ODgzNDM2OTViMzQ4N2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMGQwZjhjMjFhM2VhYjNjZDJjZmU1OTAxNDQyYTA1YmU1OGI1MDQwOTU5NDQzNTRiY2ZiNWEzMjM5ZjhlNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNjUyMzAyMWU5NzlkYzM3MDIxNjljZmI4ZjUwODM5YjFmN2Q4YmRmMmMwMTEyNzAzOTE4NTgxMTIyMDJlYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3YWQxMmI1ZWE5MGFkMTUyNTExYWYzZWU3OTQzYjMxZDZmOGFlOWZkNTE0YmEzOTUxYjk5ODJhYmQyZWMzYjkifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L29-L35",
+          "version": "repo-lines-v1:sha256:02a0838ee87e3704b244b375f0fab29b76eb3da53653063bb783ab39b6afea62:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAxZDQyOTFlM2NlYWE2NWYzOGY3N2U5ZjI2ZGI3Nzg0YWE2Mjg4Y2I3ZGE1MTRiOWZjNTY0NWQzODlhMGRmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA4ZTI4OTE5NGM2ZmUxMjhjNmZhZGEzMzllYWZmNThjMjJiOTc2ZTkyZjExODJhOTg3MDgzNmVlYTU2MTJlYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYxZTE2YTE4NTlhZjQ5OGVjMmJjM2U3YjkzNjIxZWQ2NDBiZWIxMmM2YWViMmM3MGJmOGI3MDJiNTljMzg0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDNjZGRlZGQxNWIxM2MyMjU5OWE3YmM5Yjc5NmQxMWUyODQxY2RjZGJhMDNhOGZlY2E5ZTMwZjI3ODNkNzE1NCJ9"
+        },
+        {
+          "resource": "repo://pom.xml#L5-L15",
+          "version": "repo-lines-v1:sha256:04d4acb6642eb0ec6ccfe450763df2fa4bedfac5023857b2f021545b9a2b8a0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YTQxNGFhNmJhNTA2MjEwNjNmNmM4YTk0NTNkODI4MTA5ODI1Mzc5OWI1ZTBhOWQ2MTZlOWE0NDM4MDhlZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MzE3NGEwODkxMzg1YWFiNzZjZmJlNzFiNWIxYzlkMzE5OTY5MTQ1ZjZkNWExZmZiYThlOTM3OGY4NjE5ODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMjM2M2NjNmE3MzM3MDhiMzFkMDc3NTE0Y2FhYzQzODExOWE0MTVhYmQxMzA0ZDQ4ZTViMGQ5ZTFmOTBjZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5NzUzZjMzMzVjZTQzYjNjYjY2MWIwMjdjNWNkZDFjOGQ3YTc4NzZkODNmMjQ5NmE2OWVhNzU0MGIyNjA3OTcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-09T23:10:07.903Z"
+  }
+}
