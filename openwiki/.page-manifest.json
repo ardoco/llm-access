@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "/openwiki/architecture/overview.md": {
+      "gitHead": "f7885b8d14c468c6d0d07ae5fdf0dfa1343c636c",
+      "sourceFingerprint": "sha256:4e1491f275869128b3b264f7cd162f24de5aba1778c2fa91acb1078bf8acb8ad",
+      "pageVersion": "sha256:aab7b917484eaab93a007193b31222f72d815746f46036fa16849edd9c414e28",
+      "completedBy": "openwiki/0.7.2",
+      "completedRunId": "a0b4bf1e-aa9c-4c2a-ad89-41ce1f53ef1f"
+    },
+    "/openwiki/cache/cache-backends.md": {
+      "gitHead": "f7885b8d14c468c6d0d07ae5fdf0dfa1343c636c",
+      "sourceFingerprint": "sha256:4e1491f275869128b3b264f7cd162f24de5aba1778c2fa91acb1078bf8acb8ad",
+      "pageVersion": "sha256:fa658aabdd34d01a03f8c12f4c9b7fadefd6f713cb3cb1eeaf4c03762c9adfe5",
+      "completedBy": "openwiki/0.7.2",
+      "completedRunId": "a0b4bf1e-aa9c-4c2a-ad89-41ce1f53ef1f"
+    },
+    "/openwiki/cache/cache-core.md": {
+      "gitHead": "f7885b8d14c468c6d0d07ae5fdf0dfa1343c636c",
+      "sourceFingerprint": "sha256:4e1491f275869128b3b264f7cd162f24de5aba1778c2fa91acb1078bf8acb8ad",
+      "pageVersion": "sha256:f1962d745f1abbfd3f6b29638b29ff0d6350e032b77a9f849531cc2887d338ed",
+      "completedBy": "openwiki/0.7.2",
+      "completedRunId": "a0b4bf1e-aa9c-4c2a-ad89-41ce1f53ef1f"
+    },
+    "/openwiki/cache/cache-hierarchy.md": {
+      "gitHead": "f7885b8d14c468c6d0d07ae5fdf0dfa1343c636c",
+      "sourceFingerprint": "sha256:4e1491f275869128b3b264f7cd162f24de5aba1778c2fa91acb1078bf8acb8ad",
+      "pageVersion": "sha256:6b6aba62c6c6d4a71a7da5339b7ae424d2a6c14f51930e1060f6cbfd2056c80a",
+      "completedBy": "openwiki/0.7.2",
+      "completedRunId": "a0b4bf1e-aa9c-4c2a-ad89-41ce1f53ef1f"
+    },
+    "/openwiki/cache/cache-keys.md": {
+      "pageVersion": "sha256:e119f4a217110c2bdc49340648ee1dd0bb6cf99b341c47055df2d75bce9ff268",
+      "completedBy": "openwiki/0.7.2",
+      "completedRunId": "a0b4bf1e-aa9c-4c2a-ad89-41ce1f53ef1f",
+      "gitHead": "f7885b8d14c468c6d0d07ae5fdf0dfa1343c636c",
+      "sourceFingerprint": "sha256:4e1491f275869128b3b264f7cd162f24de5aba1778c2fa91acb1078bf8acb8ad"
+    }
+  }
+}
