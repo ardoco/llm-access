@@ -30,6 +30,45 @@ openwiki:
 verified:
   - by: openwiki/0.7.2
     at: 2026-10-09T23:10:07.903Z
+sources:
+  - id: openwiki-source-2355f81d7cf522f8dbdaabd4
+    resource: repo://pom.xml
+  - id: openwiki-source-23775c3de52f3ab95a13cb8b
+    resource: repo://README.md
+  - id: openwiki-source-4fd2e823addcf84d995a9216
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
+  - id: openwiki-source-ba0dc6c01c930c4c675be60f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java
+  - id: openwiki-source-afc251b7258caad3fb7240df
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java
+  - id: openwiki-source-277faa567866b847ad915298
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java
+  - id: openwiki-source-9c0be2a8e438a2a14ff8210b
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-406400bb0fa6384c6e01eaf2
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
+  - id: openwiki-source-85b58b8b1c96d35aae37196c
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java
+  - id: openwiki-source-cc5a2b50d20e43f17b5eed14
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java
+  - id: openwiki-source-ce0c57060f690ee62c7b08e1
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java
+  - id: openwiki-source-fac3ed967ea0ee2556a0e7eb
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java
+  - id: openwiki-source-99c1b1a119adf90d8c3c650f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
+  - id: openwiki-source-d750b4fe48944bf1f4e1e0d7
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfiguration.java
+  - id: openwiki-source-486d6dcc76cb591ebe94a40f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java
+  - id: openwiki-source-759134602950914f8bf8af08
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/MockEmbeddingCreator.java
+  - id: openwiki-source-bbadcb97ac85a13457f94d29
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java
+  - id: openwiki-source-4b6b4f64ed3940f2c842548e
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java
+  - id: openwiki-source-6657b8392fc18b157b18e55c
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
 ---
 
 # Architecture Overview

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:ee923fbda20c294b9c8a88d563498808370d48e1778cecbba724d7e7e6840ecf",
+  "claims": [
+    {
+      "id": "claim_f395d12a6ba847f0becfe4183426fbf5",
+      "statement": "llm-access (io.github.ardoco:llm-access) is a Java 21 library for accessing LLMs and embedding models through LangChain4j (version 1.22.0, imported as the langchain4j-bom). It is framework-neutral: model settings are passed as plain configuration records (LlmConfiguration for chat, EmbeddingConfiguration for embeddings) while credentials and host URLs are read from an injected EnvironmentProvider — there is no global environment.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L23-L27",
+          "version": "repo-lines-v1:sha256:f5908182a8f7b775cf7cd4006add26f2e26ed1b988d50da6e630b414fcdacd1e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg0MTZmMTg2M2NlNTI5MGYwZjQxZmE1MzNmYjllMTBmZWY1ZDQwNWMxMzAwYzAzZTI3NmEwYTg5NDM4MmI2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY3ZjhmNzc4ZDk0YjAyMjBlMmJmMzE2ZjExYzY3MDkzYTNlYzkxYjRiMzVkZDk5MjI3Yjc5ZTQ3OWQwODkwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTdjN2U0OTNmZDZjNjJiNjU2NGFkZTE5OGQ0MmZjZGJmY2NiZjJkMDVkOTZkMDQ4YWM3MmU5OGYwODljNTMxYSJ9"
+        },
+        {
+          "resource": "repo://README.md#L7-L12",
+          "version": "repo-lines-v1:sha256:fba304272deadc7d1b7a723807081977757624e6e6ad33dea3be6c31ea7dbed7:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODMxYjc4ZGQ2ZTA2MzhjODZhNDQ0ZWI5YTE0MTFmZjhhZTc5MDAyZDc5OGYzOGVlN2MxMWMzM2I3MzU4M2Q0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTVjYTJjMjI1ZWQ2ZmZlM2VhNGJhMDFhYTdhMDhkMDM1MjAwMjI1NjlmNjY3OWMyMWEwYzhjOWNmZDE4YTk1MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzYzMjQ1ZDg3MDI2YTFmNzUwNDQ5Y2M5OTRjYzMwZDI1ZGYwMmVkMGZlYmJiOWE1YzgzOGJkMmVkZWE5ODc0MSJ9"
+        },
+        {
+          "resource": "repo://pom.xml#L11-L45",
+          "version": "repo-lines-v1:sha256:bfdd33267f266adf729a0da2e18d5b125e548ec459c66b91cd0352dc9c2ca648:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MDVlNjM2YjJjMzk3Yzk0Y2QxYmMxZDViMDA3MmE0MmM1NTIxZjI2ODdjNDFiYjMxN2UyNmZlMmJjMTlhM2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlODc3ZWVkMGMyOWE5YmU2MzZjMDBhOThiY2FkOGZlNjkyYTQyNmRlZDcwNDJiNTg3YzhiMmMxZDcyYTNlMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUwMmU0Y2Y3NzBkZjAxZDc3Mjg3YWY3ZmQwYjQ1YzAwMzhmNWRiM2Q4OWMzOWVmMjU4ZDVhNDBjMzI2YjI5MTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzYWZmZDViZWY4ZjYwOTMwMmNmYjQ1YTU3MWZlZTIwN2U0YWRmYmQ1Mzk3Y2YyNjBlMzU4NTI5NzkzYmFlODkifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java#L7-L20",
+          "version": "repo-lines-v1:sha256:7a026e5ed363132e5c1480124296098f84f2d28400cc0dc57c73c5e574eb53fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2NDZmNTk1ZGI0ODgyODhiODNjNzVjNjgxZWYwNTRkZGQ2OWYzMTMwOTkyNWNmN2M2MWNkNWRmMDdmNTA2MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMTVlYTc2OWZkM2VmY2EzZjE1ZThmZWMxODg0MjYzNjAyYzY4YmUxYjllZTQ5NzIxYWQwNDEwNmI2Y2M2OTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlODI2NjBiYmQyMzk0MjZhYjc2YTMyNzJlM2JlNWUzYWNiNjkzNGZiN2E0MDJiZmY4ODIwZGNlZmM5ZDk2NmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3MTI1MDAyZjM2MjE2NjdkY2U0NDIxZDcwOTAzYTNlYWNhZmY5MGVmOTkyYzkwOGYxNjJiZTAyZTY5NzQ3MmYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_29158059bb9a48c4bd649826c273c76e",
+      "statement": "Caching is central to the library's intended use: a CacheManager hands out Cache instances backed by local-file, Redis, or REST-Redis backends layered according to the CACHE_HIERARCHY variable, and with a fixed seed and temperature identical requests are served from the cache instead of being re-sent to the model, which makes runs reproducible and keeps API cost and latency down.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L151-L171",
+          "version": "repo-lines-v1:sha256:f8a2ea481d068876ef74b2baf2f0d9f68510ccc7d077e90f989b904c1a904f76:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3ZjFjMmM0ZmRiOGM2NjAxMjA4MjhjNTU5ZGQwZTIzM2E1Yjg3Mzc2NTNjNzEzMzJiMzU1ZTk1NjYzZGU4MDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMzg1YmZlY2U2NjZkODg2NWMxNWVlN2IyMmI0YjVlOGNkNzkxNmE1OTFlNmM1NjBjZTM0YTAyMDUzNTE3NWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0YzA3MWU5ZGM0NTYzNTlmOWUyODJlMjUzOThmN2RhMmM5ODdhZmFkMGY4YzNhMWE1NmI0YTFjMzc2YmVkYmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwMmFiYjBmYzUxYmU4OGE2MTBiM2MyMTEzZWY1OGJmZGQ1MDBlODQzMTEwYjdkOTQwZDFhMjQ0MjEwZGI4NjQifQ"
+        },
+        {
+          "resource": "repo://README.md#L199-L208",
+          "version": "repo-lines-v1:sha256:c7b9c1d9f2142fa6f150190c00397fdda14a9a02842156ff911df7241498068e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5MDUxNjJkMmI2MzgyMzE3NDYxNTA5ZmM4MjkwYmQyYmVjZGFjYmMyN2I3NDcyMjdhNTkzZmI3OGY1OTY1ZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzA2YzU2MWQ1YzMyNzM0MzY4NTI2OGE0NmIzMzkxZjM5OThlZWU4OTBkMmJlNTFmMGQyMWNjNGE1M2FlNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjNWNhMzFlNTY4N2VhY2Q4NTBlNGRjYzllM2Q0M2UxMDhhZDY1YjRkNjNmOTA2Y2ZiOTc2ZjJhODJhNDNmMmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhODExMWQ4M2ZlYTliODdiZGY1NzFlNDdiNDEyZTQxMDA1NmQ1MWRiOTk4MzU0YzVjODU5MzlmZWMwNWNiOTkifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L23-L31",
+          "version": "repo-lines-v1:sha256:98ea95c3f81f50e6f337674ee059139f955edcccf05284702429318ab6a8005c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcyYTQyOTM4MmIyZTE0NzE4ZTBlMzdiMDU3MGE4YTE3MDI5OTFmY2Q4NDk4Y2Q4NDA2MGE4YmY0ZjA1MDE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTljZWFmZWEzZGZiODdhMDY2MzczMjM4Y2MxMzdiNTFjODE2YzYxOWI4YWZlODFlZTdiY2E3ZmExYWExNzc3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTYxMmVhOWNhYTU1MTJlYzg2NmY2OTZhZWRhNmU1ODEzY2Q3N2IxMTgyOTRlMzAyMmQ0OWZlMGQ0NjBmM2JjNiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6f4af16237de4ef5a49b5444a44d6e5f",
+      "statement": "mvn verify is the documented full check, and the Testcontainers-based REST-Redis integration test (RestRedisTest, annotated @Testcontainers(disabledWithoutDocker = true)) is skipped automatically when no Docker environment is available, so the full gate stays green on machines without Docker; focused validation uses mvn -q test -Dtest=….",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/verify.yml#L21-L27",
+          "version": "repo-lines-v1:sha256:a2001188edfe8204f553b551bc9bab658803c633a63d718798a64cdc63672399:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlkODAxNTRlZDQyZmM1Yzc3OWIxMzMxNTc4YjU4Yjg5YzgwMWVhY2U3NGYyNGNkNDhlYjRhMjM1Nzk0MGE5NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTViYzY0YjQwY2E3NDg2YzBiMTRiMzg4Zjk5ODBjMTlhYmE0MTk0YzNmYzk0YjRiMmMyZjVkZDczMTNhYmE2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjMzNzlmYjc1Mjk5NTQ2NGY0ODEyYWQ2MmQxNDgwZjg0OGQ0YmQ0MGYxMGVjMjM4ZGUxODlkNzFiYzcxOTVhYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGM0MTZjOGU0MzUxNGUwYjU3M2I3NjQ4NTMxYzI5MDA2NTA1MTYxOGEzZTgwMGIxMDAyMzQyZTFkYWNhOTMwOSJ9"
+        },
+        {
+          "resource": "repo://README.md#L380-L388",
+          "version": "repo-lines-v1:sha256:4f01a6752cd9518f1ee577cb53e117b51ab14a568ef50d4118541464a47f3228:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmI0MDk3OTg3YzEzYTM0NDVhMjk1YjMzMmY1Yzg0ZWM1OTYxNzQ0NDhjYTczMmJhYTYxMDg5NTYwZTQ0ZDU1NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmVmNGVjOTZhZjczMGMxYWExMzFjNmIwNGFkYzFjMjVjNjBhZjcxMjIzNzNlN2I3ZDIyMjYwMzYxMjg4NjdkZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTZlNjg0ZjdjMTI5ZTBkNzZlZWQ5ZGYxMjEwODQ0ODRlMmExYTRjMmE3MTc2MjIwMmI5YWZjZGI2N2M2NTI3MiJ9"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java#L38-L45",
+          "version": "repo-lines-v1:sha256:455bdf59fd98e99f08710d6bf8a71a40ea92b068a0145ee704a1128336a4844c:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWFmMjJjZjA3MzI1OTJjMjQ3MTQxY2JlNjFlZmExMTAxMjYxMmY1YTMxMjJiOWFmOWJiYWY1MmY1NzI0ZDE5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBlNDNjZjhhZGVjZmMxMDQ0MGJmZWE5Yjc0YmE4ZTIyMTgzYjY2N2M4ZmFmYzg0ZTE0OGI2ZmVkZGRlODFiMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDM0NmE5ODM5MDNiOWYwZmVjMDRkMDg4NzFhODFmYzVmZmY0ZDRkMGY5MDQ4MjI2NmNhZWQwZjRkMWEyZDEzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODAyODYzOWViMmI0NzJhMjIwMjNiNzkxODVhNjc3ZmYwMjJhY2Y1ZmRhZjQzNzRmNTE1ZDMyMzRkODY2MjQ5NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3db2587bf07d4ef185f5594a879dd483",
+      "statement": "The code was extracted from the LiSSA project so LiSSA, ardoco, and other tools can share one implementation, and the LOCAL on-disk cache format remains compatible with LiSSA's existing caches: the file identifier omits the temperature component when it is 0.0, and file content is addressed via a deterministic UUID derived from the (line-ending-normalized) content.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L179-L186",
+          "version": "repo-lines-v1:sha256:31537efe38a7d0d281abb1853a14fbf427e6989f07b7e183f60c8d8b1abe613f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWFlYzFiNWVkMTFjYWI3M2FlNmZlOWRmMjAwNWU2ZjNkNWQxZGQxZmRkNTNkOWM3ZjY3NTRhYzNhMzQxODJhNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzI2ODEyOWVmNjgwMjIwN2M3YWNjZjA1NjZiNDExNmNhZjk5MTZjMmIwZjA4MzYwMDE1ODM0MjRkMjQxMmQwYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmE1ZTI2ZmU3ZDhiMjdlMjdmYzNkZjI1MzE5YjFiNTQxNzBjNjcyYjI4ZmNjYjhiZjg3NzFlOWZmZmEzMTkwZSJ9"
+        },
+        {
+          "resource": "repo://README.md#L7-L11",
+          "version": "repo-lines-v1:sha256:43663fa5c39b70cd0a20d3fd2cdb704bf08cbfb7fca9699d14a1f6942128945a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODMxYjc4ZGQ2ZTA2MzhjODZhNDQ0ZWI5YTE0MTFmZjhhZTc5MDAyZDc5OGYzOGVlN2MxMWMzM2I3MzU4M2Q0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTk3MzMxZTM3NDk5MGY2NGU1MGNmNGQ5MGRiMjAzYmYxZTkyNmU3NDJhNjMyNmZjMGEwOTI0NGFjZjE5NDI4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTVjYTJjMjI1ZWQ2ZmZlM2VhNGJhMDFhYTdhMDhkMDM1MjAwMjI1NjlmNjY3OWMyMWEwYzhjOWNmZDE4YTk1MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2Y1NGJmOGE4Y2UyMWVjNGRhMGE5MjUxMTJlODNmN2FkYTcwNzlhMzc4OTMyMTczYjU5ZjdhOWZlNDA1ZWJkZSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java#L15-L24",
+          "version": "repo-lines-v1:sha256:3e75a7bb3fd4fbc88cacc313cb1d6197957ff75f02e5bea4ad4e76bc844e7bfc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4OTU3NTE3ZGJkOTc5ZjZhNDQ5MjRmNjJiMzNiZjJmMThjYTA2MWYxOWVmN2I4MTE4YmRjY2Q1ZTJkZDVkOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3ZTIwZDk2YjJhM2NhNWViZmIzOGIwNzhlMzVmYzMxMzYwYmY3ZGUwZWI3YzkzOGQzM2Q1ZDVjNzdmZTMwNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhMDEyNGQ4Njk5MjFmMjQ4M2M2NzdhYzZjNDY2MTY2OTY0ZDFlMDQzNjA4ZTlmMWE1MTdiZGQxOGU0YzI4NzAifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java#L43-L50",
+          "version": "repo-lines-v1:sha256:95f2220f3c12761b8caa6cb63cfbd14c5c8c92a41467b51d3c1ebfecdb6bc13d:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ3YjQzYzYyOGNhZGZiZGYzNjRiZmY4NDc0MDMwZDI2M2ZhYTlmMjY3YTJkZjRlYTgyMWNhYzIxNDM3NDUzNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTIyNDE2YjEzMjQ3MDM4NmIyN2MzOWRhYmQyMTdhYzkzN2EzZDk3YjE4NDYwYzViMTJmOGU2ZmRmODAzMWUxNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.7.2",
+    "at": "2026-10-13T13:30:47.057Z"
+  }
+}

@@ -27,6 +27,33 @@ openwiki:
 verified:
   - by: openwiki/0.7.2
     at: 2026-10-09T23:10:07.903Z
+sources:
+  - id: openwiki-source-4fd2e823addcf84d995a9216
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
+  - id: openwiki-source-ba0dc6c01c930c4c675be60f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java
+  - id: openwiki-source-afc251b7258caad3fb7240df
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java
+  - id: openwiki-source-277faa567866b847ad915298
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java
+  - id: openwiki-source-0e1a34dfb56fd22da704bad5
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheParameter.java
+  - id: openwiki-source-acabfe13463ce32bcd989af3
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LargeLanguageModelCacheMode.java
+  - id: openwiki-source-1f5a15e9c371ebda0b1a11b5
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java
+  - id: openwiki-source-9c0be2a8e438a2a14ff8210b
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-99c1b1a119adf90d8c3c650f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
+  - id: openwiki-source-91e90e06abef694a92ea2a06
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-f42e03b15fcff2355b421087
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java
+  - id: openwiki-source-b6ade7291953ac7833ab5561
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java
+  - id: openwiki-source-ae96d7bc45dacf528f83daad
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
 ---
 
 # Cache Keys

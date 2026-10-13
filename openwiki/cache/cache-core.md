@@ -26,6 +26,39 @@ openwiki:
 verified:
   - by: openwiki/0.7.2
     at: 2026-10-09T23:10:07.903Z
+sources:
+  - id: openwiki-source-824a85d7be154153c14cda51
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
+  - id: openwiki-source-855ff655bdf1ca8f941195ab
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKey.java
+  - id: openwiki-source-4fd2e823addcf84d995a9216
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
+  - id: openwiki-source-7925c464ca7a6e2861843582
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheParameter.java
+  - id: openwiki-source-9a928fd3a5261773953a3859
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheReplacementStrategy.java
+  - id: openwiki-source-aa1879ad3a2fbd42460c7ead
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheType.java
+  - id: openwiki-source-ba0dc6c01c930c4c675be60f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java
+  - id: openwiki-source-277faa567866b847ad915298
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java
+  - id: openwiki-source-9254ad363ba331094d066d08
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/HierarchicalCache.java
+  - id: openwiki-source-acabfe13463ce32bcd989af3
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LargeLanguageModelCacheMode.java
+  - id: openwiki-source-1f5a15e9c371ebda0b1a11b5
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java
+  - id: openwiki-source-9c0be2a8e438a2a14ff8210b
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-99c1b1a119adf90d8c3c650f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
+  - id: openwiki-source-91e90e06abef694a92ea2a06
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-80764162ff1e0089fe344077
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
+  - id: openwiki-source-bf8ab9bc4c233ef5bca4a282
+    resource: repo://src/test/resources/cache/test-local-cache-sample.json
 ---
 
 # Cache Core
