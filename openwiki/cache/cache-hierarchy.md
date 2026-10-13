@@ -27,6 +27,33 @@ openwiki:
 verified:
   - by: openwiki/0.7.2
     at: 2026-10-09T23:10:07.903Z
+sources:
+  - id: openwiki-source-23775c3de52f3ab95a13cb8b
+    resource: repo://README.md
+  - id: openwiki-source-824a85d7be154153c14cda51
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
+  - id: openwiki-source-4fd2e823addcf84d995a9216
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
+  - id: openwiki-source-9a928fd3a5261773953a3859
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheReplacementStrategy.java
+  - id: openwiki-source-9254ad363ba331094d066d08
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/HierarchicalCache.java
+  - id: openwiki-source-9c0be2a8e438a2a14ff8210b
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-85b58b8b1c96d35aae37196c
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java
+  - id: openwiki-source-cc5a2b50d20e43f17b5eed14
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java
+  - id: openwiki-source-99c1b1a119adf90d8c3c650f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
+  - id: openwiki-source-486d6dcc76cb591ebe94a40f
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java
+  - id: openwiki-source-30f99b58023b3a9a8c01b6d4
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
+  - id: openwiki-source-1723ede8db0a8d28f9bd768f
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheReplacementStrategyTest.java
+  - id: openwiki-source-9f073181959c4e22c4336039
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModelTest.java
 ---
 
 # Cache Hierarchy and Manager
