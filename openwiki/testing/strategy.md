@@ -3,9 +3,6 @@ type: Operations
 title: Testing Strategy
 description: How the llm-access library is tested — hermetic unit tests built on MapEnvironment and @TempDir, Mockito-based layer tests, the Docker-gated Testcontainers REST-Redis integration test, ArchUnit architecture rules, LiSSA backward-compatibility guardrails, and the formatting gates.
 tags: [testing, junit, mockito, testcontainers, archunit, docker, ci, spotless]
-verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
 sources:
   - id: openwiki-source-f721914ec66a43bd2b76a715
     resource: repo://.github/workflows/format.yml
@@ -69,7 +66,10 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
   - id: openwiki-source-bf8ab9bc4c233ef5bca4a282
     resource: repo://src/test/resources/cache/test-local-cache-sample.json
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-26T12:15:10.459Z" }
+verified:
+  - by: openwiki/0.7.2
+    at: 2026-10-26T12:15:10.459Z
 ---
 
 # Testing Strategy
@@ -340,14 +340,18 @@ the long-text embedding recovery. The full story of these format decisions is in
   `ardoco/actions/.github/workflows/maven.yml@main` workflow with `deploy: false`, submodules
   checked out, on `ubuntu-latest`; it triggers on pushes to `main` (ignoring `v*` tags) and on
   PRs, with `paths-ignore` for `docs/**` and `openwiki/**` so documentation-only changes do not
-  trigger builds.
+  trigger builds (and it can also be run manually via `workflow_dispatch`).
 - **Formatting** is gated by Spotless, configured through the ardoco parent POM with the Eclipse
   profile in [`formatter.xml`](../../formatter.xml) and the import order in
   [`spotless.importorder`](../../spotless.importorder) (`java`, `javax`, `org`, `com`);
   `mvn spotless:apply` is the local command. The
   [`.github/workflows/format.yml`](../../.github/workflows/format.yml) bot runs on PRs to `main`
-  (and manually): it derives the JDK version from the POM, runs `mvn -B spotless:apply --file pom.xml`,
-  and auto-commits the result with `stefanzweifel/git-auto-commit-action` as
+  (and manually via `workflow_dispatch`): it checks out the repo with `actions/checkout@v7`
+  (submodules, full history), derives the JDK major version from the POM (`maven.compiler.target`
+  → `maven.compiler.release` → `java.version`, stripping the legacy `1.` prefix and failing with
+  a `::error` notice if no expression yields a number), installs it with `actions/setup-java@v6`
+  (temurin distribution, Maven cache), runs `mvn -B spotless:apply --file pom.xml`, and
+  auto-commits the result with `stefanzweifel/git-auto-commit-action@v7` as
   "Apply formatting changes" — formatting differences never block a review, they are applied
   automatically.
 

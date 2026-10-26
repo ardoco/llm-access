@@ -25,7 +25,7 @@ openwiki:
   validation_commands: ["mvn verify", "mvn -q test -Dtest=RestRedisTest"]
 verified:
   - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+    at: 2026-10-26T12:15:10.459Z
 sources:
   - id: openwiki-source-f721914ec66a43bd2b76a715
     resource: repo://.github/workflows/format.yml
@@ -57,7 +57,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-77fcb76d829af13337d04708
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.7.2", at: "2026-10-26T12:15:10.459Z" }
 ---
 
 # Operations and Deployment
@@ -336,8 +336,18 @@ re-run.
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
 | `verify.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual | Runs the shared ardoco Maven workflow (`ardoco/actions/.github/workflows/maven.yml@main`) with `deploy: false` and submodules checked out; `paths-ignore` for `docs/**` and `openwiki/**` keeps wiki- or doc-only changes from triggering builds. |
-| `format.yml` | PRs to `main` (no path filter), manual | Derives the JDK version from the POM, runs `mvn -B spotless:apply`, and auto-commits the result as "Apply formatting changes". |
+| `format.yml` | PRs to `main` (no path filter), manual | Checks out with `actions/checkout@v7` (submodules, full history), derives the JDK major version from the POM (see below), installs temurin via `setup-java@v6` with the Maven cache, runs `mvn -B spotless:apply --file pom.xml`, and auto-commits the result with `stefanzweifel/git-auto-commit-action@v7` as "Apply formatting changes". |
 | `openwiki.yml` | weekly schedule (`0 6 * * 1`, Monday 06:00 UTC), manual | Delegates to the shared `ardoco/actions/.github/workflows/openwiki.yml@main` workflow with `contents: write` and `pull-requests: write`, forwarding only `OPENROUTER_API_KEY`. The update logic (commit gating, PR creation) lives in that shared workflow, not in this repository's file. |
+
+The `format.yml` job pins nothing by hand: its "Determine Java version" step evaluates the POM
+properties in order — `maven.compiler.target`, then `maven.compiler.release`, then `java.version`
+— via `mvn -B -q -N help:evaluate -DforceStdout`, strips a leading `1.` prefix to turn `1.21`
+into `21`, and exports the first numeric result as the `java_major_version` output. If none of
+the three expressions resolves to a number, the step fails with
+`::error::Could not determine the Java version from the POM`. This keeps the formatter's JDK on
+whatever the build targets (Java 21), so `spotless:apply` rewrites code with the same toolchain
+the build and tests use; a hand-pinned version could drift from the POM as the parent POM's
+compiler settings evolve.
 
 Dependency upkeep is automated: Dependabot opens weekly update PRs for the `github-actions` and
 `maven` ecosystems (Wednesdays 11:00 Europe/Berlin) with the commit-message prefix `Dependency`.
