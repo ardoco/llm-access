@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:ced752b2205a7165d7828bada8ebb57010432d017df106072fe177bfe6e3bfa5",
+  "pageVersion": "sha256:62c63a3238a340df752666325350a9631893de369ad3feded7db771b2ff9618a",
   "claims": [
     {
       "id": "claim_8bd620070ac149ba83c31f8f4c2fc102",
@@ -288,21 +288,21 @@
     },
     {
       "id": "claim_b1320312bb3e40d099f65d9fd27fa0a4",
-      "statement": "The verify.yml CI workflow delegates to the shared ardoco/actions maven.yml workflow with deploy=false, with-submodules=true, and ubuntu-latest, triggering on pushes to main (ignoring v* tags) and on PRs opened/synchronize/reopened, with paths-ignore for docs/** and openwiki/** so documentation-only changes do not trigger builds.",
+      "statement": "The verify.yml CI workflow delegates to the shared ardoco/actions maven.yml workflow with deploy=false, with-submodules=true, and ubuntu-latest, triggering on pushes to main (ignoring v* tags), on PRs opened/synchronize/reopened, and on workflow_dispatch, with paths-ignore for docs/** and openwiki/** so documentation-only changes do not trigger builds.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/verify.yml#L1-L31",
-          "version": "repo-lines-v1:sha256:cb0d9615faaf0df6fe5849c3e8a6b166399770233e3b09cd584189eb7094f599:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1NGM3MDc4ZDU2NTRkOWY2NTNhMTFkNTYwNGI3MzcwMGZjOWJmNTZhMzM3ODc2OWEwM2RhOThiOGFkNGU4MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjOTYxZGI0NTVlMGRhNTE3MzFjOTM2NGZiNjhmZDFjMWNkYzAxNGU5NDM5MDJhNTliNGVlMjkyZjdhMWFkZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIifQ"
+          "resource": "repo://.github/workflows/verify.yml#L1-L32",
+          "version": "repo-lines-v1:sha256:4047d279799c5e5ff7db52d39713d9db726429365d8d86f771d479cf8201a066:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1NGM3MDc4ZDU2NTRkOWY2NTNhMTFkNTYwNGI3MzcwMGZjOWJmNTZhMzM3ODc2OWEwM2RhOThiOGFkNGU4MTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
     {
       "id": "claim_6ce5d821b29e4e7cb579d6908f168d53",
-      "statement": "Formatting is gated by Spotless with the Eclipse profile in formatter.xml and the import order in spotless.importorder (java, javax, org, com); the format.yml workflow runs on PRs to main and manually, derives the JDK version from the POM, runs mvn -B spotless:apply --file pom.xml, and auto-commits the result via stefanzweifel/git-auto-commit-action as 'Apply formatting changes', so formatting differences are applied automatically rather than blocking review.",
+      "statement": "Formatting is gated by Spotless with the Eclipse profile in formatter.xml and the import order in spotless.importorder (java, javax, org, com); the format.yml workflow triggers on pull_request to main and workflow_dispatch, checks out with actions/checkout@v7 (submodules: true, fetch-depth: 0), derives the JDK major version from the POM by trying maven.compiler.target, then maven.compiler.release, then java.version via mvn help:evaluate, stripping the legacy 1. prefix and failing with a ::error notice and non-zero exit if no expression yields a numeric version, installs the JDK with actions/setup-java@v6 (temurin distribution, Maven cache), runs mvn -B spotless:apply --file pom.xml, and auto-commits the result via stefanzweifel/git-auto-commit-action@v7 with the message 'Apply formatting changes' — formatting differences are applied automatically rather than blocking review.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/format.yml#L10-L32",
-          "version": "repo-lines-v1:sha256:6e15f614fc5286001605a2929eaf56fb84090765ec70a6593468fd508764347b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNGJiOTRiN2MyYTIyMTI2NDA2ZWYyMmNhMjc3ZWQyMzZiN2E0NTlhODBlN2Q3ZTRiN2Q0YzhiZjRjMjViYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzc5ZmI3NTI5OTU0NjRmNDgxMmFkNjJkMTQ4MGY4NDhkNGJkNDBmMTBlYzIzOGRlMTg5ZDcxYmM3MTk1YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://.github/workflows/format.yml#L10-L44",
+          "version": "repo-lines-v1:sha256:1ed5dad221c5053e6d2b2d7dae91f719e415555290665b09f04bbf9879996922:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNGJiOTRiN2MyYTIyMTI2NDA2ZWYyMmNhMjc3ZWQyMzZiN2E0NTlhODBlN2Q3ZTRiN2Q0YzhiZjRjMjViYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzc5ZmI3NTI5OTU0NjRmNDgxMmFkNjJkMTQ4MGY4NDhkNGJkNDBmMTBlYzIzOGRlMTg5ZDcxYmM3MTk1YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://formatter.xml#L1-L4",
@@ -317,6 +317,6 @@
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T13:30:47.057Z"
+    "at": "2026-10-26T12:15:10.459Z"
   }
 }

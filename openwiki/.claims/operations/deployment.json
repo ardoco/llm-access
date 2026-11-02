@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:8c504b213161d80b5b3126517bf532c972c3382a065503f0436d80532277a774",
+  "pageVersion": "sha256:0db583dcf295445229b625c592dde8c6d36eb91f4688435007515e1fed71e80f",
   "claims": [
     {
       "id": "claim_1ab7c570d759475992727836a5d6aa47",
@@ -204,11 +204,11 @@
     },
     {
       "id": "claim_7f63070453f44f5991775e03d84c1760",
-      "statement": "format.yml runs on pull requests to main (with no path filter) and manual dispatch, derives the JDK version via the java-version-export action, runs mvn -B spotless:apply, and auto-commits the result with the message \"Apply formatting changes\".",
+      "statement": "The format.yml workflow triggers on pull requests to main (with no path filter) plus manual workflow_dispatch; its job checks out the repository with actions/checkout@v7 (submodules: true, fetch-depth: 0), runs mvn -B spotless:apply --file pom.xml, and auto-commits the result with stefanzweifel/git-auto-commit-action@v7 using the message 'Apply formatting changes'.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/format.yml#L1-L32",
-          "version": "repo-lines-v1:sha256:ecce61e625ecfce5f2069f4354c1571142ae7038559153a4ed4fa8091abcc9cc:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZDJiZDBkMTJmYTFjNTgyZjJkZjBkZjliN2VmMjY2NzFmNGQ3MGJhNjkwYjE4MjBjMjA0OGJmMjRiNGNhNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNGJiOTRiN2MyYTIyMTI2NDA2ZWYyMmNhMjc3ZWQyMzZiN2E0NTlhODBlN2Q3ZTRiN2Q0YzhiZjRjMjViYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://.github/workflows/format.yml#L1-L44",
+          "version": "repo-lines-v1:sha256:e3114249ec046fa4b6fd317f4b293d0c7be8ff67839634ebfdb952cc6e9d6f03:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4ZDJiZDBkMTJmYTFjNTgyZjJkZjBkZjliN2VmMjY2NzFmNGQ3MGJhNjkwYjE4MjBjMjA0OGJmMjRiNGNhNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNGJiOTRiN2MyYTIyMTI2NDA2ZWYyMmNhMjc3ZWQyMzZiN2E0NTlhODBlN2Q3ZTRiN2Q0YzhiZjRjMjViYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -249,10 +249,20 @@
           "version": "repo-lines-v1:sha256:7dd4abab0c2a36e9249604abe91cb68cc89c06455c3f264c8845cfd1b3a77065:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYWQ3MzNhMGZlODRjMjk0ZGRmMzZjODZjMjkwNjg5ZmNhYTcwODBmZDNmNzA3MzgzMTg0ZDliMzJkZTJkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4ZGIyMTU0MTg3Mjc3MDFlOWVhM2IyOGU0YzRmMjcxNzhmZjg4NzJmNGIzY2FlMzAwMGVmZTIwMTU1NjRmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1OGM0MDk4OGI0MWI2NmYwMDg0MzUzYjhmODM5MGNhN2M4ZmM0NjgxMDBlNzFhNmYyMTc2M2NhMmExMDMyYWUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_a0a1a895579c47fdb84e2158f9cc3e16",
+      "statement": "The 'Determine Java version' step in format.yml resolves the JDK major version from the POM by evaluating maven.compiler.target, then maven.compiler.release, then java.version via mvn -B -q -N help:evaluate -DforceStdout, strips a leading '1.' prefix, exports the first numeric result as the java_major_version output, and fails with '::error::Could not determine the Java version from the POM' if none of the three expressions resolves; setup-java@v6 then installs temurin at that version with cache: maven.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/format.yml#L19-L38",
+          "version": "repo-lines-v1:sha256:3518070497ad1d810cfcebcd809f8ed8901f67b79f6ca7c287a61dfed8e03137:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NzM3MTg5NWNmYjA0MTU4NDljYmM5NzY4MGE4MzdkYzE2ODM1ZmNhYTlmOTk5MDIzYzlkNzkyNmRiYzhlNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyOWY4NTE5MzZkNWNmNjM3MDZkYjE1MjU0MDhmYjgyZTg4NjFlYmFmODhmOTA0ODYzZTRlZDY0OGUzOWFjM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzZThlZDVhMTMzYjNmMWQ1YTVmMWY2ODQ1YjM4MzViYWJkNDQ0MWM0YTQ4NzZkNmI0MGM5Y2QwNWY1MDYyYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiZDU1MjMwNzJmMTAwOWYxZWQ5MWI2NDM2NzVhMzNhM2JmNWE4YjAwOTZkMTk4NWFlNGM0MmRkODM2YzA4NGYifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.7.2",
-    "at": "2026-10-13T13:30:47.057Z"
+    "at": "2026-10-26T12:15:10.459Z"
   }
 }
