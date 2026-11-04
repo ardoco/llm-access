@@ -146,10 +146,10 @@ The variables each platform reads:
 | Ollama     | `OLLAMA_HOST` (`OLLAMA_USER`+`OLLAMA_PASSWORD`, or `OLLAMA_TOKEN`) | `OLLAMA_EMBEDDING_HOST` (`OLLAMA_EMBEDDING_USER`, `..._PASSWORD`) |
 | Blablador  | `BLABLADOR_API_KEY`                                                | —                                                                 |
 | DeepSeek   | `DEEPSEEK_API_KEY`                                                 | —                                                                 |
-| Bifrost    | `BIFROST_API_KEY` (`BIFROST_URL` optional)                         | `BIFROST_API_KEY` (`BIFROST_URL` optional)                        |
+| Bifrost    | `BIFROST_API_KEY`, `BIFROST_URL`                                  | `BIFROST_API_KEY`, `BIFROST_URL`                                  |
 
 Bifrost is an LLM gateway with an OpenAI-compatible API. `BIFROST_API_KEY` is a Bifrost virtual key (sent as bearer token and
-`x-bf-vk` header); `BIFROST_URL` defaults to `https://llm.vdl.sdq.kastel.kit.edu/v1` when unset or empty. Model names are
+`x-bf-vk` header); `BIFROST_URL` is the base URL of its API (e.g. `https://domain.tld/v1`). Both variables are required. Model names are
 prefixed with their provider, e.g. `openai/gpt-4o-mini` or `openai/text-embedding-3-small`.
 
 ## Caching

@@ -16,17 +16,15 @@ import org.junit.jupiter.api.Test;
 class BifrostTest {
 
     @Test
-    @DisplayName("the default URL is used when BIFROST_URL is unset, empty or blank")
-    void defaultUrl() {
-        assertEquals(Bifrost.DEFAULT_URL, Bifrost.baseUrl(new MapEnvironment(Map.of())));
-        assertEquals(Bifrost.DEFAULT_URL, Bifrost.baseUrl(new MapEnvironment(Map.of("BIFROST_URL", ""))));
-        assertEquals(Bifrost.DEFAULT_URL, Bifrost.baseUrl(new MapEnvironment(Map.of("BIFROST_URL", "  "))));
+    @DisplayName("the configured BIFROST_URL is returned")
+    void configuredUrl() {
+        assertEquals("http://localhost:8080/v1", Bifrost.baseUrl(new MapEnvironment(Map.of("BIFROST_URL", "http://localhost:8080/v1"))));
     }
 
     @Test
-    @DisplayName("a configured BIFROST_URL overrides the default")
-    void customUrl() {
-        assertEquals("http://localhost:8080/v1", Bifrost.baseUrl(new MapEnvironment(Map.of("BIFROST_URL", "http://localhost:8080/v1"))));
+    @DisplayName("the URL is required")
+    void urlRequired() {
+        assertThrows(IllegalStateException.class, () -> Bifrost.baseUrl(new MapEnvironment(Map.of())));
     }
 
     @Test

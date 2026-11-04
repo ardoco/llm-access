@@ -33,7 +33,6 @@ jobs:
           java-version: '21'
           cache: maven
       - name: Run Bifrost integration test
-        # An empty BIFROST_URL falls back to the default gateway URL.
         run: mvn -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test
         env:
           BIFROST_API_KEY: ${{ secrets.BIFROST_API_KEY }}

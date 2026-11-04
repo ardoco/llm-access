@@ -26,10 +26,11 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 
 /**
  * Live smoke test against a real Bifrost gateway: one tiny chat request and one embedding request. It is
- * skipped unless {@code BIFROST_API_KEY} is set; {@code BIFROST_URL} optionally overrides the default gateway.
+ * skipped unless both {@code BIFROST_API_KEY} and {@code BIFROST_URL} are set.
  */
 @NullMarked
 @EnabledIfEnvironmentVariable(named = "BIFROST_API_KEY", matches = ".+")
+@EnabledIfEnvironmentVariable(named = "BIFROST_URL", matches = ".+")
 class BifrostIntegrationTest {
 
     private final EnvironmentProvider environment = new SystemEnvironment();

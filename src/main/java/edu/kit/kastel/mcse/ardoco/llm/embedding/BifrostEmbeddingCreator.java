@@ -15,8 +15,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
  * Environment variables:
  * <ul>
  * <li>{@code BIFROST_API_KEY}: Your Bifrost virtual key (required)</li>
- * <li>{@code BIFROST_URL}: The base URL of the Bifrost API (optional; defaults to
- * {@code https://llm.vdl.sdq.kastel.kit.edu/v1})</li>
+ * <li>{@code BIFROST_URL}: The base URL of the Bifrost API (required)</li>
  * </ul>
  *
  * Model names are prefixed with their provider, for example {@code openai/text-embedding-3-small}. The creator
@@ -44,7 +43,7 @@ public class BifrostEmbeddingCreator extends CachedEmbeddingCreator {
      * @param model  The provider-prefixed name of the model to use
      * @param params Additional parameters (not used in this implementation)
      * @return A configured Bifrost embedding model instance
-     * @throws IllegalStateException If the {@code BIFROST_API_KEY} environment variable is not set
+     * @throws IllegalStateException If the {@code BIFROST_API_KEY} or {@code BIFROST_URL} environment variable is not set
      */
     @Override
     protected EmbeddingModel createEmbeddingModel(String model, String... params) {

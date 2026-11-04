@@ -52,8 +52,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
  * <li>Bifrost:
  * <ul>
  * <li>{@code BIFROST_API_KEY}: Your Bifrost virtual key</li>
- * <li>{@code BIFROST_URL}: The base URL of the Bifrost API (optional; defaults to
- * {@code https://llm.vdl.sdq.kastel.kit.edu/v1})</li>
+ * <li>{@code BIFROST_URL}: The base URL of the Bifrost API (required)</li>
  * </ul>
  * Model names are prefixed with their provider, for example {@code openai/gpt-4o-mini}.
  * </li>
@@ -247,10 +246,10 @@ public class ChatModelProvider {
 
     /**
      * Creates a Bifrost chat model instance. The virtual key is sent as bearer token and as {@code x-bf-vk}
-     * header. Requires the Bifrost API key to be set; the URL is optional.
+     * header. Requires the Bifrost API key and URL to be set.
      *
      * @return A configured Bifrost chat model instance
-     * @throws IllegalStateException If the {@code BIFROST_API_KEY} environment variable is not set
+     * @throws IllegalStateException If the {@code BIFROST_API_KEY} or {@code BIFROST_URL} environment variable is not set
      */
     private ChatModel createBifrostChatModel() {
         String bifrostUrl = Bifrost.baseUrl(environment);

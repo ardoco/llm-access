@@ -8,8 +8,7 @@ import java.util.Map;
  * variables are used for chat and embedding models:
  * <ul>
  * <li>{@code BIFROST_API_KEY}: The Bifrost virtual key (required)</li>
- * <li>{@code BIFROST_URL}: The base URL of the OpenAI-compatible API (optional; {@link #DEFAULT_URL} when unset or
- * empty)</li>
+ * <li>{@code BIFROST_URL}: The base URL of the OpenAI-compatible API (required)</li>
  * </ul>
  * Model names are prefixed with their provider, for example {@code openai/gpt-4o-mini}.
  */
@@ -18,8 +17,6 @@ public final class Bifrost {
     public static final String API_KEY_VARIABLE = "BIFROST_API_KEY";
     /** Name of the environment variable holding the base URL. */
     public static final String URL_VARIABLE = "BIFROST_URL";
-    /** Base URL used when {@value #URL_VARIABLE} is unset or empty. */
-    public static final String DEFAULT_URL = "https://llm.vdl.sdq.kastel.kit.edu/v1";
     /** Header through which Bifrost accepts the virtual key (in addition to the bearer token). */
     public static final String VIRTUAL_KEY_HEADER = "x-bf-vk";
 
@@ -31,11 +28,11 @@ public final class Bifrost {
      * Resolves the base URL from the given environment.
      *
      * @param environment The environment to read {@value #URL_VARIABLE} from
-     * @return The configured URL, or {@link #DEFAULT_URL} when it is unset or empty
+     * @return The configured URL
+     * @throws IllegalStateException If the variable is not set
      */
     public static String baseUrl(EnvironmentProvider environment) {
-        String url = environment.getenv(URL_VARIABLE);
-        return url == null || url.isBlank() ? DEFAULT_URL : url;
+        return environment.getenvNonNull(URL_VARIABLE);
     }
 
     /**

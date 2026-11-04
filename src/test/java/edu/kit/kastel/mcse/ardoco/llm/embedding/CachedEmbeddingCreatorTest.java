@@ -138,7 +138,7 @@ class CachedEmbeddingCreatorTest {
     }
 
     @Test
-    @DisplayName("EmbeddingCreator.create builds a Bifrost creator with the API key and fails fast without it")
+    @DisplayName("EmbeddingCreator.create builds a Bifrost creator with API key and URL and fails fast without either")
     void createBuildsBifrostCreator() {
         EmbeddingConfiguration withoutKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
                 .modelName("openai/text-embedding-3-small")
@@ -148,9 +148,15 @@ class CachedEmbeddingCreatorTest {
 
         EmbeddingConfiguration withKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
                 .modelName("openai/text-embedding-3-small")
-                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy", "BIFROST_URL", "")))
+                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy", "BIFROST_URL", "http://localhost:1/v1")))
                 .build();
         assertInstanceOf(BifrostEmbeddingCreator.class, EmbeddingCreator.create(withKey, cacheManager));
+
+        EmbeddingConfiguration withoutUrl = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
+                .modelName("openai/text-embedding-3-small")
+                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy")))
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(withoutUrl, cacheManager));
     }
 
     @Test

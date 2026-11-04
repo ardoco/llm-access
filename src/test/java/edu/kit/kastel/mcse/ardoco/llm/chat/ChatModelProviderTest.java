@@ -54,14 +54,19 @@ class ChatModelProviderTest {
     }
 
     @Test
-    @DisplayName("createChatModel builds a lazy Bifrost model with only the API key, with or without a custom URL")
+    @DisplayName("createChatModel builds a lazy Bifrost model with API key and URL")
     void buildsBifrostModel() {
-        EnvironmentProvider keyOnly = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY"));
-        EnvironmentProvider emptyUrl = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY", "BIFROST_URL", ""));
-        EnvironmentProvider customUrl = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY", "BIFROST_URL", "http://localhost:1/v1"));
-        for (EnvironmentProvider environment : List.of(keyOnly, emptyUrl, customUrl)) {
-            ChatModel model = new ChatModelProvider(configuration(ChatModelPlatform.BIFROST, "openai/gpt-4o-mini", environment)).createChatModel();
-            assertInstanceOf(LazyChatModel.class, model);
+        EnvironmentProvider environment = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY", "BIFROST_URL", "http://localhost:1/v1"));
+        ChatModel model = new ChatModelProvider(configuration(ChatModelPlatform.BIFROST, "openai/gpt-4o-mini", environment)).createChatModel();
+        assertInstanceOf(LazyChatModel.class, model);
+    }
+
+    @Test
+    @DisplayName("createChatModel fails fast for Bifrost when only the key or only the URL is set")
+    void bifrostRequiresKeyAndUrl() {
+        for (Map<String, String> variables : List.of(Map.of("BIFROST_API_KEY", "DUMMY"), Map.of("BIFROST_URL", "http://localhost:1/v1"))) {
+            ChatModelProvider provider = new ChatModelProvider(configuration(ChatModelPlatform.BIFROST, "openai/gpt-4o-mini", new MapEnvironment(variables)));
+            assertThrows(IllegalStateException.class, provider::createChatModel);
         }
     }
 

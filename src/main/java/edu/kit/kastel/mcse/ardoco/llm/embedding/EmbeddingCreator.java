@@ -36,7 +36,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
  * </li>
  * <li>Bifrost: Embedding generation via the Bifrost LLM gateway (OpenAI-compatible API)
  * <ul>
- * <li>Requires the BIFROST_API_KEY environment variable; BIFROST_URL is optional</li>
+ * <li>Requires the BIFROST_API_KEY and BIFROST_URL environment variables</li>
  * <li>Model names are provider-prefixed, e.g. openai/text-embedding-3-small</li>
  * </ul>
  * </li>
