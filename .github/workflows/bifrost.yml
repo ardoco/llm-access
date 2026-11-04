@@ -1,0 +1,63 @@
+name: Bifrost Integration
+
+on:
+  push: # Ignore releases and main dev branch
+    tags-ignore:
+      - 'v*'
+    branches:
+      - 'main'
+    paths-ignore:
+      - 'docs/**'
+      - 'openwiki/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'docs/**'
+      - 'openwiki/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bifrost:
+    # Secrets are unavailable to forks and Dependabot, so there is nothing to test against.
+    if: ${{ github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: Determine Java version
+        id: jve
+        shell: bash
+        run: |
+          for expr in maven.compiler.target maven.compiler.release java.version; do
+            v=$(mvn -B -q -N help:evaluate -DforceStdout -Dexpression="$expr" 2>/dev/null || true)
+            v=${v#1.}
+            if [[ "$v" =~ ^[0-9]+ ]]; then
+              echo "java_major_version=${BASH_REMATCH[0]}" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+          echo "::error::Could not determine the Java version from the POM"
+          exit 1
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: ${{ steps.jve.outputs.java_major_version }}
+          cache: 'maven'
+      # Same Maven version as ardoco/actions maven.yml
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.16
+      - name: Run Bifrost integration test
+        run: mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test
+        env:
+          BIFROST_API_KEY: ${{ secrets.BIFROST_API_KEY }}
+          BIFROST_URL: ${{ secrets.BIFROST_URL }}

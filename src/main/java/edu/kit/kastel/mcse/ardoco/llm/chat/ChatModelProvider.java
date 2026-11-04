@@ -11,11 +11,12 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
+import edu.kit.kastel.mcse.ardoco.llm.util.Bifrost;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
  * Provides chat language model instances for different platforms.
- * This class supports multiple language model platforms (OpenAI, Ollama, Blablador, DeepSeek, Open WebUI)
+ * This class supports multiple language model platforms (OpenAI, Ollama, Blablador, DeepSeek, Open WebUI, Bifrost)
  * and handles their configuration, including authentication and model settings.
  * <p>
  * Model settings are supplied through a framework-neutral {@link LlmConfiguration}, while credentials and
@@ -53,6 +54,13 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
  * <li>{@code OPENWEBUI_URL}: The URL for the Open WebUI server</li>
  * <li>{@code OPENWEBUI_API_KEY}: Your Open WebUI API key</li>
  * </ul>
+ * </li>
+ * <li>Bifrost:
+ * <ul>
+ * <li>{@code BIFROST_API_KEY}: Your Bifrost virtual key</li>
+ * <li>{@code BIFROST_URL}: The base URL of the Bifrost API (required)</li>
+ * </ul>
+ * Model names are prefixed with their provider, for example {@code openai/gpt-4o-mini}.
  * </li>
  * </ul>
  *
@@ -113,6 +121,7 @@ public class ChatModelProvider {
             case BLABLADOR -> createBlabladorChatModel();
             case DEEPSEEK -> createDeepSeekChatModel();
             case OPENWEBUI -> createOpenWebUIChatModel();
+            case BIFROST -> createBifrostChatModel();
         };
     }
 
@@ -239,6 +248,27 @@ public class ChatModelProvider {
                 .apiKey(deepseekApiKey)
                 .temperature(temperature)
                 .seed(seed)
+                .build());
+    }
+
+    /**
+     * Creates a Bifrost chat model instance. The virtual key is sent as bearer token and as {@code x-bf-vk}
+     * header. Requires the Bifrost API key and URL to be set.
+     *
+     * @return A configured Bifrost chat model instance
+     * @throws IllegalStateException If the {@code BIFROST_API_KEY} or {@code BIFROST_URL} environment variable is not set
+     */
+    private ChatModel createBifrostChatModel() {
+        String bifrostUrl = Bifrost.baseUrl(environment);
+        String bifrostApiKey = Bifrost.apiKey(environment);
+
+        return new LazyChatModel(() -> new OpenAiChatModel.OpenAiChatModelBuilder().baseUrl(bifrostUrl)
+                .modelName(modelName)
+                .apiKey(bifrostApiKey)
+                .customHeaders(Bifrost.headers(bifrostApiKey))
+                .temperature(temperature)
+                .seed(seed)
+                .timeout(Duration.ofMinutes(10))
                 .build());
     }
 

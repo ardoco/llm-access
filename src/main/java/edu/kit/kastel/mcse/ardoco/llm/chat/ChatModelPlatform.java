@@ -11,6 +11,7 @@ package edu.kit.kastel.mcse.ardoco.llm.chat;
  * <li>BLABLADOR: Blablador platform</li>
  * <li>DEEPSEEK: DeepSeek platform</li>
  * <li>OPENWEBUI: Open WebUI platform</li>
+ * <li>BIFROST: Bifrost LLM gateway (OpenAI-compatible API)</li>
  * </ul>
  *
  * @see ChatModelProvider
@@ -35,7 +36,12 @@ public enum ChatModelPlatform {
     /**
      * Open WebUI platform.
      */
-    OPENWEBUI;
+    OPENWEBUI,
+    /**
+     * 
+     * Bifrost LLM gateway (OpenAI-compatible API).
+     */
+    BIFROST;
 
     /**
      * Returns the enum value for the given platform name (case-insensitive).

@@ -66,6 +66,7 @@ class EmbeddingConfigurationTest {
     @DisplayName("fromString resolves embedding platforms case-insensitively")
     void testFromString() {
         assertEquals(EmbeddingPlatform.OPENWEBUI, EmbeddingPlatform.fromString("openwebui"));
+        assertEquals(EmbeddingPlatform.BIFROST, EmbeddingPlatform.fromString("bifrost"));
         assertEquals(EmbeddingPlatform.MOCK, EmbeddingPlatform.fromString("Mock"));
         assertThrows(IllegalArgumentException.class, () -> EmbeddingPlatform.fromString("nope"));
     }

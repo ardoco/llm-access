@@ -148,6 +148,60 @@ class CachedEmbeddingCreatorTest {
     }
 
     @Test
+    @DisplayName("EmbeddingCreator.create builds a Bifrost creator with API key and URL and fails fast without either")
+    void createBuildsBifrostCreator() {
+        EmbeddingConfiguration withoutKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
+                .modelName("openai/text-embedding-3-small")
+                .environment(EMPTY_ENVIRONMENT)
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(withoutKey, cacheManager));
+
+        EmbeddingConfiguration withKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
+                .modelName("openai/text-embedding-3-small")
+                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy", "BIFROST_URL", "http://localhost:1/v1")))
+                .build();
+        assertInstanceOf(BifrostEmbeddingCreator.class, EmbeddingCreator.create(withKey, cacheManager));
+
+        EmbeddingConfiguration withoutUrl = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
+                .modelName("openai/text-embedding-3-small")
+                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy")))
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(withoutUrl, cacheManager));
+    }
+
+    @Test
+    @DisplayName("an oversized input for a provider-prefixed model is truncated and retried")
+    void truncatesOversizedInputForPrefixedModel() {
+        List<String> seenInputs = new CopyOnWriteArrayList<>();
+        int limit = 45_000;
+        CachedEmbeddingCreator creator = new CachedEmbeddingCreator("openai/text-embedding-3-small", 1, EMPTY_ENVIRONMENT, cacheManager) {
+            @Override
+            protected EmbeddingModel createEmbeddingModel(String model, String... params) {
+                EmbeddingModel fake = mock(EmbeddingModel.class);
+                when(fake.embed(anyString())).thenAnswer(invocation -> {
+                    String text = invocation.getArgument(0);
+                    seenInputs.add(text);
+                    if (text.length() > limit) {
+                        throw new IllegalArgumentException("input too long");
+                    }
+                    return Response.from(Embedding.from(new float[] { 1.0f }));
+                });
+                return fake;
+            }
+        };
+        // "word " is one token per repetition, so this clearly exceeds the 8000 token limit
+        String content = "word ".repeat(30_000);
+
+        float[] embedding = creator.calculateEmbedding(content);
+
+        assertArrayEquals(new float[] { 1.0f }, embedding);
+        assertEquals(2, seenInputs.size(), "the full input fails first, then the truncated one is retried");
+        assertEquals(content, seenInputs.get(0));
+        assertTrue(seenInputs.get(1).length() < content.length());
+        assertTrue(seenInputs.get(1).length() <= limit);
+    }
+
+    @Test
     @DisplayName("the embedding cache is created by the injected cache manager")
     void usesInjectedCacheManager() throws IOException {
         RecordingEmbeddingCreator creator = new RecordingEmbeddingCreator(cacheManager, "manager-model", 1);

@@ -12,10 +12,10 @@ LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one implem
 
 ## Features
 
-- **Chat models** for OpenAI, Ollama, Blablador, DeepSeek, and Open WebUI, created lazily and
+- **Chat models** for OpenAI, Ollama, Blablador, DeepSeek, Open WebUI, and Bifrost, created lazily and
 configured via a typed builder.
 - **Cached requests**: single or n-fold LLM calls, or a transparent `CachingChatModel` decorator, backed by a cache.
-- **Embeddings** for OpenAI, Ollama, ONNX, Open WebUI, and a mock (for when embeddings are not required),
+- **Embeddings** for OpenAI, Ollama, ONNX, Open WebUI, Bifrost, and a mock (for when embeddings are not required),
 with automatic caching and token-length handling.
 - **Pluggable cache** with local-file, Redis, and REST-Redis backends, hierarchical layering, and
 conflict-resolution strategies. The on-disk format is compatible with LiSSA's existing caches.
@@ -147,6 +147,11 @@ The variables each platform reads:
 | Blablador  | `BLABLADOR_API_KEY`                                                | —                                                                 |
 | DeepSeek   | `DEEPSEEK_API_KEY`                                                 | —                                                                 |
 | Open WebUI | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                               | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                              |
+| Bifrost    | `BIFROST_API_KEY`, `BIFROST_URL`                                  | `BIFROST_API_KEY`, `BIFROST_URL`                                  |
+
+Bifrost is an LLM gateway with an OpenAI-compatible API. `BIFROST_API_KEY` is a Bifrost virtual key (sent as bearer token and
+`x-bf-vk` header); `BIFROST_URL` is the base URL of its API (e.g. `https://domain.tld/v1`). Both variables are required. Model names are
+prefixed with their provider, e.g. `openai/gpt-4o-mini` or `openai/text-embedding-3-small`.
 
 ## Caching
 
