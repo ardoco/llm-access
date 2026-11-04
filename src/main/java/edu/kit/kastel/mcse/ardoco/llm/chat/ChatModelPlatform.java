@@ -10,6 +10,7 @@ package edu.kit.kastel.mcse.ardoco.llm.chat;
  * <li>OLLAMA: Ollama platform</li>
  * <li>BLABLADOR: Blablador platform</li>
  * <li>DEEPSEEK: DeepSeek platform</li>
+ * <li>BIFROST: Bifrost LLM gateway (OpenAI-compatible API)</li>
  * </ul>
  *
  * @see ChatModelProvider
@@ -30,7 +31,11 @@ public enum ChatModelPlatform {
     /**
      * DeepSeek platform.
      */
-    DEEPSEEK;
+    DEEPSEEK,
+    /**
+     * Bifrost LLM gateway (OpenAI-compatible API).
+     */
+    BIFROST;
 
     /**
      * Returns the enum value for the given platform name (case-insensitive).

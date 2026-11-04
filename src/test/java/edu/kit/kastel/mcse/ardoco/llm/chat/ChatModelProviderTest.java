@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.llm.chat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
@@ -50,6 +51,18 @@ class ChatModelProviderTest {
         ChatModel model = new ChatModelProvider(configuration(ChatModelPlatform.OPENAI, "gpt-4o-mini", openAiEnvironment)).createChatModel();
         assertNotNull(model);
         assertInstanceOf(LazyChatModel.class, model);
+    }
+
+    @Test
+    @DisplayName("createChatModel builds a lazy Bifrost model with only the API key, with or without a custom URL")
+    void buildsBifrostModel() {
+        EnvironmentProvider keyOnly = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY"));
+        EnvironmentProvider emptyUrl = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY", "BIFROST_URL", ""));
+        EnvironmentProvider customUrl = new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY", "BIFROST_URL", "http://localhost:1/v1"));
+        for (EnvironmentProvider environment : List.of(keyOnly, emptyUrl, customUrl)) {
+            ChatModel model = new ChatModelProvider(configuration(ChatModelPlatform.BIFROST, "openai/gpt-4o-mini", environment)).createChatModel();
+            assertInstanceOf(LazyChatModel.class, model);
+        }
     }
 
     @Test
