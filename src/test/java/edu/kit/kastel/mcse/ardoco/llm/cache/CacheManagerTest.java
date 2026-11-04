@@ -19,6 +19,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
+import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheKey;
+import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 import redis.clients.jedis.exceptions.JedisConnectionException;
@@ -90,6 +92,38 @@ class CacheManagerTest {
         manager.flush();
 
         assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_a__b_1.json")));
+    }
+
+    @Test
+    @DisplayName("slashes in model names are encoded so chat and embedding caches are written directly into the cache directory")
+    void encodesPathSeparatorsInFileName() throws IOException {
+        CacheManager manager = CacheManager.getDefaultInstance();
+        Cache<ChatCacheKey> chat = manager.getCache(this, new ChatCacheParameter("openai/gpt-4o-mini", 1, 0.0));
+        Cache<EmbeddingCacheKey> embedding = manager.getCache(this, new EmbeddingCacheParameter("openai/text-embedding-3-small"));
+        chat.put("prompt", "answer");
+        embedding.put("text", new float[] { 1.0f, 2.0f });
+        assertDoesNotThrow(manager::flush);
+
+        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_openai--gpt-4o-mini_1.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_openai--text-embedding-3-small.json")));
+        try (var entries = Files.list(tempCacheDir)) {
+            assertTrue(entries.noneMatch(Files::isDirectory), "no subdirectory may be created");
+        }
+
+        CacheManager reloaded = new CacheManager(tempCacheDir, environment);
+        assertEquals("answer", reloaded.getCache(this, new ChatCacheParameter("openai/gpt-4o-mini", 1, 0.0)).get("prompt", String.class));
+        assertArrayEquals(new float[] { 1.0f, 2.0f }, reloaded.getCache(this, new EmbeddingCacheParameter("openai/text-embedding-3-small"))
+                .get("text", float[].class));
+    }
+
+    @Test
+    @DisplayName("backslashes in cache identifiers are encoded in the file name")
+    void encodesBackslashesInFileName() {
+        CacheManager manager = CacheManager.getDefaultInstance();
+        manager.getCache(this, new ChatCacheParameter("a\\b", 1, 0.0)).put("key", "value");
+        manager.flush();
+
+        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_a--b_1.json")));
     }
 
     @Test

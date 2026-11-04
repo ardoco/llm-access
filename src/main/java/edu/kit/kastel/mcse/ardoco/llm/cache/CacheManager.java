@@ -192,7 +192,8 @@ public final class CacheManager {
     /**
      * Gets a cache instance for the specified name.
      * This method is designed for internal use by model implementations.
-     * The cache name will be sanitized by replacing colons with double underscores.
+     * The cache name will be sanitized for use as a file name: colons are replaced by double underscores, and
+     * forward and backward slashes (e.g., in provider-prefixed model names like {@code openai/gpt-4o-mini}) are replaced by double hyphens.
      *
      * @param origin     The class origin (caller, {@code this})
      * @param parameters a list of parameters that define what makes a cache unique. E.g., the model name, temperature, and seed.
@@ -215,7 +216,7 @@ public final class CacheManager {
      * @return A cache instance for the specified name
      */
     private <K extends CacheKey> Cache<K> getCache(String name, CacheParameter<K> parameters) {
-        name = name.replace(":", "__");
+        name = name.replace(":", "__").replace("/", "--").replace("\\", "--");
 
         if (caches.containsKey(name)) {
             @SuppressWarnings("unchecked") Cache<K> cached = (Cache<K>) caches.get(name);
