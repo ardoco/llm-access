@@ -222,8 +222,8 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
             return cachedEmbedding;
         }
         EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
-        Encoding encoding = registry.getEncodingForModel(rawNameOfModel)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown Embedding Model. Don't know how to handle previous exception"));
+        Encoding encoding = findEncoding(registry, rawNameOfModel).orElseThrow(() -> new IllegalArgumentException(
+                "Unknown Embedding Model. Don't know how to handle previous exception"));
         int tokens = encoding.countTokens(content);
         if (tokens < MAX_TOKEN_LENGTH)
             throw new IllegalArgumentException("Token length was not too long. Don't know how to handle previous exception");
@@ -248,5 +248,18 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
         }
         cache.putViaInternalKey(newCacheKey, embedding);
         return embedding;
+    }
+
+    /**
+     * Looks up the tokenizer of a model. Provider-prefixed names (e.g., {@code openai/text-embedding-3-small}) that are
+     * unknown to the registry are retried without the prefix.
+     */
+    private static Optional<Encoding> findEncoding(EncodingRegistry registry, String modelName) {
+        Optional<Encoding> encoding = registry.getEncodingForModel(modelName);
+        int separator = modelName.lastIndexOf('/');
+        if (encoding.isEmpty() && separator >= 0) {
+            return registry.getEncodingForModel(modelName.substring(separator + 1));
+        }
+        return encoding;
     }
 }
