@@ -138,6 +138,22 @@ class CachedEmbeddingCreatorTest {
     }
 
     @Test
+    @DisplayName("EmbeddingCreator.create builds a Bifrost creator with the API key and fails fast without it")
+    void createBuildsBifrostCreator() {
+        EmbeddingConfiguration withoutKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
+                .modelName("openai/text-embedding-3-small")
+                .environment(EMPTY_ENVIRONMENT)
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(withoutKey, cacheManager));
+
+        EmbeddingConfiguration withKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
+                .modelName("openai/text-embedding-3-small")
+                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy", "BIFROST_URL", "")))
+                .build();
+        assertInstanceOf(BifrostEmbeddingCreator.class, EmbeddingCreator.create(withKey, cacheManager));
+    }
+
+    @Test
     @DisplayName("the embedding cache is created by the injected cache manager")
     void usesInjectedCacheManager() throws IOException {
         RecordingEmbeddingCreator creator = new RecordingEmbeddingCreator(cacheManager, "manager-model", 1);

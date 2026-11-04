@@ -42,6 +42,7 @@ class EmbeddingConfigurationTest {
     void testRequiresModel() {
         assertThrows(IllegalArgumentException.class, () -> EmbeddingConfiguration.builder(EmbeddingPlatform.OLLAMA).environment(environment).build());
         // The mock platform ignores the model, so it builds without one.
+        assertEquals(EmbeddingPlatform.BIFROST, EmbeddingPlatform.fromString("bifrost"));
         assertEquals(EmbeddingPlatform.MOCK, EmbeddingConfiguration.builder(EmbeddingPlatform.MOCK).environment(environment).build().platform());
     }
 
