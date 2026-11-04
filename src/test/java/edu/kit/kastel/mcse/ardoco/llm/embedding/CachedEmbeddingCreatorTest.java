@@ -138,6 +138,16 @@ class CachedEmbeddingCreatorTest {
     }
 
     @Test
+    @DisplayName("EmbeddingCreator.create passes the configured environment to the Open WebUI creator")
+    void createPassesEnvironmentToOpenWebUi() {
+        EmbeddingConfiguration configuration = EmbeddingConfiguration.builder(EmbeddingPlatform.OPENWEBUI)
+                .modelName("nomic-embed-text:v1.5")
+                .environment(EMPTY_ENVIRONMENT)
+                .build();
+        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(configuration, cacheManager));
+    }
+
+    @Test
     @DisplayName("EmbeddingCreator.create builds a Bifrost creator with API key and URL and fails fast without either")
     void createBuildsBifrostCreator() {
         EmbeddingConfiguration withoutKey = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)

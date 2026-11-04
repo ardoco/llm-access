@@ -66,7 +66,7 @@ class EmbeddingConfigurationTest {
     @Test
     @DisplayName("fromString resolves embedding platforms case-insensitively")
     void testFromString() {
-        assertEquals(EmbeddingPlatform.OPENAI, EmbeddingPlatform.fromString("openai"));
+        assertEquals(EmbeddingPlatform.OPENWEBUI, EmbeddingPlatform.fromString("openwebui"));
         assertEquals(EmbeddingPlatform.MOCK, EmbeddingPlatform.fromString("Mock"));
         assertThrows(IllegalArgumentException.class, () -> EmbeddingPlatform.fromString("nope"));
     }

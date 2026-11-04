@@ -10,6 +10,7 @@ package edu.kit.kastel.mcse.ardoco.llm.chat;
  * <li>OLLAMA: Ollama platform</li>
  * <li>BLABLADOR: Blablador platform</li>
  * <li>DEEPSEEK: DeepSeek platform</li>
+ * <li>OPENWEBUI: Open WebUI platform</li>
  * <li>BIFROST: Bifrost LLM gateway (OpenAI-compatible API)</li>
  * </ul>
  *
@@ -33,6 +34,11 @@ public enum ChatModelPlatform {
      */
     DEEPSEEK,
     /**
+     * Open WebUI platform.
+     */
+    OPENWEBUI,
+    /**
+     * 
      * Bifrost LLM gateway (OpenAI-compatible API).
      */
     BIFROST;

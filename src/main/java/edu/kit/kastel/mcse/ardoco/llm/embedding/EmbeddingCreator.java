@@ -34,6 +34,11 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
  * <li>Uses mean pooling for embedding generation</li>
  * </ul>
  * </li>
+ * <li>Open WebUI: Embedding generation via an Open WebUI server
+ * <ul>
+ * <li>Requires OPENWEBUI_URL and OPENWEBUI_API_KEY environment variables</li>
+ * </ul>
+ * </li>
  * <li>Bifrost: Embedding generation via the Bifrost LLM gateway (OpenAI-compatible API)
  * <ul>
  * <li>Requires the BIFROST_API_KEY and BIFROST_URL environment variables</li>
@@ -100,6 +105,7 @@ public abstract class EmbeddingCreator {
             case OPENAI -> new OpenAiEmbeddingCreator(model, configuration.environment(), cacheManager);
             case ONNX -> new OnnxEmbeddingCreator(model, Objects.requireNonNull(configuration.pathToModel(), "pathToModel is required for ONNX"), Objects
                     .requireNonNull(configuration.pathToTokenizer(), "pathToTokenizer is required for ONNX"), configuration.environment(), cacheManager);
+            case OPENWEBUI -> new OpenWebUiEmbeddingCreator(model, configuration.environment(), cacheManager);
             case BIFROST -> new BifrostEmbeddingCreator(model, configuration.environment(), cacheManager);
             case MOCK -> new MockEmbeddingCreator();
         };

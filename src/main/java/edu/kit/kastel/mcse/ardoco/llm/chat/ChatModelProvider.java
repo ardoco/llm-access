@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 
 /**
  * Provides chat language model instances for different platforms.
- * This class supports multiple language model platforms (OpenAI, Ollama, Blablador, DeepSeek, Bifrost)
+ * This class supports multiple language model platforms (OpenAI, Ollama, Blablador, DeepSeek, Open WebUI, Bifrost)
  * and handles their configuration, including authentication and model settings.
  * <p>
  * Model settings are supplied through a framework-neutral {@link LlmConfiguration}, while credentials and
@@ -47,6 +47,12 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
  * <li>DeepSeek:
  * <ul>
  * <li>{@code DEEPSEEK_API_KEY}: Your DeepSeek API key</li>
+ * </ul>
+ * </li>
+ * <li>Open WebUI:
+ * <ul>
+ * <li>{@code OPENWEBUI_URL}: The URL for the Open WebUI server</li>
+ * <li>{@code OPENWEBUI_API_KEY}: Your Open WebUI API key</li>
  * </ul>
  * </li>
  * <li>Bifrost:
@@ -114,6 +120,7 @@ public class ChatModelProvider {
             case OLLAMA -> createOllamaChatModel();
             case BLABLADOR -> createBlabladorChatModel();
             case DEEPSEEK -> createDeepSeekChatModel();
+            case OPENWEBUI -> createOpenWebUIChatModel();
             case BIFROST -> createBifrostChatModel();
         };
     }
@@ -259,6 +266,27 @@ public class ChatModelProvider {
                 .modelName(modelName)
                 .apiKey(bifrostApiKey)
                 .customHeaders(Bifrost.headers(bifrostApiKey))
+                .temperature(temperature)
+                .seed(seed)
+                .timeout(Duration.ofMinutes(10))
+                .build());
+    }
+
+    /**
+     * Creates an Open WebUI chat model instance.
+     * Requires the Open WebUI URL and API key to be set.
+     *
+     * @return A configured Open WebUI chat model instance
+     * @throws IllegalStateException If the {@code OPENWEBUI_URL} or {@code OPENWEBUI_API_KEY} environment variable is
+     *                               not set
+     */
+    private ChatModel createOpenWebUIChatModel() {
+        String openwebuiUrl = environment.getenvNonNull("OPENWEBUI_URL");
+        String openwebuiApiKey = environment.getenvNonNull("OPENWEBUI_API_KEY");
+
+        return new LazyChatModel(() -> new OpenAiChatModel.OpenAiChatModelBuilder().baseUrl(openwebuiUrl)
+                .modelName(modelName)
+                .apiKey(openwebuiApiKey)
                 .temperature(temperature)
                 .seed(seed)
                 .timeout(Duration.ofMinutes(10))

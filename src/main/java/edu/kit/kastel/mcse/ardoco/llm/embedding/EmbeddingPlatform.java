@@ -10,6 +10,7 @@ package edu.kit.kastel.mcse.ardoco.llm.embedding;
  * <li>OLLAMA: Local embedding generation using Ollama models</li>
  * <li>OPENAI: Cloud-based embedding generation using OpenAI's API</li>
  * <li>ONNX: Local embedding generation using ONNX models (requires model and tokenizer files)</li>
+ * <li>OPENWEBUI: Embedding generation via an Open WebUI server</li>
  * <li>BIFROST: Embedding generation via the Bifrost LLM gateway (OpenAI-compatible API)</li>
  * <li>MOCK: Testing implementation returning zero vectors</li>
  * </ul>
@@ -29,6 +30,10 @@ public enum EmbeddingPlatform {
      * ONNX platform. Requires a model name and file paths.
      */
     ONNX,
+    /**
+     * Open WebUI platform.
+     */
+    OPENWEBUI,
     /**
      * Bifrost LLM gateway (OpenAI-compatible API).
      */
