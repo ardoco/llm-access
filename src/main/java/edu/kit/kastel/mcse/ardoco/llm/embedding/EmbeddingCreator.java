@@ -34,11 +34,6 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
  * <li>Uses mean pooling for embedding generation</li>
  * </ul>
  * </li>
- * <li>Open WebUI: Embedding generation via an Open WebUI server
- * <ul>
- * <li>Requires OPENWEBUI_URL and OPENWEBUI_API_KEY environment variables</li>
- * </ul>
- * </li>
  * <li>Mock: Testing implementation returning zero vectors for all inputs</li>
  * </ul>
  *
@@ -99,7 +94,6 @@ public abstract class EmbeddingCreator {
             case OPENAI -> new OpenAiEmbeddingCreator(model, configuration.environment(), cacheManager);
             case ONNX -> new OnnxEmbeddingCreator(model, Objects.requireNonNull(configuration.pathToModel(), "pathToModel is required for ONNX"), Objects
                     .requireNonNull(configuration.pathToTokenizer(), "pathToTokenizer is required for ONNX"), configuration.environment(), cacheManager);
-            case OPENWEBUI -> new OpenWebUiEmbeddingCreator(model, configuration.environment(), cacheManager);
             case MOCK -> new MockEmbeddingCreator();
         };
     }

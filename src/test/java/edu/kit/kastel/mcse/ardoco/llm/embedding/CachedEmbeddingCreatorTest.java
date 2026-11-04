@@ -138,16 +138,6 @@ class CachedEmbeddingCreatorTest {
     }
 
     @Test
-    @DisplayName("EmbeddingCreator.create passes the configured environment to the Open WebUI creator")
-    void createPassesEnvironmentToOpenWebUi() {
-        EmbeddingConfiguration configuration = EmbeddingConfiguration.builder(EmbeddingPlatform.OPENWEBUI)
-                .modelName("nomic-embed-text:v1.5")
-                .environment(EMPTY_ENVIRONMENT)
-                .build();
-        assertThrows(IllegalStateException.class, () -> EmbeddingCreator.create(configuration, cacheManager));
-    }
-
-    @Test
     @DisplayName("the embedding cache is created by the injected cache manager")
     void usesInjectedCacheManager() throws IOException {
         RecordingEmbeddingCreator creator = new RecordingEmbeddingCreator(cacheManager, "manager-model", 1);

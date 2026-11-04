@@ -10,7 +10,6 @@ package edu.kit.kastel.mcse.ardoco.llm.chat;
  * <li>OLLAMA: Ollama platform</li>
  * <li>BLABLADOR: Blablador platform</li>
  * <li>DEEPSEEK: DeepSeek platform</li>
- * <li>OPENWEBUI: Open WebUI platform</li>
  * </ul>
  *
  * @see ChatModelProvider
@@ -31,11 +30,7 @@ public enum ChatModelPlatform {
     /**
      * DeepSeek platform.
      */
-    DEEPSEEK,
-    /**
-     * Open WebUI platform.
-     */
-    OPENWEBUI;
+    DEEPSEEK;
 
     /**
      * Returns the enum value for the given platform name (case-insensitive).

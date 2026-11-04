@@ -12,10 +12,10 @@ LiSSA, [ardoco](https://github.com/ardoco), and other tools can share one implem
 
 ## Features
 
-- **Chat models** for OpenAI, Ollama, Blablador, DeepSeek, and Open WebUI, created lazily and
+- **Chat models** for OpenAI, Ollama, Blablador, and DeepSeek, created lazily and
 configured via a typed builder.
 - **Cached requests**: single or n-fold LLM calls, or a transparent `CachingChatModel` decorator, backed by a cache.
-- **Embeddings** for OpenAI, Ollama, ONNX, Open WebUI, and a mock (for when embeddings are not required),
+- **Embeddings** for OpenAI, Ollama, ONNX, and a mock (for when embeddings are not required),
 with automatic caching and token-length handling.
 - **Pluggable cache** with local-file, Redis, and REST-Redis backends, hierarchical layering, and
 conflict-resolution strategies. The on-disk format is compatible with LiSSA's existing caches.
@@ -146,7 +146,6 @@ The variables each platform reads:
 | Ollama     | `OLLAMA_HOST` (`OLLAMA_USER`+`OLLAMA_PASSWORD`, or `OLLAMA_TOKEN`) | `OLLAMA_EMBEDDING_HOST` (`OLLAMA_EMBEDDING_USER`, `..._PASSWORD`) |
 | Blablador  | `BLABLADOR_API_KEY`                                                | —                                                                 |
 | DeepSeek   | `DEEPSEEK_API_KEY`                                                 | —                                                                 |
-| Open WebUI | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                               | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY`                              |
 
 ## Caching
 
