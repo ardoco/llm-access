@@ -18,7 +18,7 @@ configured via a typed builder.
 - **Embeddings** for OpenAI, Ollama, ONNX, Open WebUI, Bifrost, and a mock (for when embeddings are not required),
 with automatic caching and token-length handling.
 - **Pluggable cache** with local-file, Redis, and REST-Redis backends, hierarchical layering, and
-conflict-resolution strategies. The on-disk format is compatible with LiSSA's existing caches.
+conflict-resolution strategies. Cache identities are neutral to the calling class and to the Bifrost provider prefix.
 
 ## Requirements
 
@@ -66,7 +66,7 @@ import edu.kit.kastel.mcse.ardoco.llm.chat.*;
 CacheManager.setCacheDir("cache");
 ChatModelProvider provider = new ChatModelProvider(LlmConfiguration.of(ChatModelPlatform.OPENAI, "gpt-4o-mini"));
 
-Cache<ChatCacheKey> cache = CacheManager.getDefaultInstance().getCache(provider, provider.cacheParameters());
+Cache<ChatCacheKey> cache = CacheManager.getDefaultInstance().getCache(provider.cacheParameters());
 ChatModel model = provider.createChatModel();
 
 String once = ChatModelUtils.cachedRequest("Summarize X", model, cache);
@@ -130,7 +130,7 @@ ChatModelProvider provider = new ChatModelProvider(LlmConfiguration.builder(Chat
 		.modelName("gpt-4o-mini")
 		.environment(environment)
 		.build());
-ChatModel model = new CachingChatModel(provider.createChatModel(), cacheManager.getCache(provider, provider.cacheParameters()));
+ChatModel model = new CachingChatModel(provider.createChatModel(), cacheManager.getCache(provider.cacheParameters()));
 
 EmbeddingCreator creator = EmbeddingCreator.create(EmbeddingConfiguration.builder(EmbeddingPlatform.OPENAI)
 		.modelName("text-embedding-3-large")
@@ -181,13 +181,38 @@ Every entry is keyed by the model configuration (`model`, `seed`, `temperature`)
 `EMBEDDING`), and the request content. Because the mode is part of the key, chat and embedding entries
 never collide, and different models/seeds/temperatures are kept apart automatically.
 
-- **Local (file) cache:** one JSON file per caller and model configuration, named
-`<Origin>_<model>_<seed>[_<temperature>].json` in the cache directory. `<Origin>` is the simple class
-name of the object that requested the cache, and `<temperature>` is omitted when it is `0.0` (kept for
-backward compatibility with LiSSA's existing caches). Within a file, content is mapped to values via a
+- **Local (file) cache:** one JSON file per model configuration, named `Chat_<model>_<seed>[_<temperature>].json`
+or `Embedding_<model>.json` in the cache directory. `<temperature>` is omitted when it is `0.0`. The name does not
+contain the calling class or the platform, so every caller and platform with the same model configuration shares
+the file. Colons in the name become `__`, slashes become `--`. Within a file, content is mapped to values via a
 UUID derived from the content.
 - **Redis / REST-Redis:** each entry is a Redis hash whose key is the JSON form of the cache key, with
 fields `data` (the stored value) and `timestamp`.
+
+For Bifrost, the provider prefix of the model name (everything up to the first `/`, e.g. `openai/` in
+`openai/gpt-4o-mini`) is not part of the identity, neither in the Redis key nor in the file name. Requests still
+use the prefixed name, and Bifrost shares its entries with the native platform (`gpt-4o-mini` on `OPENAI`). Model
+names of other platforms are never changed. Note that models with the same name behind different providers
+(`openai/gpt-4o` and `azure/gpt-4o`) share a cache.
+
+#### Migrating caches from 0.2.x
+
+Version 0.3.0 changes the local file names (previously `<CallerClass>_<model>_...json`, with `/` as `--`) and the
+Bifrost Redis keys. Existing local cache directories can be migrated with a script that merges the old files into
+the new names:
+
+```
+python3 scripts/migrate_cache_0_3_0.py <cache-dir> --dry-run
+```
+
+Run it with `--dry-run` first and check the report. Options: `--strip-provider-prefix[=openai,anthropic,...]`
+also strips the provider prefix from Bifrost chat files (by default only embedding files are stripped, as chat
+file names cannot tell Bifrost from other platforms), and `--backup-dir` sets where the old files are moved
+(default `<cache-dir>/pre-0.3.0-backup`). Nothing is deleted. Do not run the script while a cache directory is in
+use.
+
+Redis entries are not migrated: entries written for Bifrost models by 0.2.1 contain the provider prefix in their
+key and are no longer hit.
 
 ### Backends
 
