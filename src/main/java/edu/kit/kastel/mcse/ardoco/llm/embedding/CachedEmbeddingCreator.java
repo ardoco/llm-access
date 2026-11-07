@@ -52,7 +52,8 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
     private final EmbeddingCacheParameter embeddingCacheParameter;
 
     /**
-     * Creates a new cached embedding creator with the specified model and thread count.
+     * Creates a new cached embedding creator with the specified model and thread count. The model name is used both
+     * for requests and for the cache identity.
      *
      * @param model        The name of the embedding model to use
      * @param threads      The number of threads to use for parallel embedding generation
@@ -61,10 +62,25 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
      * @param params       Additional parameters for the embedding model
      */
     protected CachedEmbeddingCreator(String model, int threads, EnvironmentProvider environment, CacheManager cacheManager, String... params) {
+        this(model, model, threads, environment, cacheManager, params);
+    }
+
+    /**
+     * Creates a new cached embedding creator whose cache identity differs from the requested model name.
+     *
+     * @param model          The name of the embedding model to use for requests
+     * @param cacheModelName The model name that identifies the cache (file name and Redis key)
+     * @param threads        The number of threads to use for parallel embedding generation
+     * @param environment    The environment that supplies credentials and host URLs
+     * @param cacheManager   The cache manager that provides the embedding cache
+     * @param params         Additional parameters for the embedding model
+     */
+    protected CachedEmbeddingCreator(String model, String cacheModelName, int threads, EnvironmentProvider environment, CacheManager cacheManager,
+            String... params) {
         // Assigned first: createEmbeddingModel (called below) is overridden by subclasses and reads the environment.
         this.environment = Objects.requireNonNull(environment, "environment must not be null");
         Objects.requireNonNull(cacheManager, "cacheManager must not be null");
-        this.embeddingCacheParameter = new EmbeddingCacheParameter(model);
+        this.embeddingCacheParameter = new EmbeddingCacheParameter(Objects.requireNonNull(cacheModelName, "cacheModelName must not be null"));
         this.cache = cacheManager.getCache(this, embeddingCacheParameter);
         this.embeddingModel = Objects.requireNonNull(createEmbeddingModel(model, params));
         this.rawNameOfModel = model;

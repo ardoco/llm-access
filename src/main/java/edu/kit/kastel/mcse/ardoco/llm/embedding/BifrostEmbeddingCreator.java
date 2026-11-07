@@ -19,7 +19,8 @@ import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
  * </ul>
  *
  * Model names are prefixed with their provider, for example {@code openai/text-embedding-3-small}. The creator
- * uses 40 threads for parallel processing of embedding requests, like the OpenAI creator.
+ * caches under the name without prefix (see {@link Bifrost#cacheModelName(String)}), so entries are shared with the OpenAI
+ * creator. It uses 40 threads for parallel processing of embedding requests, like the OpenAI creator.
  */
 public class BifrostEmbeddingCreator extends CachedEmbeddingCreator {
     /** Default number of threads for parallel processing */
@@ -33,7 +34,7 @@ public class BifrostEmbeddingCreator extends CachedEmbeddingCreator {
      * @param cacheManager The cache manager that provides the embedding cache
      */
     public BifrostEmbeddingCreator(String model, EnvironmentProvider environment, CacheManager cacheManager) {
-        super(model, THREADS, environment, cacheManager);
+        super(model, Bifrost.cacheModelName(model), THREADS, environment, cacheManager);
     }
 
     /**
