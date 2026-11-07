@@ -59,7 +59,7 @@ public final class EmbeddingCacheKey implements CacheKey {
      * @return A new embedding cache key
      */
     static EmbeddingCacheKey of(EmbeddingCacheParameter cacheParameter, String content) {
-        return new EmbeddingCacheKey(cacheParameter.modelName(), -1, -1, cacheParameter.mode(), content, KeyGenerator.generateKey(content));
+        return new EmbeddingCacheKey(cacheParameter.modelName(), -1, -1, LargeLanguageModelCacheMode.EMBEDDING, content, KeyGenerator.generateKey(content));
     }
 
     /**
