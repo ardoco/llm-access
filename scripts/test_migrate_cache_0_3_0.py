@@ -74,6 +74,21 @@ class MigrateTest(unittest.TestCase):
         self.assertIn("Chat_llama3.1__8b_1.json", self.files())
         self.assertIn("Chat_anthropic--claude_1.json", self.files())
 
+    def test_targets_differing_only_in_case_are_skipped(self):
+        self.write("SimpleClassifier_GPT-4.1_1.json", {K1: '"a"'})
+        self.write("ReasoningClassifier_gpt-4.1_1.json", {K2: '"b"'})
+        code, out = self.run_main()
+        self.assertEqual(code, 1)
+        self.assertIn("differs only in case", out)
+        self.assertEqual(self.files(), ["ReasoningClassifier_gpt-4.1_1.json", "SimpleClassifier_GPT-4.1_1.json"])
+
+    @unittest.skipUnless(os.name == "posix", "POSIX file modes")
+    def test_file_mode_is_kept(self):
+        self.write("SimpleClassifier_m_1.json", {K1: '"a"'})
+        os.chmod(os.path.join(self.d, "SimpleClassifier_m_1.json"), 0o644)
+        self.run_main()
+        self.assertEqual(os.stat(os.path.join(self.d, "Chat_m_1.json")).st_mode & 0o777, 0o644)
+
     def test_custom_provider_list(self):
         self.write("SimpleClassifier_foo--x_1.json", {K1: '"a"'})
         self.run_main("--strip-provider-prefix=foo")
@@ -95,7 +110,7 @@ class MigrateTest(unittest.TestCase):
         before = self.files()
         code, out = self.run_main("--dry-run")
         self.assertEqual(code, 0)
-        self.assertIn("dry run — nothing written", out)
+        self.assertIn("dry run - nothing written", out)
         self.assertEqual(self.files(), before)
         self.assertEqual(self.read("SimpleClassifier_m_1.json"), {K1: '"a"'})
 
