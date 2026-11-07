@@ -58,19 +58,17 @@ class CacheManagerTest {
     @DisplayName("getCache rejects null arguments")
     void getCacheRejectsNull() {
         CacheManager manager = CacheManager.getDefaultInstance();
-        ChatCacheParameter parameter = new ChatCacheParameter("m", 1, 0.0);
         ChatCacheParameter noParameter = null;
-        assertThrows(IllegalArgumentException.class, () -> manager.getCache(null, parameter));
-        assertThrows(IllegalArgumentException.class, () -> manager.getCache(this, noParameter));
+        assertThrows(IllegalArgumentException.class, () -> manager.getCache(noParameter));
     }
 
     @Test
-    @DisplayName("getCache returns the same instance for the same origin and parameters")
+    @DisplayName("getCache returns the same instance for equal parameters")
     void getCacheIsMemoized() {
         CacheManager manager = CacheManager.getDefaultInstance();
         ChatCacheParameter parameter = new ChatCacheParameter("m", 1, 0.0);
-        Cache<ChatCacheKey> first = manager.getCache(this, parameter);
-        Cache<ChatCacheKey> second = manager.getCache(this, parameter);
+        Cache<ChatCacheKey> first = manager.getCache(parameter);
+        Cache<ChatCacheKey> second = manager.getCache(new ChatCacheParameter("m", 1, 0.0));
         assertSame(first, second);
     }
 
@@ -79,40 +77,84 @@ class CacheManagerTest {
     void getCacheConflictsOnDifferentParameters() {
         CacheManager manager = CacheManager.getDefaultInstance();
         // Two parameters with the same file identifier that are not equal to each other (identity equality).
-        manager.getCache(this, new ConstantParameter());
-        assertThrows(IllegalArgumentException.class, () -> manager.getCache(this, new ConstantParameter()));
+        manager.getCache(new ConstantParameter());
+        assertThrows(IllegalArgumentException.class, () -> manager.getCache(new ConstantParameter()));
+    }
+
+    @Test
+    @DisplayName("cache names are Chat_ and Embedding_ plus the parameters, independent of the caller")
+    void cacheNamesFollowModeAndParameters() {
+        CacheManager manager = CacheManager.getDefaultInstance();
+        manager.getCache(new ChatCacheParameter("gpt-4o-mini", 42, 0.0)).put("key", "value");
+        manager.getCache(new ChatCacheParameter("gpt-4o-mini", 42, 0.5)).put("key", "value");
+        manager.getCache(new EmbeddingCacheParameter("text-embedding-3-small")).put("key", new float[] { 1.0f });
+        manager.flush();
+
+        assertTrue(Files.exists(tempCacheDir.resolve("Chat_gpt-4o-mini_42.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Chat_gpt-4o-mini_42_0.5.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Embedding_text-embedding-3-small.json")));
+    }
+
+    @Test
+    @DisplayName("a chat and an embedding parameter with the same parameters() use separate files")
+    void chatAndEmbeddingCachesAreSeparate() {
+        CacheManager manager = CacheManager.getDefaultInstance();
+        Cache<ChatCacheKey> chat = manager.getCache(new ModeParameter(LargeLanguageModelCacheMode.CHAT, "same"));
+        Cache<ChatCacheKey> embedding = manager.getCache(new ModeParameter(LargeLanguageModelCacheMode.EMBEDDING, "same"));
+        chat.put("key", "chat-value");
+        embedding.put("key", "embedding-value");
+        manager.flush();
+
+        assertNotSame(chat, embedding);
+        assertTrue(Files.exists(tempCacheDir.resolve("Chat_same.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Embedding_same.json")));
+        assertEquals("chat-value", chat.get("key", String.class));
+        assertEquals("embedding-value", embedding.get("key", String.class));
+    }
+
+    @Test
+    @DisplayName("end to end: a new manager reads migrated-style Chat_ and Embedding_ files")
+    void readsMigratedStyleFiles() throws IOException {
+        Path fixtures = Path.of("src/test/resources/cache");
+        Files.copy(fixtures.resolve("Chat_gpt-4o-mini_42.json"), tempCacheDir.resolve("Chat_gpt-4o-mini_42.json"));
+        Files.copy(fixtures.resolve("Embedding_text-embedding-3-small.json"), tempCacheDir.resolve("Embedding_text-embedding-3-small.json"));
+
+        CacheManager fresh = new CacheManager(tempCacheDir, environment);
+
+        assertEquals("world", fresh.getCache(new ChatCacheParameter("gpt-4o-mini", 42, 0.0)).get("hello", String.class));
+        assertArrayEquals(new float[] { 0.5f, -1.0f, 2.0f }, fresh.getCache(new EmbeddingCacheParameter("text-embedding-3-small")).get("hello", float[].class));
     }
 
     @Test
     @DisplayName("colons in cache identifiers are sanitized in the file name")
     void sanitizesColonsInFileName() {
         CacheManager manager = CacheManager.getDefaultInstance();
-        Cache<ChatCacheKey> cache = manager.getCache(this, new ChatCacheParameter("a:b", 1, 0.0));
+        Cache<ChatCacheKey> cache = manager.getCache(new ChatCacheParameter("a:b", 1, 0.0));
         cache.put("key", "value");
         manager.flush();
 
-        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_a__b_1.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Chat_a__b_1.json")));
     }
 
     @Test
     @DisplayName("slashes in model names are encoded so chat and embedding caches are written directly into the cache directory")
     void encodesPathSeparatorsInFileName() throws IOException {
         CacheManager manager = CacheManager.getDefaultInstance();
-        Cache<ChatCacheKey> chat = manager.getCache(this, new ChatCacheParameter("openai/gpt-4o-mini", 1, 0.0));
-        Cache<EmbeddingCacheKey> embedding = manager.getCache(this, new EmbeddingCacheParameter("openai/text-embedding-3-small"));
+        Cache<ChatCacheKey> chat = manager.getCache(new ChatCacheParameter("openai/gpt-4o-mini", 1, 0.0));
+        Cache<EmbeddingCacheKey> embedding = manager.getCache(new EmbeddingCacheParameter("openai/text-embedding-3-small"));
         chat.put("prompt", "answer");
         embedding.put("text", new float[] { 1.0f, 2.0f });
         assertDoesNotThrow(manager::flush);
 
-        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_openai--gpt-4o-mini_1.json")));
-        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_openai--text-embedding-3-small.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Chat_openai--gpt-4o-mini_1.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Embedding_openai--text-embedding-3-small.json")));
         try (var entries = Files.list(tempCacheDir)) {
             assertTrue(entries.noneMatch(Files::isDirectory), "no subdirectory may be created");
         }
 
         CacheManager reloaded = new CacheManager(tempCacheDir, environment);
-        assertEquals("answer", reloaded.getCache(this, new ChatCacheParameter("openai/gpt-4o-mini", 1, 0.0)).get("prompt", String.class));
-        assertArrayEquals(new float[] { 1.0f, 2.0f }, reloaded.getCache(this, new EmbeddingCacheParameter("openai/text-embedding-3-small"))
+        assertEquals("answer", reloaded.getCache(new ChatCacheParameter("openai/gpt-4o-mini", 1, 0.0)).get("prompt", String.class));
+        assertArrayEquals(new float[] { 1.0f, 2.0f }, reloaded.getCache(new EmbeddingCacheParameter("openai/text-embedding-3-small"))
                 .get("text", float[].class));
     }
 
@@ -120,21 +162,21 @@ class CacheManagerTest {
     @DisplayName("backslashes in cache identifiers are encoded in the file name")
     void encodesBackslashesInFileName() {
         CacheManager manager = CacheManager.getDefaultInstance();
-        manager.getCache(this, new ChatCacheParameter("a\\b", 1, 0.0)).put("key", "value");
+        manager.getCache(new ChatCacheParameter("a\\b", 1, 0.0)).put("key", "value");
         manager.flush();
 
-        assertTrue(Files.exists(tempCacheDir.resolve("CacheManagerTest_a--b_1.json")));
+        assertTrue(Files.exists(tempCacheDir.resolve("Chat_a--b_1.json")));
     }
 
     @Test
     @DisplayName("flush persists cache entries to disk")
     void flushPersists() throws IOException {
         CacheManager manager = CacheManager.getDefaultInstance();
-        Cache<ChatCacheKey> cache = manager.getCache(this, new ChatCacheParameter("model", 7, 0.0));
+        Cache<ChatCacheKey> cache = manager.getCache(new ChatCacheParameter("model", 7, 0.0));
         cache.put("prompt", "answer");
         manager.flush();
 
-        Path file = tempCacheDir.resolve("CacheManagerTest_model_7.json");
+        Path file = tempCacheDir.resolve("Chat_model_7.json");
         assertTrue(Files.exists(file));
         assertTrue(Files.readString(file).contains("answer"));
     }
@@ -170,7 +212,7 @@ class CacheManagerTest {
         CacheManager manager = new CacheManager(tempCacheDir, unreachableRedis);
         ChatCacheParameter parameter = new ChatCacheParameter("m", 1, 0.0);
 
-        JedisConnectionException exception = assertThrows(JedisConnectionException.class, () -> manager.getCache(this, parameter));
+        JedisConnectionException exception = assertThrows(JedisConnectionException.class, () -> manager.getCache(parameter));
         assertTrue(exception.getMessage().contains("127.0.0.1:1"), "the connection must use the injected REDIS_URL");
     }
 
@@ -181,6 +223,19 @@ class CacheManagerTest {
             return "constant";
         }
 
+        @Override
+        public LargeLanguageModelCacheMode mode() {
+            return LargeLanguageModelCacheMode.CHAT;
+        }
+
+        @Override
+        public ChatCacheKey createCacheKey(String content) {
+            return new ChatCacheParameter("m", 1, 0.0).createCacheKey(content);
+        }
+    }
+
+    /** A parameter that only differs in mode and identifier, used to check that modes get separate caches. */
+    private record ModeParameter(LargeLanguageModelCacheMode mode, String parameters) implements CacheParameter<ChatCacheKey> {
         @Override
         public ChatCacheKey createCacheKey(String content) {
             return new ChatCacheParameter("m", 1, 0.0).createCacheKey(content);

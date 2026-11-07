@@ -40,7 +40,7 @@ class ChatModelUtilsTest {
     }
 
     private Cache<ChatCacheKey> cache() {
-        return CacheManager.getDefaultInstance().getCache(this, new ChatCacheParameter("test-model", 42, 0.0));
+        return CacheManager.getDefaultInstance().getCache(new ChatCacheParameter("test-model", 42, 0.0));
     }
 
     @Test

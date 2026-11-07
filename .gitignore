@@ -47,3 +47,6 @@ hs_err_pid*
 .AppleDouble
 .LSOverride
 ._*
+
+# Python
+__pycache__/

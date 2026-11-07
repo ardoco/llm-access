@@ -153,6 +153,11 @@ class CacheTest {
         }
 
         @Override
+        public LargeLanguageModelCacheMode mode() {
+            return LargeLanguageModelCacheMode.CHAT;
+        }
+
+        @Override
         public TestCacheKey createCacheKey(String content) {
             return TestCacheKey.of(this, content);
         }
