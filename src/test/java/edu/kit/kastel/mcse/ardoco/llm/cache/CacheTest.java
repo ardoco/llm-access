@@ -57,6 +57,17 @@ class CacheTest {
     }
 
     @Test
+    @DisplayName("flushAll writes pending entries of all local caches")
+    void testFlushAll() throws IOException {
+        Cache<TestCacheKey> cache = createLocalCache();
+        cache.put("key1", "pending-value");
+
+        LocalCache.flushAll();
+
+        assertTrue(Files.readString(tempCacheDir.resolve("test_cache.json")).contains("pending-value"));
+    }
+
+    @Test
     @DisplayName("Existing cache entries are retrieved from cache file")
     void testRetrieveExistingEntry() throws IOException {
         Cache<TestCacheKey> cache1 = createLocalCache();

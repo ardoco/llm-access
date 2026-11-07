@@ -75,6 +75,9 @@ var many = ChatModelUtils.nCachedRequest("Summarize X", model, cache, 5); // 5 s
 cache.flush(); // persist
 ```
 
+Local caches for the same file are shared across `CacheManager` instances, and pending entries are written on JVM
+shutdown. Calling `flush()` at the end of a run is still recommended.
+
 Alternatively, wrap any `ChatModel` in a `CachingChatModel` decorator to cache transparently (including
 multi-message chats) without changing call sites:
 

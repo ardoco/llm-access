@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
      * All local caches by normalized file path, so that one file is backed by exactly one instance.
      */
     private static final Map<Path, LocalCache<?>> INSTANCES = new ConcurrentHashMap<>();
+
+    private static final AtomicBoolean SHUTDOWN_HOOK_REGISTERED = new AtomicBoolean();
 
     /**
      * Maximum number of modifications before automatic flush.
@@ -82,6 +85,7 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
      */
     @SuppressWarnings("unchecked")
     static <K extends CacheKey> LocalCache<K> forFile(String cacheFile, CacheParameter<K> cacheParameter) {
+        registerShutdownHook();
         Path path = Path.of(Objects.requireNonNull(cacheFile)).toAbsolutePath().normalize();
         LocalCache<?> existing = INSTANCES.compute(path, (p, current) -> {
             if (current == null) {
@@ -93,6 +97,25 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
             return current;
         });
         return (LocalCache<K>) existing;
+    }
+
+    private static void registerShutdownHook() {
+        if (SHUTDOWN_HOOK_REGISTERED.compareAndSet(false, true)) {
+            Runtime.getRuntime().addShutdownHook(new Thread(LocalCache::flushAll, "llm-access-cache-flush"));
+        }
+    }
+
+    /**
+     * Writes the pending entries of every local cache to disk. A failing cache is logged and does not stop the others.
+     */
+    static void flushAll() {
+        for (LocalCache<?> cache : INSTANCES.values()) {
+            try {
+                cache.flush();
+            } catch (RuntimeException e) {
+                logger.error("Could not flush cache file {}", cache.cacheFile, e);
+            }
+        }
     }
 
     /**
