@@ -18,6 +18,15 @@ public interface CacheParameter<K extends CacheKey> {
     String parameters();
 
     /**
+     * Provides the mode of operation that is cached with these parameters. Its
+     * {@link LargeLanguageModelCacheMode#cacheNamePrefix() prefix} starts the cache name, so that caches of different
+     * modes never share a file.
+     *
+     * @return The cache mode
+     */
+    LargeLanguageModelCacheMode mode();
+
+    /**
      * Creates a cache key based on the content and the cache parameters.
      * The created key combines the cache configuration with the content to be cached.
      *

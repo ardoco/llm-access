@@ -182,6 +182,11 @@ class CacheManagerTest {
         }
 
         @Override
+        public LargeLanguageModelCacheMode mode() {
+            return LargeLanguageModelCacheMode.CHAT;
+        }
+
+        @Override
         public ChatCacheKey createCacheKey(String content) {
             return new ChatCacheParameter("m", 1, 0.0).createCacheKey(content);
         }
