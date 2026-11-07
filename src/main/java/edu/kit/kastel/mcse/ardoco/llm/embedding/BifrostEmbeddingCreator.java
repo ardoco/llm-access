@@ -53,6 +53,7 @@ public class BifrostEmbeddingCreator extends CachedEmbeddingCreator {
                 .customHeaders(Bifrost.headers(apiKey))
                 .modelName(model)
                 .timeout(Duration.ofMinutes(5))
+                .maxRetries(0)
                 .build();
     }
 }
