@@ -67,6 +67,8 @@ class ArchitectureTest {
                                 .filter(m -> !m.getOwner().isEquivalentTo(Object.class))
                                 // parameters() generates the cache file name and is not used in key creation
                                 .filter(m -> !m.getName().equals("parameters"))
+                                // mode() is fixed per key type (a ChatCacheKey is always CHAT) and only selects the file name prefix
+                                .filter(m -> !m.getName().equals("mode"))
                                 // createCacheKey() is the factory that calls of(), not the other way round
                                 .filter(m -> !m.getName().equals("createCacheKey"))
                                 .filter(m -> !m.getName().equals("equals"))
