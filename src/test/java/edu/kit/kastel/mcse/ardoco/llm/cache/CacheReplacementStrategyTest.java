@@ -44,7 +44,7 @@ class CacheReplacementStrategyTest {
      * Factory method to create a LocalCache instance for testing
      */
     private Cache<TestCacheKey> createLocalCache(String cachePrefix) {
-        return new LocalCache<>(tempCacheDir.resolve(cachePrefix + "_cache.json").toString(), new TestCacheParameter());
+        return LocalCache.forFile(tempCacheDir.resolve(cachePrefix + "_cache.json").toString(), new TestCacheParameter());
     }
 
     // ==================== NONE Strategy String Tests ====================
@@ -368,6 +368,16 @@ class CacheReplacementStrategyTest {
     }
 
     static class TestCacheParameter implements CacheParameter<TestCacheKey> {
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof TestCacheParameter;
+        }
+
+        @Override
+        public int hashCode() {
+            return TestCacheParameter.class.hashCode();
+        }
+
         @Override
         public String parameters() {
             return "test-cache";

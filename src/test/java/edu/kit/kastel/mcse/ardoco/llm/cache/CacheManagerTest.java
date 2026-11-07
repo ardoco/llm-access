@@ -205,6 +205,31 @@ class CacheManagerTest {
     }
 
     @Test
+    @DisplayName("managers on the same directory share one cache object per file")
+    void managersShareLocalCache() throws IOException {
+        Path dir = Files.createDirectory(tempCacheDir.resolve("shared"));
+        CacheManager first = new CacheManager(dir, environment);
+        CacheManager second = new CacheManager(dir, environment);
+
+        Cache<ChatCacheKey> viaFirst = first.getCache(new ChatCacheParameter("shared-model", 1, 0.0));
+        Cache<ChatCacheKey> viaSecond = second.getCache(new ChatCacheParameter("shared-model", 1, 0.0));
+        viaFirst.put("key", "value");
+
+        assertSame(viaFirst, viaSecond);
+        assertEquals("value", viaSecond.get("key", String.class));
+    }
+
+    @Test
+    @DisplayName("managers on the same directory reject the same file with different parameters")
+    void managersRejectConflictingParameters() throws IOException {
+        Path dir = Files.createDirectory(tempCacheDir.resolve("conflict"));
+        new CacheManager(dir, environment).getCache(new ConstantParameter());
+        CacheManager second = new CacheManager(dir, environment);
+
+        assertThrows(IllegalArgumentException.class, () -> second.getCache(new ConstantParameter()));
+    }
+
+    @Test
     @DisplayName("getCache passes the injected environment on to the Redis cache")
     void passesEnvironmentToRedisCache() throws IOException {
         // Port 1 is never a Redis server: if REDIS_URL reaches the Redis cache, connecting to it must fail.

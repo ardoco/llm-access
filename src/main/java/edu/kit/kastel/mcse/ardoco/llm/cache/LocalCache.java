@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
@@ -26,6 +30,13 @@ import tools.jackson.databind.json.JsonMapper;
 class LocalCache<K extends CacheKey> implements Cache<K> {
 
     private static final ObjectMapper MAPPER = JsonMapper.builderWithJackson2Defaults().build();
+
+    private static final Logger logger = LoggerFactory.getLogger(LocalCache.class);
+
+    /**
+     * All local caches by normalized file path, so that one file is backed by exactly one instance.
+     */
+    private static final Map<Path, LocalCache<?>> INSTANCES = new ConcurrentHashMap<>();
 
     /**
      * Maximum number of modifications before automatic flush.
@@ -54,10 +65,34 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
      * @param cacheFile      The path to the cache file
      * @param cacheParameter The cache parameter configuration
      */
-    LocalCache(String cacheFile, CacheParameter<K> cacheParameter) {
+    private LocalCache(String cacheFile, CacheParameter<K> cacheParameter) {
         this.cacheParameter = Objects.requireNonNull(cacheParameter);
         this.cacheFile = new File(Objects.requireNonNull(cacheFile));
         createLocalStore();
+    }
+
+    /**
+     * Returns the local cache for the given file. All callers asking for the same file share one instance.
+     *
+     * @param <K>            The type of cache key
+     * @param cacheFile      The path to the cache file
+     * @param cacheParameter The cache parameter configuration
+     * @return The shared cache instance of this file
+     * @throws IllegalArgumentException If the file is already in use with different parameters
+     */
+    @SuppressWarnings("unchecked")
+    static <K extends CacheKey> LocalCache<K> forFile(String cacheFile, CacheParameter<K> cacheParameter) {
+        Path path = Path.of(Objects.requireNonNull(cacheFile)).toAbsolutePath().normalize();
+        LocalCache<?> existing = INSTANCES.compute(path, (p, current) -> {
+            if (current == null) {
+                return new LocalCache<>(cacheFile, cacheParameter);
+            }
+            if (!current.cacheParameter.equals(cacheParameter)) {
+                throw new IllegalArgumentException("Cache file " + path + " already exists with different parameters");
+            }
+            return current;
+        });
+        return (LocalCache<K>) existing;
     }
 
     /**
