@@ -80,7 +80,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
         // Assigned first: createEmbeddingModel (called below) is overridden by subclasses and reads the environment.
         this.environment = Objects.requireNonNull(environment, "environment must not be null");
         Objects.requireNonNull(cacheManager, "cacheManager must not be null");
-        this.embeddingCacheParameter = new EmbeddingCacheParameter(Objects.requireNonNull(cacheModelName, "cacheModelName must not be null"));
+        this.embeddingCacheParameter = new EmbeddingCacheParameter(cacheModelName);
         this.cache = cacheManager.getCache(embeddingCacheParameter);
         this.embeddingModel = Objects.requireNonNull(createEmbeddingModel(model, params));
         this.rawNameOfModel = model;

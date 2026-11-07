@@ -1,6 +1,8 @@
 /* Licensed under MIT 2026. */
 package edu.kit.kastel.mcse.ardoco.llm.cache.embedding;
 
+import java.util.Objects;
+
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.cache.LargeLanguageModelCacheMode;
 
@@ -12,6 +14,15 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.LargeLanguageModelCacheMode;
  * @param modelName The name of the embedding model used for generating embeddings
  */
 public record EmbeddingCacheParameter(String modelName) implements CacheParameter<EmbeddingCacheKey> {
+    /**
+     * Creates the cache parameters.
+     *
+     * @param modelName The name of the embedding model used for generating embeddings
+     */
+    public EmbeddingCacheParameter {
+        Objects.requireNonNull(modelName, "modelName must not be null");
+    }
+
     @Override
     public String parameters() {
         return modelName;
