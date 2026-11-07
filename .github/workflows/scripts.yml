@@ -1,0 +1,25 @@
+name: Scripts
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+      - name: Test migration script
+        run: python -m unittest discover -v scripts
