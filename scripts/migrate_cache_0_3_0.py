@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Migrate llm-access local caches (<=0.2.x) to the 0.3.0 file naming.
 
-Usage:
+Usage (Linux/macOS: python3, Windows: py):
     python3 scripts/migrate_cache_0_3_0.py <dir> [--dry-run]
         [--strip-provider-prefix[=openai,ollama]] [--backup-dir PATH]
 
@@ -98,7 +98,15 @@ def plan(directory, options=None):
             p.skipped.append((name, "content does not match kind (" + ("embedding" if embedding else "chat") + ")"))
             continue
         groups.setdefault(target, []).append((name, data))
+    # Windows and macOS file systems are usually case-insensitive: never let targets differ only in case.
+    lower = {}
+    for name in [n for n in os.listdir(directory) if n.startswith(("Chat_", "Embedding_"))] + list(groups):
+        lower.setdefault(name.lower(), set()).add(name)
     for target, sources in sorted(groups.items()):
+        clash = sorted(lower[target.lower()] - {target})
+        if clash:
+            p.skipped.extend((n, f"target {target} differs only in case from {clash[0]}") for n, _ in sources)
+            continue
         tpath = os.path.join(directory, target)
         merged, owner = {}, {}
         if os.path.exists(tpath):
@@ -137,7 +145,10 @@ def apply(p):
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as f:
                 json.dump(t["data"], f, separators=(",", ":"), ensure_ascii=False)
-            os.replace(tmp, os.path.join(p.directory, target))
+            tpath = os.path.join(p.directory, target)
+            # mkstemp creates the file as owner-only; keep the permissions of the file being replaced.
+            shutil.copymode(tpath if os.path.exists(tpath) else os.path.join(p.directory, t["sources"][0]), tmp)
+            os.replace(tmp, tpath)
         except BaseException:
             if os.path.exists(tmp):
                 os.remove(tmp)
@@ -162,7 +173,7 @@ def report(p, dry_run, out=print):
     if not p.targets and not p.skipped:
         out("nothing to migrate")
     if dry_run:
-        out("dry run — nothing written")
+        out("dry run - nothing written")
 
 
 def main(argv=None):

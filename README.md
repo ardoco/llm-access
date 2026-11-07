@@ -205,6 +205,8 @@ the new names:
 python3 scripts/migrate_cache_0_3_0.py <cache-dir> --dry-run
 ```
 
+The script needs only Python 3 and runs on Linux, macOS and Windows (use `py` instead of `python3` on Windows).
+
 Run it with `--dry-run` first and check the report. Options: `--strip-provider-prefix[=openai,ollama]`
 also strips the provider prefix from Bifrost chat files (by default only embedding files are stripped, as chat
 file names cannot tell Bifrost from other platforms), and `--backup-dir` sets where the old files are moved
