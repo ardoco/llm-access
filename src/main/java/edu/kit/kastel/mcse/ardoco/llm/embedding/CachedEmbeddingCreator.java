@@ -81,7 +81,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
         this.environment = Objects.requireNonNull(environment, "environment must not be null");
         Objects.requireNonNull(cacheManager, "cacheManager must not be null");
         this.embeddingCacheParameter = new EmbeddingCacheParameter(Objects.requireNonNull(cacheModelName, "cacheModelName must not be null"));
-        this.cache = cacheManager.getCache(this, embeddingCacheParameter);
+        this.cache = cacheManager.getCache(embeddingCacheParameter);
         this.embeddingModel = Objects.requireNonNull(createEmbeddingModel(model, params));
         this.rawNameOfModel = model;
         this.params = params;
