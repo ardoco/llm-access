@@ -28,6 +28,8 @@ import tools.jackson.databind.json.JsonMapper;
  * <p>
  * Each cache manager holds the {@link EnvironmentProvider} it was created with; it reads the cache configuration
  * from it and passes it on to the Redis-based caches for their connection settings.
+ * <p>
+ * Cache managers are thread-safe.
  */
 public final class CacheManager {
     /**
@@ -45,7 +47,7 @@ public final class CacheManager {
      */
     private static final CacheReplacementStrategy DEFAULT_REPLACEMENT_STRATEGY = CacheReplacementStrategy.NONE;
 
-    private static @Nullable CacheManager defaultInstanceManager;
+    private static volatile @Nullable CacheManager defaultInstanceManager;
     private final Path directoryOfCaches;
     private final CacheReplacementStrategy replacementStrategy;
     private final List<CacheType> hierarchyConfig;
@@ -206,7 +208,7 @@ public final class CacheManager {
      * @return A cache instance for the specified parameters
      * @throws IllegalArgumentException If the parameters are null, or if a cache with the same name but different parameters exists
      */
-    public <K extends CacheKey> Cache<K> getCache(CacheParameter<K> parameters) {
+    public synchronized <K extends CacheKey> Cache<K> getCache(CacheParameter<K> parameters) {
         if (parameters == null) {
             throw new IllegalArgumentException("Parameters must not be null");
         }
@@ -286,7 +288,7 @@ public final class CacheManager {
      * Flushes all caches managed by this cache manager.
      * This ensures that all pending changes are written to disk.
      */
-    public void flush() {
+    public synchronized void flush() {
         for (Cache<?> cache : caches.values()) {
             cache.flush();
         }
