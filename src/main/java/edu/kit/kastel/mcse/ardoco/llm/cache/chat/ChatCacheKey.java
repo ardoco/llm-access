@@ -58,8 +58,8 @@ public final class ChatCacheKey implements CacheKey {
      * @return A new chat cache key
      */
     static ChatCacheKey of(ChatCacheParameter cacheParameter, String content) {
-        return new ChatCacheKey(cacheParameter.modelName(), cacheParameter.seed(), cacheParameter.temperature(), LargeLanguageModelCacheMode.CHAT, content,
-                KeyGenerator.generateKey(content));
+        return new ChatCacheKey(cacheParameter.modelName(), cacheParameter.seed(), cacheParameter.temperature(), cacheParameter.mode(), content, KeyGenerator
+                .generateKey(content));
     }
 
     /**

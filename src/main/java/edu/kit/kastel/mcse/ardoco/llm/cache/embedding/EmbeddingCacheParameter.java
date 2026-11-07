@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.llm.cache.embedding;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheParameter;
+import edu.kit.kastel.mcse.ardoco.llm.cache.LargeLanguageModelCacheMode;
 
 /**
  * Cache parameters for embedding operations.
@@ -14,6 +15,11 @@ public record EmbeddingCacheParameter(String modelName) implements CacheParamete
     @Override
     public String parameters() {
         return modelName;
+    }
+
+    @Override
+    public LargeLanguageModelCacheMode mode() {
+        return LargeLanguageModelCacheMode.EMBEDDING;
     }
 
     @Override
