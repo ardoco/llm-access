@@ -3,7 +3,7 @@
 
 Usage:
     python3 scripts/migrate_cache_0_3_0.py <dir> [--dry-run]
-        [--strip-provider-prefix[=openai,anthropic,...]] [--backup-dir PATH]
+        [--strip-provider-prefix[=openai,ollama]] [--backup-dir PATH]
 
 Old files `<Origin>_<params>.json` become `Chat_<params>.json` or
 `Embedding_<params>.json`; files that map to the same target are merged.
@@ -21,9 +21,8 @@ import sys
 import tempfile
 from dataclasses import dataclass, field
 
-# Known Bifrost provider ids (used by --strip-provider-prefix without a value).
-DEFAULT_PROVIDERS = ("openai,anthropic,azure,bedrock,vertex,gemini,mistral,groq,cohere,ollama,"
-                     "openrouter,cerebras,perplexity,xai,sgl,vllm,parasail,elevenlabs,huggingface")
+# Bifrost providers that map to a native llm-access platform (used by --strip-provider-prefix without a value).
+DEFAULT_PROVIDERS = "openai,ollama"
 NAME_RE = re.compile(r"^([A-Za-z0-9$]+)_(.+)\.json$")
 
 
