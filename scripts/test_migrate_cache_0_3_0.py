@@ -67,6 +67,13 @@ class MigrateTest(unittest.TestCase):
         self.assertIn("Chat_gpt-4o-mini_1.json", self.files())
         self.assertIn("Chat_meta-llama--x_1.json", self.files())
 
+    def test_default_providers_are_openai_and_ollama(self):
+        self.write("SimpleClassifier_ollama--llama3.1__8b_1.json", {K1: '"a"'})
+        self.write("SimpleClassifier_anthropic--claude_1.json", {K1: '"b"'})
+        self.run_main("--strip-provider-prefix")
+        self.assertIn("Chat_llama3.1__8b_1.json", self.files())
+        self.assertIn("Chat_anthropic--claude_1.json", self.files())
+
     def test_custom_provider_list(self):
         self.write("SimpleClassifier_foo--x_1.json", {K1: '"a"'})
         self.run_main("--strip-provider-prefix=foo")
