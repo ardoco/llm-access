@@ -55,4 +55,21 @@ public final class Bifrost {
     public static Map<String, String> headers(String apiKey) {
         return Map.of(VIRTUAL_KEY_HEADER, apiKey);
     }
+
+    /**
+     * Derives the model name used in cache identities from a Bifrost model name. The provider prefix (everything up to
+     * and including the first {@code /}) is removed so that Bifrost shares cache entries with the native platforms.
+     * Requests to the gateway keep the prefixed name.
+     *
+     * @param modelName The provider-prefixed model name, e.g., {@code openai/gpt-4o-mini}
+     * @return The model name without provider prefix, e.g., {@code gpt-4o-mini}; unchanged if it has no {@code /}
+     * @throws IllegalArgumentException If nothing remains after removing the prefix
+     */
+    public static String cacheModelName(String modelName) {
+        String name = modelName.substring(modelName.indexOf('/') + 1);
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("Bifrost model name has no model after the provider prefix: " + modelName);
+        }
+        return name;
+    }
 }
