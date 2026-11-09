@@ -15,6 +15,7 @@ openwiki:
   symbols: [Cache, Cache.createByType, Cache.convert, Cache.getViaInternalKey, Cache.putViaInternalKey, CacheKey, CacheKey.toJsonKey, CacheKey.localKey, CacheParameter, CacheType, LargeLanguageModelCacheMode]
   test_paths:
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
     - src/test/resources/cache/test-local-cache-sample.json
   invariants:
     - Cache values are stored as JSON strings; on failed deserialization a String-typed value is returned raw (legacy unserialized entries), any other failure throws IllegalArgumentException.
@@ -24,8 +25,8 @@ openwiki:
     - getViaInternalKey and putViaInternalKey are deprecated and reserved for the long-text embedding recovery path and layer conflict resolution.
   validation_commands: ["mvn -q test -Dtest=CacheTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-824a85d7be154153c14cda51
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
@@ -41,8 +42,12 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheType.java
   - id: openwiki-source-ba0dc6c01c930c4c675be60f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java
+  - id: openwiki-source-afc251b7258caad3fb7240df
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java
   - id: openwiki-source-277faa567866b847ad915298
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java
+  - id: openwiki-source-0e1a34dfb56fd22da704bad5
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheParameter.java
   - id: openwiki-source-9254ad363ba331094d066d08
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/HierarchicalCache.java
   - id: openwiki-source-acabfe13463ce32bcd989af3
@@ -55,10 +60,13 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-91e90e06abef694a92ea2a06
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-4feeab6332f6627178c60394
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
   - id: openwiki-source-80764162ff1e0089fe344077
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
   - id: openwiki-source-bf8ab9bc4c233ef5bca4a282
     resource: repo://src/test/resources/cache/test-local-cache-sample.json
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Cache Core
@@ -145,12 +153,28 @@ implementations.
 
 - `String parameters()` — a unique string identifying the configuration (model/seed/temperature
   for chat, model name for embedding); it is the file-name component `CacheManager` uses for
-  `LocalCache` files (`<Origin>_<parameters>.json`).
+  `LocalCache` files (`<Origin>_<parameters>.json`). `CacheManager` sanitizes the composed name
+  for the file system: colons become `__` and forward/backward slashes become `--`, so
+  provider-prefixed model names like `openai/gpt-4o-mini` yield safe file names.
 - `K createCacheKey(String content)` — combines the configuration with the content into a key.
   This is the single point where caller-facing content strings become cache keys.
 
-`ChatCacheParameter` and `EmbeddingCacheParameter` are the two concrete records — see
+`ChatCacheParameter` and `EmbeddingCacheParameter` are the two concrete records. For backward
+compatibility, `ChatCacheParameter.parameters()` omits the temperature component when it is `0.0`
+(the historical zero-temperature file identifier is preserved), and `EmbeddingCacheParameter`
+carries only the model name because embeddings are deterministic — see
 [Cache Keys](cache-keys.md).
+
+## Structural guardrails: ArchitectureTest
+
+`ArchitectureTest` structurally enforces key completeness with two ArchUnit rules over all
+non-test classes: every `CacheKey` implementation must have a static `of(CacheParameter, String)`
+that reads **all** `CacheParameter` attributes, and every `CacheParameter.parameters()` must
+access **all** of its fields. A missing attribute silently shares cache entries (same key) or
+cache files (same file name) across configurations and returns wrong cached results, so a
+violation fails the build. The test-local `TestCacheKey`/`TestCacheParameter` helpers in
+`CacheTest` satisfy the same contract (they carry no configuration attributes). See
+[Testing Strategy](../testing/strategy.md) for how the ArchUnit rules fit into the overall gate.
 
 ## CacheType and LargeLanguageModelCacheMode
 

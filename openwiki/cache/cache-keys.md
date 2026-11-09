@@ -17,16 +17,18 @@ openwiki:
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
   invariants:
     - KeyGenerator.generateKey normalizes CRLF to LF and returns a stable type-3 name-based UUID; generateKey("test") must remain 098f6bcd-4621-3373-8ade-4e832627b4f6 because the value is part of the on-disk cache format.
     - ChatCacheParameter.parameters() omits the temperature component when it is 0.0, keeping LocalCache file names compatible with LiSSA caches (<Origin>_<model>_<seed>[_<temperature>].json).
     - EmbeddingCacheParameter.parameters() is the bare model name; EmbeddingCacheKey pins seed and temperature to -1 (information-free backward-compatibility markers) and the mode to EMBEDDING.
     - localKey is a content UUID from KeyGenerator, is excluded from toJsonKey via @JsonIgnore, and is part of equals/hashCode.
     - The mode (CHAT/EMBEDDING) is a serialized key field, so the two domains never collide in Redis; parameters() in the cache file name separates configurations locally.
-  validation_commands: ["mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest"]
+    - ArchitectureTest makes key-completeness omissions fail the build: CacheKey.of must call every CacheParameter accessor and CacheParameter.parameters() must access all fields, because a missing attribute silently shares cache entries or files across configurations.
+  validation_commands: ["mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest,ArchitectureTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-4fd2e823addcf84d995a9216
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
@@ -44,16 +46,21 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java
   - id: openwiki-source-9c0be2a8e438a2a14ff8210b
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-91e90e06abef694a92ea2a06
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-4feeab6332f6627178c60394
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
   - id: openwiki-source-f42e03b15fcff2355b421087
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java
   - id: openwiki-source-b6ade7291953ac7833ab5561
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java
   - id: openwiki-source-ae96d7bc45dacf528f83daad
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Cache Keys
@@ -142,6 +149,16 @@ through the equally deprecated `Cache.getViaInternalKey`. `EmbeddingCacheKeyTest
 guards that `ofRaw` preserves the custom local key. See [Embeddings](../embeddings/embeddings.md)
 for the surrounding recovery flow.
 
+The truncation path is also where **provider-prefixed model names** meet the key layer. Bifrost
+creators address models as `<provider>/<model>` (e.g. `openai/text-embedding-3-small`, see
+[Bifrost Gateway](../integrations/bifrost-gateway.md)), and that full prefixed string is both the
+`EmbeddingCacheParameter` model name (so the cache file name) and the model passed to the jtokkit
+registry in `tryToFixWithLength`. `CachedEmbeddingCreator.findEncoding` resolves the tokenizer by
+trying the name as given first, and — when the registry knows no such model — retries the lookup
+with everything up to and including the last `/` stripped off. This keeps the recovery path working
+for prefixed names even though jtokkit itself only knows bare model identifiers; a name unknown in
+both forms still aborts with `IllegalArgumentException` (the "not a token-length problem" branch).
+
 ## How one entry gets two addresses
 
 ```mermaid
@@ -190,6 +207,30 @@ cache entries:
 Redis-backed caches are equally sensitive: `toJsonKey()` is their address, so any change to the
 serialized fields of either key class invalidates stored Redis entries.
 
+## Structural guardrail: key completeness
+
+A key or file identifier that silently drops a configuration attribute is the most dangerous
+failure mode of this layer: if `of(...)` does not read a `CacheParameter` attribute, two different
+configurations produce the same key and share cache entries; if `parameters()` does not access a
+field, two configurations share one cache file. Both return **wrong cached results without any
+error**. `ArchitectureTest` makes such omissions fail the build with two ArchUnit rules over all
+non-test classes:
+
+- `cacheKeysMustHaveOfMethodWithCacheParameter` — every concrete `CacheKey` implementation must
+  have a static `of(CacheParameter, String)` whose body calls **every** non-`Object` accessor of
+  the parameter type (only `parameters()`, `createCacheKey`, `equals`, `hashCode`, and `toString`
+  are excluded as non-configuration methods). `ChatCacheKey.of` and `EmbeddingCacheKey.of` pass by
+  reading `modelName`, `seed`, and `temperature` (and pinning `mode` internally); removing any of
+  those calls from an `of` method fails the build.
+- `cacheParametersMustUseAllFieldsInParametersMethod` — every `CacheParameter.parameters()` must
+  access all non-static fields, either directly or via the record accessor. The deliberate
+  temperature-`0.0` omission in `ChatCacheParameter.parameters()` still satisfies the rule because
+  the `temperature` field is read (compared) inside the method — the guardrail enforces access,
+  not unconditional inclusion.
+
+See [Cache Core](cache-core.md) for how the rules fit into the wider structural gate and
+[Testing Strategy](../testing/strategy.md) for their place in the overall test gate.
+
 ## Focused tests
 
 - `ChatCacheKeyTest` — `parametersOmitZeroTemperature` (`gpt-4o_42`),
@@ -200,5 +241,8 @@ serialized fields of either key class invalidates stored Redis entries.
   (asserts `EMBEDDING` present, local key absent), `ofRawCustomLocalKey`, and `equality`.
 - `KeyGeneratorTest` — `deterministic`, `normalizesLineEndings`, `distinctInputs`,
   `stableUuidValue` (the pinned `098f6bcd-4621-3373-8ade-4e832627b4f6`), and `nullInput`.
+- `ArchitectureTest` — the two structural key-completeness rules described above; they run over
+  the whole `edu.kit.kastel.mcse.ardoco.llm` package (tests excluded) and fail the build on any
+  violation rather than testing individual keys.
 
-Run with `mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest`.
+Run with `mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest,ArchitectureTest`.

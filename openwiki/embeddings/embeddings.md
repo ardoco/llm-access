@@ -1,11 +1,11 @@
 ---
 type: Architecture
 title: Embeddings
-description: The EmbeddingCreator factory and platform creators (OpenAI, Ollama, ONNX, Open WebUI, Mock), EmbeddingConfiguration, and CachedEmbeddingCreator's caching, parallel execution, and long-text recovery.
-tags: [embedding, cache, parallelism, architecture]
+description: The EmbeddingCreator factory and platform creators (OpenAI, Ollama, ONNX, Open WebUI, Bifrost, Mock), EmbeddingConfiguration, and CachedEmbeddingCreator's caching, parallel execution, token-length recovery, and provider-prefixed tokenizer fallback.
+tags: [embedding, cache, parallelism, architecture, bifrost]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-824a85d7be154153c14cda51
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
@@ -13,6 +13,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
   - id: openwiki-source-277faa567866b847ad915298
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-d750b4fe48944bf1f4e1e0d7
@@ -31,6 +33,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java
   - id: openwiki-source-4cb1f7f9ff22fa760910f687
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenWebUiEmbeddingCreator.java
+  - id: openwiki-source-74ec3f5f99ed6a20eea5c444
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
   - id: openwiki-source-37d33de6b9946b71ff708a8e
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Futures.java
   - id: openwiki-source-91e90e06abef694a92ea2a06
@@ -41,7 +45,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java
   - id: openwiki-source-6657b8392fc18b157b18e55c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Embeddings
@@ -82,9 +86,10 @@ falls back to the name `"mock"`. When no environment is set, `build()` creates a
 `SystemEnvironment`, so an unset configuration still reads the process environment and the
 optional `.env` file.
 
-`EmbeddingPlatform` is the enum `OLLAMA`, `OPENAI`, `ONNX`, `OPENWEBUI`, `MOCK`. Its static
-`fromString` resolves names case-insensitively and throws `IllegalArgumentException` for unknown
-names — it is the parse point for string-driven configurations.
+`EmbeddingPlatform` is the enum `OLLAMA`, `OPENAI`, `ONNX`, `OPENWEBUI`, `BIFROST`, `MOCK`. Its
+static `fromString` resolves names case-insensitively — `"bifrost"` just as much as `"Mock"` — and
+throws `IllegalArgumentException` for unknown names; it is the parse point for string-driven
+configurations.
 
 ## The EmbeddingCreator factory
 
@@ -99,6 +104,7 @@ dispatches on the configuration's `platform()`:
 | `OPENAI` | `OpenAiEmbeddingCreator` | 40 | `OPENAI_API_KEY`; optional `OPENAI_ORGANIZATION_ID` |
 | `ONNX` | `OnnxEmbeddingCreator` | 1 | non-null `pathToModel` and `pathToTokenizer` (checked with `requireNonNull` here, existence checked by the creator) |
 | `OPENWEBUI` | `OpenWebUiEmbeddingCreator` | 1 | `OPENWEBUI_URL` and `OPENWEBUI_API_KEY` |
+| `BIFROST` | `BifrostEmbeddingCreator` | 40 | `BIFROST_API_KEY` and `BIFROST_URL` |
 | `MOCK` | `MockEmbeddingCreator` | — | none; the cache manager is ignored |
 
 The caching creators receive the `CacheManager` as a constructor argument — they never resolve the
@@ -118,15 +124,22 @@ needed.
 
 ## Platform creators
 
-All four real creators extend `CachedEmbeddingCreator` and implement only
+All five real creators extend `CachedEmbeddingCreator` and implement only
 `createEmbeddingModel(String model, String... params)`, reading their credentials from the
 protected `environment()` accessor:
 
-- **OpenAI** (`OpenAiEmbeddingCreator`) — the only multi-threaded creator: it passes
-  `THREADS = 40` to the base constructor. It requires `OPENAI_API_KEY` (via `getenvNonNull`, so a
-  missing key fails fast with `IllegalStateException`), sends `OPENAI_ORGANIZATION_ID` only when
-  it is set, and builds the LangChain4j `OpenAiEmbeddingModel` with `maxRetries(0)` so failures
-  surface immediately instead of being retried inside the client.
+- **OpenAI** (`OpenAiEmbeddingCreator`) — one of the two multi-threaded creators (`THREADS = 40`,
+  like Bifrost). It requires `OPENAI_API_KEY` (via `getenvNonNull`, so a missing key fails fast
+  with `IllegalStateException`), sends `OPENAI_ORGANIZATION_ID` only when it is set, and builds the
+  LangChain4j `OpenAiEmbeddingModel` with `maxRetries(0)` so failures surface immediately instead
+  of being retried inside the client.
+- **Bifrost** (`BifrostEmbeddingCreator`) — the other multi-threaded creator (`THREADS = 40`). It
+  requires `BIFROST_API_KEY` and `BIFROST_URL`, which the shared `Bifrost` utility resolves from
+  the environment via `getenvNonNull` (a missing variable fails fast with `IllegalStateException`;
+  the gateway semantics live in [Bifrost Gateway](../integrations/bifrost-gateway.md)). It builds
+  the LangChain4j `OpenAiEmbeddingModel` pointed at the gateway URL with a five-minute timeout,
+  sending the virtual key both as the bearer token and as the `x-bf-vk` custom header. Model names
+  are provider-prefixed, e.g. `openai/text-embedding-3-small`.
 - **Ollama** (`OllamaEmbeddingCreator`) — single-threaded. It requires `OLLAMA_EMBEDDING_HOST` and,
   when both `OLLAMA_EMBEDDING_USER` and `OLLAMA_EMBEDDING_PASSWORD` are set and non-empty, sends a
   `Basic` `Authorization` header. The request timeout is five minutes.
@@ -200,7 +213,7 @@ flowchart TD
     HIT -- "no" --> EMBED["model.embed(content)"]
     EMBED -- "success" --> PUT["cache the vector and return it"]
     EMBED -- "exception" --> FIX["tryToFixWithLength"]
-    FIX --> KNOWN{"jtokkit knows the model?"}
+    FIX --> KNOWN{"jtokkit knows the model, after retrying without the provider prefix?"}
     KNOWN -- "no" --> THROW["throw IllegalArgumentException"]
     KNOWN -- "yes" --> TOK{"full content below 8000 tokens?"}
     TOK -- "yes" --> THROW
@@ -208,7 +221,8 @@ flowchart TD
 ```
 
 *Execution path through `CachedEmbeddingCreator`: empty-input short-circuit, sequential versus
-parallel splitting, cache lookup, and the long-text recovery fallback.*
+parallel splitting, cache lookup, and the long-text recovery fallback (with the prefix-stripped
+tokenizer retry for provider-prefixed model names).*
 
 ### Long-text recovery
 
@@ -223,15 +237,25 @@ successfully on the real models. The recovery proceeds as follows:
    and the later store go through the deprecated `getViaInternalKey`/`putViaInternalKey` cache
    methods — the one sanctioned embedding use of that internal-key path, kept for backwards
    compatibility with existing caches. A hit returns the truncated embedding immediately.
-2. **Failure attribution.** The jtokkit encoding registry resolves the configured model name. If
-   the model is unknown to jtokkit, or the full content counts **fewer** than `MAX_TOKEN_LENGTH`
-   tokens, the original failure was not a length problem and the method throws
-   `IllegalArgumentException` ("Don't know how to handle previous exception") — the caller sees
-   the recovery failure, not a silently wrong embedding.
+2. **Failure attribution.** The jtokkit encoding registry resolves the configured model name
+   through `findEncoding`, which retries the lookup without a `provider/` prefix when the first
+   attempt fails. If no encoding is found even after that retry, or the full content counts
+   **fewer** than `MAX_TOKEN_LENGTH` tokens, the original failure was not a length problem and the
+   method throws `IllegalArgumentException` ("Unknown Embedding Model. Don't know how to handle
+   previous exception" or "Token length was not too long. Don't know how to handle previous
+   exception") — the caller sees the recovery failure, not a silently wrong embedding.
 3. **Binary-search truncation.** Otherwise a binary search over character offsets advances to the
    first prefix that reaches `MAX_TOKEN_LENGTH` tokens. That boundary prefix is embedded, and the
    resulting vector is stored under the fixed key so repeat requests for the same long text are
    served from the cache.
+
+**Provider-prefixed tokenizer fallback.** Bifrost and comparable gateways address models as
+`<provider>/<model>`, but jtokkit only knows bare model identifiers. `CachedEmbeddingCreator.findEncoding`
+therefore queries the registry with the name as given first and, when the registry knows no such
+model and the name contains a `/`, retries the lookup with everything up to and including the last
+`/` stripped — `openai/text-embedding-3-small` resolves `text-embedding-3-small`. A name unknown
+in both forms yields no encoding, and the truncation path aborts with the failure-attribution
+exception from step 2.
 
 The truncated vector is stored **only** under the `_fixed_` key; the original content key never
 receives a vector, so the untruncated text can never be answered with the wrong embedding.
@@ -261,16 +285,22 @@ silently missing vector.
 - `createUsesConfiguredEnvironment` / `createPassesEnvironmentToOpenWebUi` — `EmbeddingCreator.create`
   fails fast when a required credential is missing from the configured environment and otherwise
   instantiates the expected creator.
+- `createBuildsBifrostCreator` — `EmbeddingCreator.create` fails fast without `BIFROST_API_KEY`,
+  fails fast again when only the key is set, and builds a `BifrostEmbeddingCreator` once key and
+  URL are both present.
+- `truncatesOversizedInputForPrefixedModel` — an oversized input for the provider-prefixed model
+  `openai/text-embedding-3-small` fails once on the full text and is then retried with a truncated
+  prefix, exercising `findEncoding`'s prefix-stripped tokenizer fallback end to end.
 - `usesInjectedCacheManager` / `createUsesInjectedCacheManager` — the cache file lands in the
   injected manager's directory, and a manager configured for an unreachable Redis propagates the
   backend failure out of `create`.
 
 `EmbeddingConfigurationTest` covers `of`/`onnx`/builder construction, the non-blank model name
 requirement (with the MOCK exception), the `SystemEnvironment` default, case-insensitive
-`fromString`, the mock creator's zero vectors, and the `NullPointerException` when an ONNX
-configuration lacks its file paths. Run them with
-`mvn -q test -Dtest=CachedEmbeddingCreatorTest,EmbeddingConfigurationTest`; the environment and
-cache-manager injection rules are enforced by the ArchUnit tests described in
+`fromString` — including `"bifrost"` alongside `"openwebui"` and `"Mock"` — the mock creator's zero
+vectors, and the `NullPointerException` when an ONNX configuration lacks its file paths. Run them
+with `mvn -q test -Dtest=CachedEmbeddingCreatorTest,EmbeddingConfigurationTest`; the environment
+and cache-manager injection rules are enforced by the ArchUnit tests described in
 [Testing Strategy](../testing/strategy.md).
 
 ## Adding an embedding platform
@@ -281,7 +311,8 @@ cache-manager injection rules are enforced by the ArchUnit tests described in
    `createEmbeddingModel`. Pass the thread count, the `EnvironmentProvider`, and the `CacheManager`
    through to the super constructor, and hand extra builder inputs (such as file paths) over as
    `params`. Remember that `createEmbeddingModel` executes inside the super constructor, before
-   subclass fields exist.
+   subclass fields exist. Provider-prefixed model names (as for `BIFROST`) need no extra work: the
+   base class's `findEncoding` retries the tokenizer lookup without the prefix.
 3. Add a `case` to `EmbeddingCreator.create` and read credentials from the injected environment.
 4. Extend `EmbeddingConfigurationTest` and `CachedEmbeddingCreatorTest` (the latter's
    `RecordingEmbeddingCreator` shows the stub-model pattern).

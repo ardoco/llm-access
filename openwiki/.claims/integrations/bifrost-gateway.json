@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1a0d9f5437e472f8d99c6b7818f9aa47007d7589b9f4365a2ab8e9f9bac60f19",
+  "claims": [
+    {
+      "id": "claim_48f37c09f9054b469879203694166366",
+      "statement": "Both the chat and embedding subsystems resolve Bifrost's two required environment variables (BIFROST_API_KEY, BIFROST_URL) through the single shared util-layer helper edu.kit.kastel.mcse.ardoco.llm.util.Bifrost, making Bifrost the only platform whose credential-resolution code itself is shared across the two consumer subsystems rather than duplicated in each subsystem's factory.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L261-L272",
+          "version": "repo-lines-v1:sha256:35e735c6b74e3b9fb7f38112bd2fb8d9d3a14c31e48fed66b823cd296eb0b7e9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjE1NjRlYTRjNjQ2M2M3ZGU3YWEwOWE0MGI2N2M4MjJmZjM3YTU2MzdhZWU2Y2VkNWY5NDJjYjM3OTFiNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczMGEyZTc0NjNkNWZmYzZhZDc3ZmU4YmE4OTQ5YmE3MzIwMjEzNjc1ZTBmN2RlMDJhYmMyNTBkOTQ5OWFhNzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmNzI3Y2NkZGYyNmY4ZmE4OGYzMzVhNmRmNTYzMDczY2RkNDlmYmM3ZTM5ZTRkNzExMzA4NzRlNWNlMzY3MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmI5ZTIxZmRjODZmYzJjMmVlNDQ3MjE4NWQ2NzY0NjdiZGQxY2JmMmUyNGI0ZGM2NDRhYjFhYmIzMzI1NDcifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L48-L57",
+          "version": "repo-lines-v1:sha256:9a3c9cba94445c6a52377602672442e1ad790f44a587d129f11968909192d7fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljMTdmM2FmY2Y4YmFkMWEwNDUwOGM5MWIyOGFlMDY4MTkyMDYxZGE1OGE2NzY3NzNlNjZhNzNhMDU1NzM1ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L16-L58",
+          "version": "repo-lines-v1:sha256:f3f678fad887221c0452233806d91f31954a261ba8b62b550829ad87565d2b96:eyJzZWxlY3RlZExpbmVDb3VudCI6NDMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5NzBkZDFkN2JlNzAwYzk3YjRjNDQ2YmIyNzFmZjRhNWEwMTdhMTVlZDc4YWY1YTczNjU4OThjMDhlNjk4YWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyZWVhYjQ5ZTZkMjcxYzg0MDFlMWQ0MjliMmU3OGZhYjlhY2M0NDEwMTdjMTBhM2VjOGQ2ZjIxODY3ZGZhYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f37bc3b0c41b4c2ea2a534b648e6c309",
+      "statement": "Bifrost.baseUrl(environment) and Bifrost.apiKey(environment) resolve BIFROST_URL and BIFROST_API_KEY via EnvironmentProvider.getenvNonNull, which throws IllegalStateException when the variable is unset, so both Bifrost consumers fail fast against whatever EnvironmentProvider their configuration carries; there are no optional Bifrost environment variables.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L34-L49",
+          "version": "repo-lines-v1:sha256:65705c14024ef6839596ccc61c4ed65c99c112fbec8f4ae541d6f0f16aa1db05:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZhYTg1NTczMzU5YTViOWJiMzI5ODliNDEzN2FjNTY0NTc4MDNiNWI0YmIwZTljODJiMDgzNjQyMzE5ZTI4ZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkNzUxMzc4MTMxMDBiOGMyNWY0N2Q3YmIwMGRlNjgzMWE5ZTU5NTEyMjk3Mjg4NzViYTdmZjA4OGNmZjE2M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwNjM0OTk3YTRhNTM5NThhOWU4Yzc3OTkzZTY4NzBiODFmMmQ4Mjg4YjZlOTBlMGM1OGI1N2U3NWE1ZjI4NjYifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java#L35-L41",
+          "version": "repo-lines-v1:sha256:a4fc5efcc91df83e16cec64085993540cb05623f24bacf32e515137063ba7171:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGU5MmViYWQzYTAyYzIxZDBhYTMxM2U0NzBlMTZhNzgzZjliOGI3MDg1NmNmZTJkZDk4YTJjZDUwNWE3YjNjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2FiOTJkZTk2OWE0M2M5NGY2ZDg0NGNlY2ExODFiMzI3ZmM4YzRiMzg0OWZlNThkMDlmZDk3ODUyNjhjODU4NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c6cc4d3f4da4de0a26948438af3463d",
+      "statement": "Bifrost.headers(apiKey) returns the single-entry map with key x-bf-vk and the virtual key as value, and every Bifrost consumer sends the same virtual key twice: as the LangChain4j client's apiKey (bearer token) and as the x-bf-vk custom header, the header through which Bifrost accepts the virtual key in addition to the bearer token.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L265-L269",
+          "version": "repo-lines-v1:sha256:5a944d011d2d4f7e477a8a078545727346bf5e873b49057d239e666bc06b3eb4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmEyMjczODk2ZGYxYmVjZDNlNzBlMGNjYzhjYmExMGUyNjQ3NjgyOTNlYTlhOGIzM2M5YWI2NTM1MmI2Nzg0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjliMmQ2ZTc2MzZlMTRiMzNkZjUxNzk3ZjA0NzhjYjQ3YTljMzg4N2Y4ZGM2YzU5NGFmMWFjNDAzYzY1ODk1ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDgwYTU5MjA3MmE5OTFkNWE5MjdmNmRmMzY3YTBhMTEwN2M3ZTg1NzVkYjNjNDY4NjYwYjBiMjI1ZGYwMTA5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWQ5MzM1ODQzMDM3MDEwOWJiNWM3MzViYmExM2RmNjgxZjQ3M2YzNzMzN2E5MzVjNjNmODNhNGMxYzhmNTlkMyJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L50-L54",
+          "version": "repo-lines-v1:sha256:099d90d12920b24ed0ec6a4f90cedaa0a7479eeb6d863b52a5abae708d29fb3e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTg2ODIwOWVjZjYwZjhkN2QyNzg2N2QzNmU3ZTgwNDk4NTg3MzUyZjkyZDhlMDUzNWZkNTdhZDE4Y2QyNWM5MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFiMmFmNTBkMDEzNWI1OTU3YjgzYmVlYjk1N2ZlNDQ1NTg0MTQwNDFhODFhM2NmMmI3NzkxYTY5Nzc4ZmE5ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWI4ZDk5MjRmNmM1ODQwZmNiMDM2MDQ5NGZiNTlmZjQzY2E4NzU5MjBkZjQ2MDMwYTRiOWNiNmYzMTA2NTMzZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDE2YzM5YjUyM2VjYjliNmRlYzEwMDkyMDU0NDRhNDFmYWUyMjIyZmM5NDg0ZGU5MDAyNzNjNDdiMmJlMWFmYiJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L21-L56",
+          "version": "repo-lines-v1:sha256:aceaf98af074c1032482562710312dd54db74908a5e5af8e32c271cf9f48384d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3ZTgwNzRhMWRiMWRmZTYxZTBhNDBkZjA0MGZkYzUyMmI4NWJjOWEwNzEzNjI4MWViYjk3NTc0MGExNWZkYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5YjgwMDQ5YTY4NzNlNTU4ZjE2MzIwYTc3ZGYzZDc1Y2JmZjI0ODc4MjI4YTI5MzYzZTg0NjVlNTM2YjVjZjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhOGJmNDRmYTNiODZiMjliNWE5YjA2MDkzNTI3YThkOTdkYWYzMmJjZGMxMjlhNTdiMTZlODIxM2UxOTMxNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8425ec0717864231b6ff699582c95334",
+      "statement": "ChatModelProvider.createBifrostChatModel resolves BIFROST_URL and BIFROST_API_KEY eagerly inside createChatModel() (so a missing variable aborts the factory call) and hands the resolved values to a LazyChatModel supplier that, on the first chat call, builds an OpenAiChatModel at BIFROST_URL with the configured model name, temperature, seed, the key as bearer token plus x-bf-vk header, and an explicit 10-minute timeout.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L124-L272",
+          "version": "repo-lines-v1:sha256:e486b0cdd0c4f62ce5ca318f6f944358617078766046cfacd8db0b2d5462647f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmNGY1MTllNjkwYWViMDIxNTIwNjk4NWIxOTc2NDQwMTE4MzYxNDZiMTEwNzM2MzZlNDNjY2NlMGUxOWNmNGE1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3MzBhMmU3NDYzZDVmZmM2YWQ3N2ZlOGJhODk0OWJhNzMyMDIxMzY3NWUwZjdkZTAyYWJjMjUwZDk0OTlhYTczIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3Yzg4NGU2Nzg4ZjczNGYzNWQ5M2QwNDBiZTdjNWJmZjkwYjRkZDc3NTk1NzJhODg2YTM4ZDA5NThkMjdlODYzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI1ZTJiOWUyMWZkYzg2ZmMyYzJlZTQ0NzIxODVkNjc2NDY3YmRkMWNiZjJlMjRiNGRjNjQ0YWIxYWJiMzMyNTQ3In0"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java#L45-L51",
+          "version": "repo-lines-v1:sha256:7f25f0ae94dad29b9397c126ad7e8245bd5c1b214cfe7324be862670e2e5d4b6:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODdlMmYyY2IyNzhmNzA0YWY3MjNjNDlmODY2MjE1ZGIyZWMyNzgwMmRmYTExMjMzNzBhM2RjOTRkZDBlM2VlYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODdlMmYyY2IyNzhmNzA0YWY3MjNjNDlmODY2MjE1ZGIyZWMyNzgwMmRmYTExMjMzNzBhM2RjOTRkZDBlM2VlYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzkxY2E5YzEyM2Y1YWM2ZDA3NDI0NjFhYzZhODcyNmI0NjIyZTM3MTFjZWYxMzA2MmMzYmNmYjIxNTZiZmZjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_882ef331e0434a0fa8814f8ecbe3f8b1",
+      "statement": "BifrostEmbeddingCreator is one of the two multi-threaded embedding creators (THREADS = 40, matching OpenAiEmbeddingCreator; the other caching creators run single-threaded) and implements only createEmbeddingModel, which builds an OpenAiEmbeddingModel at the gateway URL with the key as bearer token plus x-bf-vk header and an explicit 5-minute timeout, and sets no explicit maxRetries unlike OpenAiEmbeddingCreator's maxRetries(0).",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L24-L57",
+          "version": "repo-lines-v1:sha256:5a36a441bc865cbc88bda227e47e7b18e72f066062fe6c16392c87e1c07df2a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlhN2YzODU4MmZlMDhkM2U1ZGMwMzBjNjM4YTRhMDkzNjMwZDlhYmU5Mzc4NDU1NDhlY2UzNTA2ZGY4MTc0NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2OWJhNmMyNTlmNDllYzk5M2ZjNzE4Nzg5MDEzZDA1MTY0NWU3MTliMDA4MjViMDYzOTUzODU0M2Q0ZGU4MzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java#L46-L55",
+          "version": "repo-lines-v1:sha256:76bf8e6f82687c03cdb98a9b21775261eee41050d0b184381ab2006a580419ca:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1NmQ4N2U1NmY3NTkzMzdkMmNhZDkyNzY5YWU4NTU1YWQ2NGQ3ZmIzZTk2ZTYyMDQzMzg4ZjViOGQ1YThmZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiZWMxMmVkNzVhNzRlOGIzZGY1MzkzYjgxMGI3ODgzN2IzNzIwMWY2Y2IwMDdhODNkNDU5MGEwYjZiNmU0NTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f47ca2953c1f4c549992bcfe771cd3e3",
+      "statement": "On the embedding side, Bifrost settings are resolved when the creator is constructed (CachedEmbeddingCreator's constructor invokes the overridden createEmbeddingModel), and the parallel path of calculateEmbeddings builds one model instance per worker thread via another createEmbeddingModel call, so a full 40-worker batch re-resolves the BIFROST_API_KEY/BIFROST_URL pair through the shared helper up to 40 times.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L48-L57",
+          "version": "repo-lines-v1:sha256:9a3c9cba94445c6a52377602672442e1ad790f44a587d129f11968909192d7fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljMTdmM2FmY2Y4YmFkMWEwNDUwOGM5MWIyOGFlMDY4MTkyMDYxZGE1OGE2NzY3NzNlNjZhNzNhMDU1NzM1ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L107-L127",
+          "version": "repo-lines-v1:sha256:e32c2f51463c6eba749aa4fb8f366b76724a6fb6d4b9a5e4118fd836b14472cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiYzZhMjg5NGI2N2FjZjk0YjE1ODgxZjFkN2FlOTUxNDUxMmNiZjgyN2MzYjNjYjA3ZDFhMTU2Yzg4N2QwNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwODRkOTcyMzFhZmMzOWZkZGZlMjU2YmFiMTU1YmRjYzk2MzM3OTM4YzQzNDM2MDExMjg1Yzg3ZTBjNTY5YzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4NzhjZjBkNzljMWRhNzYxZTk3NGQ1N2E4OTI4NzZhMjRjYjA1NzcxYmE5ZGZkNTExZTgwNGJkMmM2ZGRjMGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQyYjAwN2FmOGM1NGFjYzAwMzE1OGIxY2ExYTYwMzczNjEwOWE5Y2M0Y2YxNWQyYzE5YzhiNGFhYzgwNDU5MTIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L63-L72",
+          "version": "repo-lines-v1:sha256:7f936ebac2d9fc03540000f6c3038d95559d0a1fa656ccddd2b94f042927c17f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1YTdkZGJmYjI3N2QyODkxMDk4NWU0NTJmMDhiMTBhMTMwNDE1Njg0MjgzNTRjMTlkNzIwM2ZlZjcwZGE2MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5ZTUyY2IxNjViZTUwYjQ2N2UxNzZkMGVlMWJkODk4MTc3NDA5MDg1ZmUyYzhiNzA3YWUxYTBlMWE1YjhjMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyYmQxNTc0ZDQwZWY3M2VlZDUwMmYyZjA5N2VhMjM1YTI1ODlkOGUxZWMxZWJjYmRkMjljMjEwNzRhNTdmZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmI5ZTIxZmRjODZmYzJjMmVlNDQ3MjE4NWQ2NzY0NjdiZGQxY2JmMmUyNGI0ZGM2NDRhYjFhYmIzMzI1NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b6bb666c7c147e683a7e98e33c3c429",
+      "statement": "Bifrost models are addressed as provider-prefixed names (openai/gpt-4o-mini for chat, openai/text-embedding-3-small for embeddings); the full prefixed string is passed to the client builders and becomes the EmbeddingCacheParameter model name, so it is part of the embedding cache identity.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheParameter.java#L9-L14",
+          "version": "repo-lines-v1:sha256:820a046b2bf7b553ffc4abb602374696bb63a43d2bc9c214509d490cba787a1f:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTdjMzNmOGE5N2M1NTNiM2U0YjQ4ZjNmMjI5MzNiY2Q1ZjAwZmRiNWE2YjA4YzMzMzk5YTA2OTAyNGExNjZlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmNmYjQ0MDFkNGY5M2E2YWUyZjg0MzIzMzFlZDNjYWYxMGE3YmZiOWRiOTczZWI0ODVhYmEwMDMwOTBkYThkMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTI4YWJmZjhjYTExMmM2NmUxNzkxMDE1MTUzYjk2YmIzNzVhMDgwYWExMTA4OTE3OWY3MTAxMDczY2EyZWQ0YiJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L10-L37",
+          "version": "repo-lines-v1:sha256:61ae89cbbac389373341d914cbd4d13a7fc9a724b248b91fe484cc0479b51e0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVhNTcwMGUyZjE3ODE2ODM2NjQ0ZmJlOGE3MzhjMGE1MDhiMjE5NGI3NGE3YjVlODFjY2ExNDEzNjRhOGU4YTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiNzY5MzI1NjZiZTUyODU0Njk1ZmI1M2E1ZjJmZTBjNGFiZGQ5ODI4N2EwMzM4YWFhOTY2MjJjODA3ZWM4NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmZjhkODczN2Y3NTVjOTI5NTk1M2E3Zjg4MjlkYjMzYTM3MDY3YjU1Njk4MjJmNmEwMWQ0Njc5YmM0MGZhYWUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L67-L69",
+          "version": "repo-lines-v1:sha256:c5c211f583c011b0ac9be447f47c9035cc9b7468fe34a96e2064cc12676ec35d:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjFhNmRlMjQ5NTEzODAwYmYxN2E1ZDc4ODFiMGNlZGJjMmRkZGNjN2JjYzU2M2RhZjE4NzUwYTVhNzM3ZDUzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmRmN2MxMjUwNjI5NTMwMjczN2MxM2IyMjNmZjA1NjA5ZTQyYzg2OTNjMjc4ZWQ3ODg4MDc2ZjNiZGMxMjZhOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTc3YTRlYzhjNzMzNTgxNGQ2YWJhYTdhZTY1MDVlMTkzY2ZjM2EzOGQ1Nzk1YTFhZGZmMTU4NDZlOTY5YWM0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTVlMmZmNjJkYWQzNGIyNTg3OGQ4NGIzYzIyZGQwM2VhY2U5ZDkwOTlmNjc0M2NlN2VhZGY3ZWFiZjkzMGMzYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a3360eed82f4f6a9243b3be04eecbd5",
+      "statement": "CachedEmbeddingCreator.findEncoding makes the embedding token-length recovery path work for provider-prefixed Bifrost model names: it queries the jtokkit registry with the name as given first and, when unknown and the name contains a slash, retries the lookup with everything up to and including the last slash stripped (openai/text-embedding-3-small resolves text-embedding-3-small); a name unknown in both forms aborts recovery with IllegalArgumentException.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L221-L264",
+          "version": "repo-lines-v1:sha256:fcd15cc498d651571a42dbb98fbd9386071faa8ee9b3e1cf2db18227496deeef:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MjJjNDJjZDE5YzZkMDNkODA4YzQ1MjcyMDU1MjgyNWI3ZWExYzViNDkxYjIxODUxMWNhYzc0MTVjZjlkOWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0NDgzZWM0OGRjYTA4NzI1ZTRjZjI2ZjFhY2Q4ZWZjMGMzZWE0M2ViY2Y4ZGQwOTEzZDk0ZWIzODUxNmQ1MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java#L174-L196",
+          "version": "repo-lines-v1:sha256:9e86a9e963fad177e7be91f9a0ecca991546144f5c45fd048b04ff776677bb66:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4ZWU3YzE5NjZhMDk0ZjIzMmZjN2JiNmQwY2Y5ODMyNTViZjkyNTJiYzYzZWFkMzMyMmQ4NjVjYmE0MTY1NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiNWZlNzBhMTNiNzg3NjRiMjgyNDVhMzQ5NDA1MzQwOGU4ZGE0MTFlN2ZmOGY3MTIwOWI1NzU0YTk2YWNhNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM2NGNmNjQyMjc4MWRhMjZhNTA4ZDFmMDk2NGI5NDIxMGE1MmI1MWM2MGZkOTVkODk4NTg0ZDZlMGEzZWI3MGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fdc579910abf4bb8a92d7c620300db6a",
+      "statement": "BifrostIntegrationTest is a live smoke test against a real gateway, gated by two @EnabledIfEnvironmentVariable conditions on both BIFROST_API_KEY and BIFROST_URL (each matching .+), so the whole class is silently disabled whenever either variable is unset; it makes one tiny chat request (openai/gpt-4o-mini, asserting a non-null non-blank answer) and one embedding request (openai/text-embedding-3-small against a LOCAL cache in a @TempDir, asserting a non-empty vector).",
+      "evidence": [
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java#L28-L64",
+          "version": "repo-lines-v1:sha256:3449036a0ce41f40c49f7813e3edc8ba0b5924687b364544d8a2a3771c75ede4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMTM1ZGUzZWIzNTZjNjE5OGNjZTU5ZGJlNTdhZTVmOGQ1MmUxNWY5Yjg5MzM2YjgwNjMyMzBjMTJhNWVjNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3NGQxN2RiYjFjOTQ0YTI4YWQ4Y2E0OTgxMTg3NDg2MTQ1YzUxMzY0YzdjNzRkNGZiNjE0NGVjMjVjYzA2NzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3YmFmOGVlYWU2MjVkYmZiOTM1ODk4MmQ0NmQ3NmVlMTI5ZjQ5NWJkODU2N2Q1MzU2NTMwYTYzZGU3NjEyNTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3ca024334db14f249bf41c1ff883c98a",
+      "statement": "The dedicated GitHub Actions workflow .github/workflows/bifrost.yml runs BifrostIntegrationTest against a real gateway on pushes to main (ignoring v* tags) and PRs with paths-ignore for docs/** and openwiki/** plus manual dispatch, injects BIFROST_API_KEY and BIFROST_URL from repository secrets, and skips fork pull requests and Dependabot actors because those events receive no secrets; it runs only the smoke test via mvn -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false and grants only contents: read.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/bifrost.yml#L1-L63",
+          "version": "repo-lines-v1:sha256:80319b21755b5bdfca928af9a4bc70e930f943df6df63731641c5fc6b178c2b0:eyJzZWxlY3RlZExpbmVDb3VudCI6NjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1NDY4NmI3ZjNkNDg4ZGE2NzlhOGZlYTRiODdjYzgwYTlkMTI4MWIwNDlmODA5YWEwZWMwMDBjOGFkMThlOTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMjcxYTkzZGYwNzQzMjA5N2NmY2E5NTg1MTA4MGI4N2I0ZjJjNGFmZTBmNGZmMmExZGQwNTY5YTk4ZjlkMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/verify.yml#L21-L32",
+          "version": "repo-lines-v1:sha256:42fbd5b32f0f0b9b0828b62eef1aba9584c55abefe43abcefe18c2ccd0c7b4f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzc5ZmI3NTI5OTU0NjRmNDgxMmFkNjJkMTQ4MGY4NDhkNGJkNDBmMTBlYzIzOGRlMTg5ZDcxYmM3MTk1YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c18a0fe9bdf54ed8b5b660696bac0761",
+      "statement": "The Bifrost helper's environment contract is pinned hermetically: BifrostTest uses a MapEnvironment to assert that the configured BIFROST_URL and BIFROST_API_KEY values are returned, that an empty environment yields IllegalStateException for both lookups, and that headers(key) equals the map x-bf-vk to key; the factory branches are covered by ChatModelProviderTest.buildsBifrostModel/bifrostRequiresKeyAndUrl and CachedEmbeddingCreatorTest.createBuildsBifrostCreator.",
+      "evidence": [
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L57-L68",
+          "version": "repo-lines-v1:sha256:1af7ca0bc3a0c634531df890f598b010a8933c70e0751e0cb04c8f6a254c024d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlOTFlOTdhZjE3OTdiNGI4NjczYmE2OWUyNDY4MzRmZTExZDk2MzJiY2FjNDdlOTg4YmMzZjEzNGNiNzUxZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNDliMTYzZWVlMDIwNTA4ZWJkZTA3ZTI4OGZmZTM3MjMyNjNiNjk2Y2ZiYTNhNTA2MGU5NGE1ZWQ3YTVlOGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4ZWFmM2UxZGIyODRmNmE2ZmQ0ZTA2NmFlMmZiNjU0YWU2OGZkZmNmM2U3ZTRkY2E0YzJkZDIxNGE0OWI5ZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4ZTg3MTY1MTU0OGZlYTcyODU3YzZhNGY4NTZhMzIyNTQ5NGFkZjM2NWFiMDllYWM4NWQwNTNhYWVjMjM5NjkifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java#L151-L172",
+          "version": "repo-lines-v1:sha256:7a21448a38b60e2fee58d07346505ce5d71bbc1ef71566507130eb9b1c952286:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjMTgzNjJjYzU3ZGIxYWM1ZThjNWQ4MTgyN2IwNGZkMzg2Yjk0Y2M5YTg5ZTQ0NDU5NTFmMGE0ODQ0NjcwMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4ZWFmM2UxZGIyODRmNmE2ZmQ0ZTA2NmFlMmZiNjU0YWU2OGZkZmNmM2U3ZTRkY2E0YzJkZDIxNGE0OWI5ZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1YWQ0MTcyNmMwZTI1MjFhZThmN2FjY2ZiMDZjOTgzMTVkZDIwYzQ2OGRjYzc3ODkzMjcyNzA3NzEzNGRmMGQifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/BifrostTest.java#L16-L41",
+          "version": "repo-lines-v1:sha256:304e9ca8ed041d6763d97bb4652b0ba3a78863d11002a573df5fca272e942b72:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxODQwMDMwNDY1NjRkMTIwMGQxYjFlZDgwNTU4NjBkODU5MmZlNzZmMmU2OTdhYzY5OWE4MmI3NTkzODE3Y2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJlZTk1NjA5NjA2NzExMDUxZDk4Nzk4YjhjNTEyNTNhNjFkOWFmODdkMjY0YTA4MDgwMjhlZDA2NzdiN2UwNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_504a02a9a7e441e0ad40ee7e2868472e",
+      "statement": "The regular Maven Verify workflow (verify.yml) delegates to the shared ardoco Maven workflow and passes only Central/GPG credentials — no Bifrost secrets — so in standard CI the hermetic suite runs while the env-gated BifrostIntegrationTest silently skips; bifrost.yml is the only CI context in which the library actually calls a Bifrost gateway.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/verify.yml#L21-L32",
+          "version": "repo-lines-v1:sha256:42fbd5b32f0f0b9b0828b62eef1aba9584c55abefe43abcefe18c2ccd0c7b4f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDgwMTU0ZWQ0MmZjNWM3NzliMTMzMTU3OGI1OGI4OWM4MDFlYWNlNzRmMjRjZDQ4ZWI0YTIzNTc5NDBhOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzc5ZmI3NTI5OTU0NjRmNDgxMmFkNjJkMTQ4MGY4NDhkNGJkNDBmMTBlYzIzOGRlMTg5ZDcxYmM3MTk1YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java#L32-L33",
+          "version": "repo-lines-v1:sha256:978ec0d290077f91b80ab1d0778e2795a82f9e68b2dc202e8437e2b966816f18:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWQyMzdlMGM0YThlOWQ0MDIwMjY3MDRlN2U2ZmJlMDZhNDAzZTRiNzY3MWM4NGQzYzU1OWVlN2I1N2QxYWMyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWVkNDBhOTVjOGRkZTIzZDU5ODUxOTUxZDk5OGVhNTM0MDI0N2U4MGZiODJhZWM4MTMzOWMyMGI0MGMwN2JmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzkwYTRhYmM4NjU1MTI3ZjFmYTJlYTFjNjY1NWQ3YmIwNWNlMjNlMzBjYzY2NmVhZWRiOTI5ZTc3NmNmZGE3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWJkMDRjYjU4YTE3Y2ZhMmYwYThiYmNiMDdlMTMzYjNiN2NlMjIxMGQ4ZjYwY2Q4YzU4NjFhMDBiMzZlNzkzNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e51c6cac2494713890e7e3b463be9f8",
+      "statement": "sample.env carries the Bifrost pair as a commented block in its chat section annotated as serving chat and embeddings, with BIFROST_URL shown as the base URL of the OpenAI-compatible API (e.g. https://domain.tld/v1) and model names documented as provider-prefixed.",
+      "evidence": [
+        {
+          "resource": "repo://sample.env#L23-L27",
+          "version": "repo-lines-v1:sha256:2387a27cfbc4d0cdfaaf0a6381d4fea7aef697fdca39d86d940a67f2aa5a3f1d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTY4NTEwOGY1YjAzNTgwMTlmZDFmYzM4Y2JlM2U3ZTkwMGFkOWQzYWJhOTRlNzA4MjU5M2JmOWE3N2ZhM2E0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDA3NWM1MDVlNzdjNDU4YTk0ZjdkNTEwNjBhZTBhM2FiZWE4ZDU1YmMwZWIyZjE0ZTIzMjkxMDFmYWZlMWQ1MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjY4MzA5M2IxNzUxOGJhNTY3Y2ZlNTM1ZmQwYWRhYTM2OWI0MGM0MWQ0ZDhkNThmNjY0NDI5NDAzNDg2MzQ5NiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-09T15:10:09.905Z"
+  }
+}

@@ -21,8 +21,8 @@ openwiki:
     - nCachedRequest and cachedRequest never flush; persistence is the caller's responsibility.
   validation_commands: ["mvn -q test -Dtest=CachingChatModelTest,ChatModelUtilsTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md

@@ -1,8 +1,8 @@
 ---
 type: Architecture
 title: Architecture Overview
-description: System map of the llm-access library — the chat, embedding, and cache subsystems plus the util layer, their dependency direction, the public API surface, and the cross-cutting no-global-environment invariant.
-tags: [architecture, overview, subsystems, dependency-direction, caching]
+description: System map of the llm-access library — the chat, embedding, and cache subsystems plus the util layer (including the shared Bifrost gateway helper), their one-way dependency direction, the framework-neutral public API surface, and the no-global-environment invariant.
+tags: [architecture, overview, subsystems, dependency-direction, caching, bifrost]
 openwiki:
   roles: [architecture, repository]
   change_kinds: [public-api, lifecycle]
@@ -14,22 +14,27 @@ openwiki:
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
+    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java
-  symbols: [ChatModelProvider, LlmConfiguration, LazyChatModel, CachingChatModel, EmbeddingCreator, EmbeddingCreator.create, CachedEmbeddingCreator, CacheManager, CacheManager.getDefaultInstance, Cache, ChatCacheParameter, EnvironmentProvider, SystemEnvironment, MapEnvironment, NoGlobalEnvironmentTest]
+    - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
+  symbols: [ChatModelProvider, LlmConfiguration, LazyChatModel, CachingChatModel, EmbeddingCreator, EmbeddingCreator.create, CachedEmbeddingCreator, BifrostEmbeddingCreator, Bifrost, CacheManager, CacheManager.getDefaultInstance, Cache, ChatCacheParameter, EnvironmentProvider, SystemEnvironment, MapEnvironment, NoGlobalEnvironmentTest, ArchitectureTest]
   test_paths:
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
   invariants:
     - Chat and embedding build on the cache subsystem; the cache subsystem reads its settings from an injected EnvironmentProvider; nothing depends on application-specific configuration objects.
     - Model name, seed, and temperature are part of chat cache identity, so runs with a fixed seed and temperature are reproducible from cache.
     - No static EnvironmentProvider fields; CacheManager.getDefaultInstance is callable only from EmbeddingCreator.create(EmbeddingConfiguration).
     - createChatModel fails fast on missing credentials but constructs the platform client lazily via LazyChatModel.
+    - Bifrost settings are resolved once through the shared util-layer Bifrost helper by both the chat and the embedding subsystem.
+    - ArchitectureTest guards cache-key completeness structurally: CacheKey.of must read every CacheParameter attribute and CacheParameter.parameters must access all fields.
   validation_commands: ["mvn verify"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-2355f81d7cf522f8dbdaabd4
     resource: repo://pom.xml
@@ -55,6 +60,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java
   - id: openwiki-source-fac3ed967ea0ee2556a0e7eb
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-d750b4fe48944bf1f4e1e0d7
@@ -65,10 +72,15 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/MockEmbeddingCreator.java
   - id: openwiki-source-bbadcb97ac85a13457f94d29
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java
+  - id: openwiki-source-74ec3f5f99ed6a20eea5c444
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
+  - id: openwiki-source-4feeab6332f6627178c60394
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
   - id: openwiki-source-4b6b4f64ed3940f2c842548e
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java
   - id: openwiki-source-6657b8392fc18b157b18e55c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Architecture Overview
@@ -77,19 +89,21 @@ sources:
 embedding models through [LangChain4j](https://docs.langchain4j.dev/), with a pluggable caching
 layer around both. The code is organized into four subsystems whose dependency direction is
 one-way: the **chat** and **embedding** subsystems build on the **cache** subsystem, and the cache
-subsystem reads its configuration from the **util** layer. [Quickstart](../quickstart.md) routes
-change areas to the dedicated pages; this page is the map of how the parts fit together.
+subsystem reads its configuration from the **util** layer, which also hosts the shared
+[Bifrost](../integrations/bifrost-gateway.md) gateway helper that both consumer subsystems use.
+[Quickstart](../quickstart.md) routes change areas to the dedicated pages; this page is the map of
+how the parts fit together.
 
 ## Subsystems and dependency direction
 
 | Subsystem | Package(s) | Core types | Depends on |
 | --- | --- | --- | --- |
-| util | `...llm.util` | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `KeyGenerator`, `Futures` | nothing internal (dotenv-java, slf4j) |
+| util | `...llm.util` | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `KeyGenerator`, `Futures`, `Bifrost` | nothing internal (dotenv-java, slf4j) |
 | cache | `...llm.cache` (+ `cache.chat`, `cache.embedding`) | `Cache`, `CacheKey`, `CacheParameter`, `CacheType`, `CacheManager`, `HierarchicalCache`, `LocalCache`, `RedisCache`, `RestRedisCache` | util (`EnvironmentProvider`) |
-| chat | `...llm.chat` | `ChatModelProvider`, `LlmConfiguration`, `ChatModelPlatform`, `LazyChatModel`, `CachingChatModel`, `ChatModelUtils` | cache (typed chat keys and parameters), util |
-| embedding | `...llm.embedding` | `EmbeddingCreator`, `EmbeddingConfiguration`, `EmbeddingPlatform`, `CachedEmbeddingCreator` and platform creators | cache (`CacheManager`), util |
+| chat | `...llm.chat` | `ChatModelProvider`, `LlmConfiguration`, `ChatModelPlatform`, `LazyChatModel`, `CachingChatModel`, `ChatModelUtils` | cache (typed chat keys and parameters), util (`EnvironmentProvider`, `Bifrost`) |
+| embedding | `...llm.embedding` | `EmbeddingCreator`, `EmbeddingConfiguration`, `EmbeddingPlatform`, `CachedEmbeddingCreator` and platform creators (incl. `BifrostEmbeddingCreator`) | cache (`CacheManager`), util (`EnvironmentProvider`, `Bifrost`) |
 
-Two rules hold across the whole map:
+Three rules hold across the whole map:
 
 1. **Dependencies point toward the cache, and from the cache toward util.** `ChatModelProvider`
    exposes its model settings as a `ChatCacheParameter` (`cacheParameters()`), and
@@ -107,6 +121,17 @@ Two rules hold across the whole map:
    `https://api.deepseek.com/v1` for DeepSeek) inside `ChatModelProvider`. This neutrality is the
    deliberate replacement for the coupling LiSSA originally required, and it is what lets LiSSA,
    ardoco, and other tools share one implementation.
+3. **Cache-key completeness is guarded structurally.** `ArchitectureTest` requires every concrete
+   `CacheKey` implementation's static `of(CacheParameter, String)` factory to read every attribute
+   of its `CacheParameter`, and every `CacheParameter` implementation's `parameters()` to access
+   all of its fields — otherwise different configurations would silently share cache entries or
+   cache files and return wrong cached results (see [Testing Strategy](../testing/strategy.md)).
+
+The one setting block shared verbatim across the two consumer subsystems is Bifrost's: both
+`ChatModelProvider` and the embedding side resolve `BIFROST_API_KEY` and `BIFROST_URL` through the
+single util-layer `Bifrost` helper, which also supplies the `x-bf-vk` virtual-key header. Every
+other platform reads its variables in separate per-subsystem code (see
+[Bifrost Gateway](../integrations/bifrost-gateway.md)).
 
 ## Subsystem flow
 
@@ -118,8 +143,10 @@ flowchart TD
         ENV["EnvironmentProvider"]
         SYS["SystemEnvironment"]
         MAP["MapEnvironment"]
+        BIF["Bifrost helper"]
         SYS --> ENV
         MAP --> ENV
+        BIF -- "reads BIFROST_API_KEY and BIFROST_URL from" --> ENV
     end
 
     subgraph CFG["configuration records"]
@@ -163,6 +190,9 @@ flowchart TD
     CCM -- "requests cache" --> MGR
     CEC -- "obtains cache" --> MGR
 
+    PROV -- "resolves Bifrost settings via" --> BIF
+    CEC -- "Bifrost creator resolves settings via" --> BIF
+
     MGR -- "creates" --> LOCAL
     MGR -- "creates" --> RC
     MGR -- "creates" --> RRC
@@ -175,7 +205,8 @@ flowchart TD
 *Configuration records carry an `EnvironmentProvider`; providers and creators build the LangChain4j
 models; `CachingChatModel` and `CachedEmbeddingCreator` obtain their `Cache` instances from a
 `CacheManager`, which creates the concrete backends (folding multiple ones into `HierarchicalCache`)
-and whose backends read connection settings from the manager's environment.*
+and whose backends read connection settings from the manager's environment. Both consumer
+subsystems resolve the shared Bifrost gateway settings through the util layer's `Bifrost` helper.*
 
 ## Public API surface
 
@@ -184,7 +215,8 @@ The library's entry points are deliberately small:
 - **Chat** — build an `LlmConfiguration` (`of(platform, modelName)` or the builder; defaults
   `DEFAULT_SEED = 133742243`, `DEFAULT_TEMPERATURE = 0.0`), then
   `new ChatModelProvider(config).createChatModel()` for platforms `OPENAI`, `OLLAMA`,
-  `BLABLADOR`, `DEEPSEEK`, or `OPENWEBUI`. Wrap the result in
+  `BLABLADOR`, `DEEPSEEK`, `OPENWEBUI`, or `BIFROST` (the last with provider-prefixed model names
+  such as `openai/gpt-4o-mini` and required `BIFROST_API_KEY`/`BIFROST_URL`). Wrap the result in
   `new CachingChatModel(model, cache)` for transparent caching, or use `ChatModelUtils` for
   single (`cachedRequest`) and n-fold (`nCachedRequest`) requests. `provider.cacheParameters()`
   yields the `ChatCacheParameter` used to obtain a matching cache from a `CacheManager`
@@ -193,7 +225,7 @@ The library's entry points are deliberately small:
 - **Embeddings** — build an `EmbeddingConfiguration` (`of(platform, modelName)` or
   `onnx(model, pathToModel, pathToTokenizer)`), then
   `EmbeddingCreator.create(configuration[, cacheManager])` for platforms `OLLAMA`, `OPENAI`,
-  `ONNX`, `OPENWEBUI`, or `MOCK` (see [Embeddings](../embeddings/embeddings.md)).
+  `ONNX`, `OPENWEBUI`, `BIFROST`, or `MOCK` (see [Embeddings](../embeddings/embeddings.md)).
 - **Cache** — either `CacheManager.setCacheDir(dir[, environment])` followed by
   `CacheManager.getDefaultInstance()`, or a standalone `new CacheManager(path[, environment])`.
   `getCache(origin, parameters)` hands out memoized `Cache` instances; `flush()` persists all of
@@ -222,7 +254,7 @@ Two mechanics make this practical:
   on a hit without contacting the delegate, and flushes immediately after each newly computed
   response so file-backed caches persist incrementally.
 - `CachedEmbeddingCreator` caches each embedding under a content-derived key, parallelizes batches
-  (per-platform thread counts; OpenAI uses 40), and recovers from over-long inputs by
+  (per-platform thread counts; OpenAI and Bifrost use 40), and recovers from over-long inputs by
   jtokkit-driven truncation to `MAX_TOKEN_LENGTH` (8000), cached under a separate `_fixed_` key.
 
 The `LOCAL` backend is what makes the results portable: its files are self-contained, and their
@@ -258,17 +290,18 @@ one (see [Environment and Configuration](../concepts/environment-provider.md)).
 ## Toolchain
 
 - **Build**: Java 21 on the `io.github.ardoco:parent` 2.1.0 parent POM; the artifact is
-  `io.github.ardoco:llm-access` (`0.2.1-SNAPSHOT`). CI runs `mvn verify` via the shared ardoco
+  `io.github.ardoco:llm-access` (`0.2.2-SNAPSHOT`). CI runs `mvn verify` via the shared ardoco
   workflow; `mvn spotless:apply` gates formatting.
-- **Model access**: LangChain4j `1.22.0` imported as a BOM — `langchain4j-core`, `langchain4j`,
+- **Model access**: LangChain4j `1.23.0` imported as a BOM — `langchain4j-core`, `langchain4j`,
   `langchain4j-embeddings`, `langchain4j-ollama`, and `langchain4j-open-ai` (used for OpenAI,
-  Blablador, DeepSeek, and Open WebUI endpoints).
+  Blablador, DeepSeek, Open WebUI, and Bifrost endpoints).
 - **Caching support**: `jtokkit` `1.1.0` (token counting for the long-text fallback),
-  `org.fuchss:rest-redis` `0.1.5` (REST-Redis client), Jackson (cache serialization).
+  `org.fuchss:rest-redis` `0.1.7` (REST-Redis client), Jackson (cache serialization).
 - **Environment**: `dotenv-java` `3.2.0` (the `.env` support inside `SystemEnvironment`), slf4j
   for logging.
 - **Testing**: Testcontainers (`2.0.5` BOM, test scope) for the Docker-gated REST-Redis
-  integration test, plus ArchUnit for the architecture rules above
+  integration test, plus ArchUnit (`1.5.1`) for the architecture rules above and the structural
+  cache-key completeness guards in `ArchitectureTest`
   (see [Testing Strategy](../testing/strategy.md)).
 - **Release plumbing**: `flatten-maven-plugin` is pinned to `1.7.3` because the ardoco parent
   references it without a version and Maven would otherwise resolve `1.8.0`, which has an NPE
@@ -283,6 +316,7 @@ one (see [Environment and Configuration](../concepts/environment-provider.md)).
 - [Cache Core](../cache/cache-core.md), [Cache Keys](../cache/cache-keys.md),
   [Cache Hierarchy and Manager](../cache/cache-hierarchy.md), and
   [Cache Backends](../cache/cache-backends.md) — the caching stack.
+- [Bifrost Gateway](../integrations/bifrost-gateway.md) — the shared OpenAI-compatible gateway whose settings both consumer subsystems resolve through the util layer.
 - [Environment and Configuration](../concepts/environment-provider.md) — where credentials, hosts, and cache settings come from.
 - [Operations and Deployment](../operations/deployment.md) — running the backends and replication packages.
-- [Testing Strategy](../testing/strategy.md) — hermetic tests, Docker gating, and the ArchUnit rules.
+- [Testing Strategy](../testing/strategy.md) — hermetic tests, Docker gating, and the ArchUnit rules (dependency direction, no-global-environment, cache-key completeness).

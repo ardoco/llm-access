@@ -1,7 +1,7 @@
 ---
 type: Architecture
 title: Cache Hierarchy and Manager
-description: CacheManager owns the default cache manager, derives cache names, and builds the HierarchicalCache layering over the cache backends; CacheReplacementStrategy resolves conflicts between layers with write-through semantics and backfill.
+description: CacheManager owns the default singleton, derives and sanitizes cache names, and builds the HierarchicalCache layering over the cache backends; CacheReplacementStrategy resolves conflicts between layers with write-through semantics and backfill.
 tags: [cache, architecture, workflow]
 openwiki:
   roles: [architecture, operations, workflow]
@@ -19,14 +19,14 @@ openwiki:
     - getDefaultInstance throws IllegalStateException until setCacheDir has been called.
     - setCacheDir and the no-environment constructors fall back to a new SystemEnvironment.
     - Hierarchy and replacement strategy are read at construction; Redis connection settings are read when a cache is first requested.
-    - getCache memoizes by name and throws IllegalArgumentException when the same name is requested with parameters that are not equal.
-    - Colons in cache names are replaced with double underscores before use as file names.
+    - getCache memoizes by sanitized name and throws IllegalArgumentException when the same name is requested with parameters that are not equal.
+    - Cache names are sanitized before use as file names — colons become double underscores, slashes and backslashes become double hyphens, so every cache file lands flat in the cache directory.
     - HierarchicalCache.put writes through to all layers; get reads all layers and backfills missing ones; flush cascades to every layer.
     - Base resolve backfills either direction (returning the present value) and otherwise returns the primary value; ERROR throws IllegalStateException on deepEquals-mismatched non-null values; OVERWRITE overwrites the secondary with the primary and returns the primary value.
   validation_commands: ["mvn -q test -Dtest=CacheManagerTest,HierarchicalCacheTest,CacheReplacementStrategyTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
@@ -54,6 +54,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheReplacementStrategyTest.java
   - id: openwiki-source-9f073181959c4e22c4336039
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModelTest.java
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Cache Hierarchy and Manager
@@ -127,14 +128,18 @@ implementations:
 
 - The name is `origin.getClass().getSimpleName() + "_" + parameters.parameters()`; passing a
   `null` origin or `null` parameters throws `IllegalArgumentException`.
-- Every colon in the name is replaced with a double underscore (`:` → `__`) before use, so model
-  names such as `a:b` produce safe file names (`CacheManagerTest_a__b_1.json`).
-- The resulting `Cache` is **memoized by name** within the manager: a repeated request with
-  parameters equal to the stored ones returns the same instance, while the same name requested
-  with parameters that are **not** `equals` to the stored ones throws `IllegalArgumentException`
-  ("Cache with name … already exists with different parameters"). The conflict is detected on the
-  `CacheParameter` objects, not on the derived name — two identity-distinct parameter objects
-  that yield the same `parameters()` identifier collide (see
+- The name is **sanitized before use** as a cache file name: every colon is replaced with a double
+  underscore (`:` → `__`), and every forward or backward slash is replaced with a double hyphen
+  (`/`, `\` → `--`). This keeps provider-prefixed model names such as `openai/gpt-4o-mini` from
+  creating subdirectories — `CacheManagerTest.encodesPathSeparatorsInFileName` additionally
+  asserts that no directory is created inside the cache directory and that a reloaded manager
+  reads the entries back.
+- The resulting `Cache` is **memoized by sanitized name** within the manager: a repeated request
+  with parameters equal to the stored ones returns the same instance, while the same name
+  requested with parameters that are **not** `equals` to the stored ones throws
+  `IllegalArgumentException` ("Cache with name … already exists with different parameters"). The
+  conflict is detected on the `CacheParameter` objects, not on the derived name — two
+  identity-distinct parameter objects that yield the same `parameters()` identifier collide (see
   `CacheManagerTest.getCacheConflictsOnDifferentParameters`).
 
 `flush()` flushes every cache this manager has handed out (see
@@ -245,14 +250,17 @@ layered caches without access to the original content (see [Cache Core](cache-co
 ## Consumers
 
 - **Embeddings:** `CachedEmbeddingCreator` obtains its cache in its constructor via
-  `cacheManager.getCache(this, embeddingCacheParameter)`. `EmbeddingCreator.create(configuration)`
-  wires `CacheManager.getDefaultInstance()`; `create(configuration, cacheManager)` passes an
-  explicit manager (the mock platform needs no cache).
+  `cacheManager.getCache(this, embeddingCacheParameter)`, so `EmbeddingCreator.create(configuration)`
+  wires `CacheManager.getDefaultInstance()` through the subclass constructors; the explicit
+  `create(configuration, cacheManager)` overload passes a manager of the caller's choice (the
+  mock platform needs no cache). Every platform subclass (`OpenAiEmbeddingCreator`, `OllamaEmbeddingCreator`,
+  `OnnxEmbeddingCreator`, `OpenWebUiEmbeddingCreator`, `BifrostEmbeddingCreator`) forwards the
+  manager it received to the `CachedEmbeddingCreator` constructor.
 - **Chat:** the cache is injected rather than fetched. `CachingChatModel` and
   `ChatModelUtils.cachedRequest`/`nCachedRequest` take the `Cache<ChatCacheKey>` as an argument;
   the caller combines `ChatModelProvider.cacheParameters()` — a `ChatCacheParameter` over model
   name, seed, and temperature — with the manager, e.g.
-  `CacheManager.getDefaultInstance().getCache(this, parameters)` as the tests do.
+  `CacheManager.getDefaultInstance().getCache(this, parameters)` as `CachingChatModelTest` does.
 
 ## Changing layering or strategy
 
@@ -269,8 +277,9 @@ layered caches without access to the original content (see [Cache Core](cache-co
 - `CacheManagerTest` — singleton lifecycle (`defaultInstanceRequiresDirectory`), `getCache`
   null rejection, memoization, the parameter-conflict `IllegalArgumentException`
   (`getCacheConflictsOnDifferentParameters`, using identity-unequal parameters with the same
-  identifier), colon sanitization in file names, flush persistence, constructor validation
-  (empty hierarchy, non-directory path), environment-driven configuration
+  identifier), sanitization of colons, slashes, and backslashes in file names (including the
+  no-subdirectory and reload assertions), flush persistence, constructor validation (empty
+  hierarchy, non-directory path), environment-driven configuration
   (`readsConfigurationFromInjectedEnvironment`), and that the injected environment reaches the
   Redis cache (`passesEnvironmentToRedisCache`).
 - `HierarchicalCacheTest` — mock-based layer synchronization: `put` writes to both layers,

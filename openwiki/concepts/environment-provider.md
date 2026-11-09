@@ -1,11 +1,11 @@
 ---
 type: Concept
 title: Environment and Configuration
-description: The EnvironmentProvider seam — SystemEnvironment (system variables with a lazy .env fallback) and MapEnvironment (in-memory, secret-safe) — which variables each subsystem reads, and the no-global-environment invariant.
-tags: [environment, configuration, credentials, dotenv, dependency-injection, secrets]
+description: The EnvironmentProvider seam — SystemEnvironment (system variables with a lazy .env fallback) and MapEnvironment (in-memory, secret-safe) — which variables each subsystem reads, including the shared Bifrost gateway pair, and the no-global-environment invariant.
+tags: [environment, configuration, credentials, dotenv, dependency-injection, secrets, bifrost]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
@@ -21,6 +21,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java
   - id: openwiki-source-fac3ed967ea0ee2556a0e7eb
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-d750b4fe48944bf1f4e1e0d7
@@ -35,6 +37,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java
   - id: openwiki-source-4cb1f7f9ff22fa760910f687
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenWebUiEmbeddingCreator.java
+  - id: openwiki-source-74ec3f5f99ed6a20eea5c444
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
   - id: openwiki-source-f933314cddd3af5c44148dcf
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java
   - id: openwiki-source-424e35b1b23cbd6261f4135e
@@ -47,13 +51,15 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatConfigurationTest.java
   - id: openwiki-source-65cab9f1c35cb70c3750cd65
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java
+  - id: openwiki-source-f159a5e43c937a689a95c1b6
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/BifrostTest.java
   - id: openwiki-source-53173e335c62f63857b13264
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/MapEnvironmentTest.java
   - id: openwiki-source-6657b8392fc18b157b18e55c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
   - id: openwiki-source-7450881a125d4b9c7b67cf6c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/SystemEnvironmentTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Environment and Configuration
@@ -181,6 +187,7 @@ flowchart TD
         IFACE["EnvironmentProvider"]
         SYS["SystemEnvironment"]
         MAP["MapEnvironment"]
+        BF["Bifrost helper"]
     end
 
     LLM["LlmConfiguration"]
@@ -203,12 +210,16 @@ flowchart TD
     MGR -- "forwards when a cache is created" --> BACKENDS
     PROV -- "reads platform credentials" --> IFACE
     CEC -- "reads platform credentials" --> IFACE
+    PROV -- "Bifrost branch resolves through" --> BF
+    CEC -- "Bifrost platform resolves through" --> BF
+    BF -- "getenvNonNull for key and URL" --> IFACE
     BACKENDS -- "reads connection settings" --> IFACE
 ```
 
 *One injected `EnvironmentProvider` (or two different ones) supplies the chat/embedding platform
-credentials via the configuration records and the cache settings via the `CacheManager`, which
-forwards it to the Redis-based backends.*
+credentials via the configuration records and the cache settings via the `CacheManager`; the
+Bifrost branches of both model paths detour through the shared `Bifrost` helper, which resolves
+the gateway's two required variables from that same environment.*
 
 There are two distinct consumption paths, and they may use different environments:
 
@@ -221,6 +232,26 @@ There are two distinct consumption paths, and they may use different environment
   connection settings are read from the same environment when the first cache is requested from
   the manager (see [Cache Hierarchy and Manager](../cache/cache-hierarchy.md) and
   [Cache Backends](../cache/cache-backends.md)).
+
+**What each chat branch reads.** Every branch of `createChatModel()` resolves its platform's
+variables eagerly from the configuration's environment, before the returned `LazyChatModel` could
+build any client. Five platforms read directly:
+
+- `OPENAI` — `getenvNonNull("OPENAI_API_KEY")`, plus optional `getenv("OPENAI_ORGANIZATION_ID")`.
+- `OLLAMA` — `getenvNonNull("OLLAMA_HOST")`, plus optional `getenv` for `OLLAMA_USER`,
+  `OLLAMA_PASSWORD`, and `OLLAMA_TOKEN`.
+- `BLABLADOR` — `getenvNonNull("BLABLADOR_API_KEY")`.
+- `DEEPSEEK` — `getenvNonNull("DEEPSEEK_API_KEY")`.
+- `OPENWEBUI` — `getenvNonNull("OPENWEBUI_URL")` and `getenvNonNull("OPENWEBUI_API_KEY")`.
+
+The sixth, `BIFROST`, resolves through the shared `Bifrost` helper instead of direct `getenv`
+calls: `createBifrostChatModel()` asks `Bifrost.baseUrl(environment)` for `BIFROST_URL` and
+`Bifrost.apiKey(environment)` for `BIFROST_API_KEY`, and both helper methods call `getenvNonNull`
+— so the branch fails fast on either missing variable exactly like the direct reads of the other
+five platforms. Because every required variable is resolved before the client supplier is built,
+`createChatModel()` fails fast per platform before any model object is returned. The per-platform
+client construction behind these reads is described in
+[Chat Models](../chat/chat-models.md).
 
 A single `MapEnvironment` can serve both paths, as the README's programmatic-setup example shows
 (`new MapEnvironment(Map.of("OPENAI_API_KEY", apiKey, "CACHE_HIERARCHY", "LOCAL"))` handed to a
@@ -240,6 +271,46 @@ shared static instance:
 Because the `.env` file is read lazily, these per-object defaults stay cheap; each object simply
 owns its own environment.
 
+## The Bifrost gateway helper: one required variable pair for chat and embeddings
+
+The Bifrost LLM gateway is an OpenAI-compatible API in front of multiple providers; how the
+gateway itself routes and is deployed is covered in
+[Bifrost Gateway](../integrations/bifrost-gateway.md). From the environment's point of view it is
+the one platform whose settings serve **both** subsystems from the **same** required variable
+pair — and the only platform whose reads go through a shared helper in the `util` package rather
+than direct `getenv` calls:
+
+```java
+public final class Bifrost {
+    public static final String API_KEY_VARIABLE   = "BIFROST_API_KEY";
+    public static final String URL_VARIABLE       = "BIFROST_URL";
+    public static final String VIRTUAL_KEY_HEADER = "x-bf-vk";
+
+    public static String baseUrl(EnvironmentProvider environment)  // getenvNonNull(URL_VARIABLE)
+    public static String apiKey(EnvironmentProvider environment)   // getenvNonNull(API_KEY_VARIABLE)
+    public static Map<String, String> headers(String apiKey)       // Map.of("x-bf-vk", apiKey)
+}
+```
+
+- **Both variables are required.** `Bifrost.baseUrl(environment)` and `Bifrost.apiKey(environment)`
+  resolve `BIFROST_URL` and `BIFROST_API_KEY` via `getenvNonNull`, so whichever branch runs aborts
+  with the standard missing-variable message when either is unset.
+- **Chat** — `ChatModelProvider.createBifrostChatModel()` resolves both eagerly inside
+  `createChatModel()`; the key is sent as the OpenAI bearer token and, via `Bifrost.headers(...)`,
+  as the `x-bf-vk` custom header, and the supplier builds an `OpenAiChatModel` at `BIFROST_URL`
+  with a 10-minute timeout.
+- **Embeddings** — `BifrostEmbeddingCreator` resolves the same pair through the same helper in
+  `createEmbeddingModel(...)`, which `CachedEmbeddingCreator`'s constructor invokes, so the reads
+  happen when the creator is constructed — the same timing as every other embedding platform.
+  The key again travels as bearer token and `x-bf-vk` header.
+- **Model names are provider-prefixed** (`openai/gpt-4o-mini`,
+  `openai/text-embedding-3-small`) because the gateway routes by provider prefix.
+
+`sample.env` carries the pair in its chat section, annotated as serving chat and embeddings.
+`BifrostTest` pins the helper's environment contract: the configured URL and key are returned,
+both are required (`IllegalStateException` on an empty environment), and `headers` maps the key
+to `x-bf-vk`.
+
 ## Environment variable reference
 
 Variables are read from the environment of the component listed below; chat and embedding
@@ -255,6 +326,7 @@ variables from the configuration's environment, cache variables from the `CacheM
 | `BLABLADOR_API_KEY` | chat (Blablador) | yes | `IllegalStateException` |
 | `DEEPSEEK_API_KEY` | chat (DeepSeek) | yes | `IllegalStateException` |
 | `OPENWEBUI_URL` / `OPENWEBUI_API_KEY` | chat and embeddings (Open WebUI) | yes | `IllegalStateException` |
+| `BIFROST_API_KEY` / `BIFROST_URL` | chat and embeddings (Bifrost, via the shared `Bifrost` helper) | yes | `IllegalStateException` |
 | `OLLAMA_EMBEDDING_HOST` | embeddings (Ollama) | yes | `IllegalStateException` |
 | `OLLAMA_EMBEDDING_USER` / `OLLAMA_EMBEDDING_PASSWORD` | embeddings (Ollama) | no | basic auth header not sent |
 | `CACHE_HIERARCHY` | `CacheManager` | no | `LOCAL` |
@@ -270,12 +342,16 @@ Notes:
   comes from in your own runner (e.g. a `LLM_CACHE_DIR` variable you read and pass in).
 - The ONNX embedding platform reads no environment variables — its model and tokenizer paths come
   from `EmbeddingConfiguration.onnx(...)`.
-- [`sample.env`](../../sample.env) is the template: a commented skeleton of all variables
-  above, with the cache section pointing at the README's deployment instructions.
+- [`sample.env`](../../sample.env) is the template: a commented skeleton of all variables above —
+  the Bifrost pair sits in the chat section, annotated as serving chat and embeddings — with the
+  cache section pointing at the README's deployment instructions and noting that the cache
+  directory is set in code, not through a variable.
 - Per-variable detail: [Chat Models](../chat/chat-models.md) and
   [Embeddings](../embeddings/embeddings.md) for the platform variables,
   [Cache Hierarchy and Manager](../cache/cache-hierarchy.md) and
-  [Cache Backends](../cache/cache-backends.md) for the cache variables.
+  [Cache Backends](../cache/cache-backends.md) for the cache variables, and
+  [Bifrost Gateway](../integrations/bifrost-gateway.md) for the gateway semantics behind the
+  shared pair.
 
 ## The no-global-environment invariant
 
@@ -318,6 +394,9 @@ or `CacheManager` is not a violation precisely because their defaults are fresh
   but not `.env`; later changes to the source map do not affect the environment (defensive copy);
   `toString()` lists keys but never values (`sk-very-secret`, the Ollama host are absent);
   environments with the same entries are equal and hash-equal.
+- `BifrostTest` — the configured `BIFROST_URL` and `BIFROST_API_KEY` values are returned and both
+  are required (`IllegalStateException` on an empty environment, exercising the `getenvNonNull`
+  path of `baseUrl`/`apiKey`); `headers` maps the virtual key to the `x-bf-vk` header.
 - `NoGlobalEnvironmentTest` — the two ArchUnit rules described above.
 
 ## Relationship to the removed legacy configuration
@@ -337,4 +416,6 @@ implementations:
 `KeyGenerator` and `Futures`, which the removed page also documented, are unchanged members of the
 same package; they concern cache-key derivation and parallel embedding futures rather than
 environment handling, so they are covered with the subsystems that use them
-([Cache Keys](../cache/cache-keys.md), [Embeddings](../embeddings/embeddings.md)).
+([Cache Keys](../cache/cache-keys.md), [Embeddings](../embeddings/embeddings.md)). The package has
+since also gained the [Bifrost gateway helper](#the-bifrost-gateway-helper-one-required-variable-pair-for-chat-and-embeddings),
+which *is* environment handling and therefore documented on this page.
