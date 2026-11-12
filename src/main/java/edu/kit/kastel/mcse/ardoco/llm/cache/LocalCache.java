@@ -10,9 +10,10 @@ import java.util.*;
 
 import org.jspecify.annotations.Nullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Implements a local file-based cache for storing key-value pairs.
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 class LocalCache<K extends CacheKey> implements Cache<K> {
 
-    private final ObjectMapper mapper;
+    private static final ObjectMapper MAPPER = JsonMapper.builderWithJackson2Defaults().build();
 
     /**
      * Maximum number of modifications before automatic flush.
@@ -56,7 +57,6 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
     LocalCache(String cacheFile, CacheParameter<K> cacheParameter) {
         this.cacheParameter = Objects.requireNonNull(cacheParameter);
         this.cacheFile = new File(Objects.requireNonNull(cacheFile));
-        mapper = new ObjectMapper();
         createLocalStore();
     }
 
@@ -88,10 +88,10 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
                 if (Files.readString(cacheFile.toPath()).isBlank()) {
                     cacheFile.delete();
                 } else {
-                    cache = mapper.readValue(cacheFile, new TypeReference<>() {
+                    cache = MAPPER.readValue(cacheFile, new TypeReference<>() {
                     });
                 }
-            } catch (IOException e) {
+            } catch (IOException | JacksonException e) {
                 throw new IllegalArgumentException("Could not read cache file (" + cacheFile.getName() + ")", e);
             }
         }
@@ -111,11 +111,11 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
 
         try {
             File tempFile = new File(cacheFile.getAbsolutePath() + ".tmp.json");
-            mapper.writeValue(tempFile, cache);
+            MAPPER.writeValue(tempFile, cache);
             Files.copy(tempFile.toPath(), cacheFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             Files.delete(tempFile.toPath());
             dirty = 0;
-        } catch (IOException e) {
+        } catch (IOException | JacksonException e) {
             throw new IllegalArgumentException("Could not write cache file", e);
         }
     }
@@ -124,7 +124,7 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
     public synchronized <T> @Nullable T get(String key, Class<T> clazz) {
         K cacheKey = cacheParameter.createCacheKey(key);
         String jsonData = cache.get(cacheKey.localKey());
-        return Cache.convert(jsonData, clazz, mapper);
+        return Cache.convert(jsonData, clazz, MAPPER);
     }
 
     /**
@@ -138,7 +138,7 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
     @Deprecated(forRemoval = false)
     public synchronized <T> @Nullable T getViaInternalKey(K key, Class<T> clazz) {
         String jsonData = cache.get(key.localKey());
-        return Cache.convert(jsonData, clazz, mapper);
+        return Cache.convert(jsonData, clazz, MAPPER);
     }
 
     @Override
@@ -161,8 +161,8 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
     public synchronized <T> void putViaInternalKey(K cacheKey, T value) {
         String jsonValue;
         try {
-            jsonValue = mapper.writeValueAsString(Objects.requireNonNull(value));
-        } catch (JsonProcessingException e) {
+            jsonValue = MAPPER.writeValueAsString(Objects.requireNonNull(value));
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Could not serialize object", e);
         }
         String old = cache.put(cacheKey.localKey(), jsonValue);

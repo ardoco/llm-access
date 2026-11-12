@@ -15,10 +15,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Manages caching operations.
@@ -51,6 +51,8 @@ public final class CacheManager {
     private final List<CacheType> hierarchyConfig;
     private final EnvironmentProvider environment;
     private final Map<String, Cache<?>> caches = new HashMap<>();
+
+    private static final ObjectMapper MAPPER = JsonMapper.builderWithJackson2Defaults().build();
 
     private static final Logger logger = LoggerFactory.getLogger(CacheManager.class);
 
@@ -244,11 +246,10 @@ public final class CacheManager {
      * @return The configured cache instance
      */
     private <K extends CacheKey> Cache<K> buildCacheHierarchy(String cacheName, CacheParameter<K> parameters) {
-        ObjectMapper mapper = new ObjectMapper();
         String cacheFilePath = directoryOfCaches.resolve(cacheName + ".json").toString();
         List<Cache<K>> createdCaches = new ArrayList<>();
         for (CacheType cacheType : hierarchyConfig) {
-            Cache<K> cache = Cache.createByType(cacheType, parameters, cacheFilePath, mapper, environment);
+            Cache<K> cache = Cache.createByType(cacheType, parameters, cacheFilePath, MAPPER, environment);
             createdCaches.add(cache);
             logger.debug("Created cache type: {}", cacheType);
         }

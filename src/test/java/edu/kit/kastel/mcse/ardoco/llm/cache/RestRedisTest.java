@@ -27,13 +27,13 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 import kong.unirest.core.Unirest;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Integration test for the REST Redis interface, using a Testcontainers-managed Redis instance.
@@ -51,6 +51,8 @@ public class RestRedisTest {
     private final ChatCacheParameter cacheParameter = new ChatCacheParameter("test", 1, 0.0);
 
     private EnvironmentProvider environment;
+    private static final ObjectMapper MAPPER = JsonMapper.builderWithJackson2Defaults().build();
+
     private Thread serverThread;
     private Client client;
 
@@ -61,7 +63,7 @@ public class RestRedisTest {
     void startServer(@TempDir Path serverDir) throws Exception {
         int httpPort = findFreePort();
         Path configFile = serverDir.resolve("server_config.json");
-        new ObjectMapper().writeValue(configFile.toFile(), new ServerConfiguration(REDIS.getHost(), REDIS.getMappedPort(6379), httpPort));
+        MAPPER.writeValue(configFile.toFile(), new ServerConfiguration(REDIS.getHost(), REDIS.getMappedPort(6379), httpPort));
 
         serverThread = new Thread(() -> {
             try {
@@ -93,7 +95,7 @@ public class RestRedisTest {
 
     @BeforeEach
     public void setup() {
-        restCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
+        restCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
     }
 
     /**
@@ -102,7 +104,7 @@ public class RestRedisTest {
     @Test
     @DisplayName("Test REST Redis client connection")
     void testRestRedisConnection() {
-        Cache.createByType(CacheType.REST_REDIS, new ChatCacheParameter("test", 1, 0.0), null, new ObjectMapper(), environment);
+        Cache.createByType(CacheType.REST_REDIS, new ChatCacheParameter("test", 1, 0.0), null, MAPPER, environment);
     }
 
     /**
@@ -127,7 +129,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache with local and REST Redis cache")
     void testHierarchicalCacheWithLocalAndRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("hierarchical_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "conflict-key";
         String localValue = "local-value";
@@ -152,7 +154,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache OVERWRITE strategy with REST Redis")
     void testHierarchicalCacheOverwriteStrategyWithRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("overwrite_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "overwrite-key";
         String primaryValue = "primary-value";
@@ -179,7 +181,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache ERROR strategy detects conflicts with REST Redis")
     void testHierarchicalCacheErrorStrategyWithRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("error_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "error-key";
         String localValue = "local-value";
@@ -203,7 +205,7 @@ public class RestRedisTest {
     @DisplayName("Test HierarchicalCache backfill with REST Redis cache")
     void testHierarchicalCacheBackfillWithRestRedis() {
         Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("backfill_test.json").toString(), cacheParameter);
-        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, new ObjectMapper(), environment);
+        Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "backfill-key";
         String redisValue = "redis-only-value";

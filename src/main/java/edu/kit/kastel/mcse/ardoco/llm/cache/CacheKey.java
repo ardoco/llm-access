@@ -1,9 +1,10 @@
 /* Licensed under MIT 2026. */
 package edu.kit.kastel.mcse.ardoco.llm.cache;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Represents a key for caching operations.
@@ -12,7 +13,7 @@ public interface CacheKey {
     /**
      * Shared ObjectMapper instance for JSON serialization.
      */
-    ObjectMapper MAPPER = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
+    ObjectMapper MAPPER = JsonMapper.builderWithJackson2Defaults().enable(SerializationFeature.INDENT_OUTPUT).build();
 
     /**
      * Converts this cache key to a JSON string representation.
@@ -23,7 +24,7 @@ public interface CacheKey {
     default String toJsonKey() {
         try {
             return MAPPER.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Could not serialize key", e);
         }
     }

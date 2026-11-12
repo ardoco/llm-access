@@ -4,9 +4,8 @@ package edu.kit.kastel.mcse.ardoco.llm.cache;
 import org.fuchss.restredis.client.Client;
 import org.fuchss.restredis.client.ClientConfiguration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Implements a Redis-based cache for storing and retrieving values using a REST interface.
