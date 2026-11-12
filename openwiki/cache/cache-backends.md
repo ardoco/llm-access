@@ -25,8 +25,8 @@ openwiki:
     - RestRedisCache extends RedisCache and only overrides connection setup.
   validation_commands: ["mvn -q test -Dtest=CacheTest", "mvn -q test -Dtest=RestRedisTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-824a85d7be154153c14cda51
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
@@ -46,11 +46,13 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
   - id: openwiki-source-40c4513abd4e4ec4b3783b4a
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/UnifiedRedisClient.java
+  - id: openwiki-source-4feeab6332f6627178c60394
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
   - id: openwiki-source-80764162ff1e0089fe344077
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
   - id: openwiki-source-77fcb76d829af13337d04708
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Cache Backends
@@ -84,11 +86,11 @@ caching has exactly one storage implementation (`RedisCache`) that is generic ov
 mutating and reading methods are `synchronized`, so one instance can be shared across threads.
 
 - **File:** `<cacheDir>/<name>.json`. `CacheManager` composes the name as `<Origin>_<parameters>`
-  (colons replaced by `__`); `ChatCacheParameter` joins model name and seed and omits temperature
-  when it is `0.0`, keeping file names backward compatible with LiSSA's existing caches.
+  (colons replaced by `__`, forward and backward slashes by `--`); `ChatCacheParameter` joins model
+  name and seed and omits temperature when it is `0.0`, keeping file names backward compatible with
+  LiSSA's existing caches.
 - **Within a file:** content is mapped to values via the key's `localKey()` — a deterministic UUID
-<!-- openwiki: broken internal link [../cache-keys.md] file "../cache-keys.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-  derived from the cached content (see [Cache Keys](../cache-keys.md)) — so identical content always
+  derived from the cached content (see [Cache Keys](cache-keys.md)) — so identical content always
   maps to the same entry.
 - **Loading:** at construction, an existing non-blank file is read into memory; a blank file is
   deleted to guarantee a clean state; an unloadable file raises `IllegalArgumentException` naming
@@ -107,9 +109,10 @@ Because the files are self-contained, the cache directory is the replication art
 
 `RedisCache` never talks to a concrete Redis client. It holds a `UnifiedRedisClient`, a public
 `AutoCloseable` interface exposing exactly the operations the cache uses: `ping`, `exists`,
-`hget`, `hset`, `close`. Its protected constructor accepts an already-connected client, which is
-how `RestRedisCache` injects the HTTP transport — and how external code could plug in another
-transport. Two package-private adapters implement the seam:
+`hget`, `hset`, `close`. The protected `RedisCache` constructor accepts an already-connected
+`UnifiedRedisClient`, which is how `RestRedisCache` injects the HTTP transport — and how another
+transport can be plugged in without touching `RedisCache`'s storage code. Two package-private
+adapters implement the seam:
 
 - `RedisAdapter` — wraps a Jedis `UnifiedJedis`; `ping` succeeds only when the reply equals
   `PONG`; `close` shuts the connection down.
@@ -120,8 +123,7 @@ transport. Two package-private adapters implement the seam:
 
 `RedisCache<K>` (package-private) stores each entry as a Redis hash:
 
-<!-- openwiki: broken internal link [../cache-keys.md] file "../cache-keys.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- **Hash key:** `cacheKey.toJsonKey()` (the JSON form of the key — see [Cache Keys](../cache-keys.md)).
+- **Hash key:** `cacheKey.toJsonKey()` (the JSON form of the key — see [Cache Keys](cache-keys.md)).
 - **Fields:** `data` (the stored value, serialized to JSON) and `timestamp`
   (`Instant.now().getEpochSecond()`). The timestamp is written on every `put` but never read back.
 - `get` reads the `data` field and deserializes; `containsKey` uses Redis `EXISTS` on the hash
@@ -157,10 +159,9 @@ All storage behavior (hash key, `data`/`timestamp` fields, no-op `flush`) is inh
 
 `Cache.createByType` (see [Cache Core](cache-core.md)) requires a `cacheDir` for `LOCAL` and an
 `ObjectMapper` for `REDIS` and `REST_REDIS` (throwing `IllegalArgumentException` otherwise) and
-<!-- openwiki: broken internal link [../configuration.md] file "../configuration.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-forwards the [Environment](../configuration.md) to the Redis-based backends so they can read their
-connection settings. `CacheManager` hands every layer of one hierarchy the same cache-file path and
-one shared `ObjectMapper`; the Redis-based layers simply ignore the file path.
+forwards the [Environment](../concepts/environment-provider.md) to the Redis-based backends so they
+can read their connection settings. `CacheManager` hands every layer of one hierarchy the same
+cache-file path and one shared `ObjectMapper`; the Redis-based layers simply ignore the file path.
 
 ## Adding a backend
 
@@ -168,10 +169,14 @@ one shared `ObjectMapper`; the Redis-based layers simply ignore the file path.
    `CacheParameter` and, where needed, `cacheDir`/`mapper`).
 2. Implement `Cache<K>` (or extend an existing backend like `RestRedisCache` extends
    `RedisCache`).
-<!-- openwiki: broken internal link [../configuration.md] file "../configuration.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-3. If it needs connection details, read them through [Environment](../configuration.md) and
-   preserve the fail-fast PING contract so layering and conflict strategies remain safe.
-4. Add tests mirroring `RestRedisTest` (Testcontainers where a real server is needed; the
+3. If it needs connection details, read them through [Environment](../concepts/environment-provider.md)
+   and preserve the fail-fast PING contract so layering and conflict strategies remain safe.
+4. Make the new backend's `CacheParameter`/`CacheKey` pair satisfy the `ArchitectureTest`
+   completeness rules: the key's static `of(CacheParameter, String)` factory must read every
+   `CacheParameter` attribute, and `parameters()` must access every field — a missed attribute
+   makes different configurations share cache entries or cache files and silently return wrong
+   cached results (see [Testing Strategy](../testing/strategy.md)).
+5. Add tests mirroring `RestRedisTest` (Testcontainers where a real server is needed; the
    `@Testcontainers(disabledWithoutDocker = true)` annotation skips gracefully without Docker).
 
 ## Focused tests

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:447d8b45fadb3db353befd79ae592df22e31ecdc3e5df2da61c3291293e64952",
+  "pageVersion": "sha256:45b4c75ac36b7624d391fd817fc429ac1fd7ef5fdba62329dc899b208f88a50f",
   "claims": [
     {
       "id": "claim_79c66cfaf63940b1945fc0b0fdba4db5",
@@ -43,7 +43,7 @@
       "statement": "ChatCacheParameter.parameters() joins model name and seed with '_' and omits the temperature component when it is 0.0 (e.g. gpt-4o_42 vs gpt-4o_42_0.5) — the LiSSA file-name compatibility rule, since CacheManager composes the LocalCache file name from the origin class name plus parameters() as <Origin>_<parameters>.json and unconditionally appending 0.0 would rename existing temperature-0.0 cache files.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L203-L209",
           "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
         },
         {
@@ -129,7 +129,7 @@
       "statement": "Cache entries cannot collide across domains or configurations: LargeLanguageModelCacheMode (CHAT vs EMBEDDING) is a serialized field of every concrete key, so toJsonKey() — the hash key RedisCache addresses entries by — differs across domains and configurations even for identical model and content, while distinct configurations are additionally isolated per LocalCache file because CacheManager embeds parameters() in the file name and LocalCache keys entries within a file by the content-only localKey.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L203-L209",
           "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
         },
         {
@@ -145,10 +145,42 @@
           "version": "repo-lines-v1:sha256:fcc834d8dea17ffaca2cc12df0f3a75f1137bf802aa3d12509783625fd44143f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhNDE1NjQ4Y2IzOWU3YWU2ZjhkNTRjMWNiZmM0NDIyNDk1MzFiZWJiNDY0ZWYzMTkzNGQwOGUxN2IxNzcxNjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2MDk0OWZmZTdjOWQ3MzZhMzVmYWMwNDc1ZWU2NzY1ODcwMzU0OGJmYTczMWNiZWZhOWY3ZDBmMDViN2MyMWUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_be23237a8bd24c3f8c049e64cc7e6ec9",
+      "statement": "ArchitectureTest structurally enforces cache-key completeness with two ArchUnit rules over all non-test classes: every concrete CacheKey implementation must have a static of(CacheParameter, String) that calls every non-Object accessor of the parameter type (excluding parameters(), createCacheKey, equals, hashCode, toString), and every CacheParameter.parameters() must access all non-static fields (directly or via record accessors). A missing attribute silently merges configurations — shared cache entries via of() or shared cache files via parameters() — returning wrong cached results without error, so violations fail the build. ChatCacheParameter's deliberate temperature-0.0 omission still passes because the temperature field is read (compared) inside parameters().",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKey.java#L55-L63",
+          "version": "repo-lines-v1:sha256:72fdb963a2709ec79369ccc094c22ae6386205052e143c1bb8c7169a384ef4ea:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTQ1YTAzYmUxZjZjOWY2ZmVhYmIzZTM1Y2RjZGE2NjhiMWJjMDI1YmM1MjFlZjExYzBiZmI0N2U1ZTE4NDgxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2E1NmYzZGQ5MDQ2NzllM2U3ZDNiNDEzMGExN2Q1NGEyNmU1NjJjMmM5YWRhY2JmNzc3N2JlM2FiNGZlZWY0NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2RhYjllZjJmYTJiODdlN2I0OWU0ODQ3YTIwYjZmNGZhMTRmMTljOGZmMDI1MzRhMTY0NzRlYzIyMGJmNGNjZiJ9"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java#L1-L137",
+          "version": "repo-lines-v1:sha256:a15836a687977ee5c81578f220bd516a9a4aefc53156ef8b91cd2fd7cd0dc462:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MzhlZmNkMTliZDdjZWY4ZjhmZmYxZDk5NGJlYTk0MjMwNGE5MDQxYjY0NGI4MGZhZGY5MWZmMjA2ZTkxYzdmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_72f02c9d4158447f936aed2aca2ea1da",
+      "statement": "CachedEmbeddingCreator.findEncoding, used by the long-text recovery path (tryToFixWithLength) that resolves the tokenizer for the ofRaw/truncation flow, first queries the jtokkit registry with the model name as configured and, when no encoding is found and the name contains a '/', retries with the entire provider prefix (everything up to and including the last '/') stripped. This makes the recovery path work for provider-prefixed model names such as Bifrost's openai/text-embedding-3-small, which jtokkit only knows in bare form; names unknown in both forms abort with IllegalArgumentException.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L1-L58",
+          "version": "repo-lines-v1:sha256:73098dba685a0ab7e5df02757dc1c787c6d41dc587f8438d2d5b5de5a29a41f1:eyJzZWxlY3RlZExpbmVDb3VudCI6NTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzOGVmY2QxOWJkN2NlZjhmOGZmZjFkOTk0YmVhOTQyMzA0YTkwNDFiNjQ0YjgwZmFkZjkxZmYyMDZlOTFjN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L209-L225",
+          "version": "repo-lines-v1:sha256:5123e29dcb15eacc45fdc4d03c66aa3414651ba3b231783060a22d4df11b4483:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMGZkMzk0Zjc3YjkyOGJjOTA4MmZhYmQ1NjA1NmIxMGY3YTkzNTkyYTYxZWE2MjAwNmExNjYyMDRkNTk3MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjOGUwNDhhNTgzZDAwOWVkNWViNzA5ZjA2OGQ1YjU0ZDhmNDI5NTQ5OWMyY2U4OGYwMDdlNWY5Yjk1Njc0ZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNzM4YTUxOWU3MDYyY2VhZjcxYTY0ZWEzOThmMTM0Y2QzOWJhMTU2ODA5YjMyNjhmYzVjNzViYmY5NGUyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlOTJlNmI3MzQ2Zjc2Y2YxYTNhMzI5NWEzZTQyZDhiNWViMTJiNzViYjk2MzU2MzNhMWZkYTEwMTFhYWQ1ZjUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L251-L265",
+          "version": "repo-lines-v1:sha256:25871099358e8e9a1c5093cacb818b61a07847dd1cec28b1c77b82ee380ed06e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhZDc3NWI4NWE1Y2M1MWE5MTRlMTBhYmZiZGM5MTRlOTM5ZGRiMmUyMGMzNGJlYzg3N2IyMWY3YzM3Y2RlOGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-09T23:10:07.903Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-09T15:10:09.905Z"
   }
 }

@@ -1,11 +1,11 @@
 ---
 type: Architecture
 title: Chat Models
-description: How ChatModelProvider turns an LlmConfiguration into lazily-initialized LangChain4j ChatModel instances for OpenAI, Ollama, Blablador, DeepSeek, and Open WebUI — the configuration record, the platform enum, LazyChatModel's deferred client construction, per-platform credentials, and the bridge into the cache subsystem.
+description: How ChatModelProvider turns an LlmConfiguration into lazily-initialized LangChain4j ChatModel instances for OpenAI, Ollama, Blablador, DeepSeek, Open WebUI, and the Bifrost gateway — the configuration record, the platform enum, LazyChatModel's deferred client construction, per-platform credentials, and the bridge into the cache subsystem.
 tags: [chat, models, configuration, lazy-initialization]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
   - id: openwiki-source-afc251b7258caad3fb7240df
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java
@@ -17,6 +17,10 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java
   - id: openwiki-source-fac3ed967ea0ee2556a0e7eb
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
+  - id: openwiki-source-74ec3f5f99ed6a20eea5c444
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
   - id: openwiki-source-f933314cddd3af5c44148dcf
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java
   - id: openwiki-source-9004cbdc8e51b2de64d3e116
@@ -25,7 +29,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java
   - id: openwiki-source-8dc1f1936de5b41a642deb07
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModelTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Chat Models
@@ -79,7 +83,7 @@ Defaults and validation:
 ## ChatModelPlatform
 
 `ChatModelPlatform` is an enum with exactly the values `OPENAI`, `OLLAMA`, `BLABLADOR`, `DEEPSEEK`,
-and `OPENWEBUI`. `fromString(name)` matches enum names case-insensitively and throws
+`OPENWEBUI`, and `BIFROST`. `fromString(name)` matches enum names case-insensitively and throws
 `IllegalArgumentException` for unknown names, which makes it usable for parsing user-supplied
 configuration. The model name is deliberately **not** part of the platform; it travels separately
 in `LlmConfiguration`.
@@ -97,16 +101,29 @@ factory methods behind `createChatModel()`, which exhaustively switches over the
 | `BLABLADOR` | `BLABLADOR_API_KEY` | — | `OpenAiChatModel` | Hardcoded `https://api.helmholtz-blablador.fz-juelich.de/v1` |
 | `DEEPSEEK` | `DEEPSEEK_API_KEY` | — | `OpenAiChatModel` | Hardcoded `https://api.deepseek.com/v1` |
 | `OPENWEBUI` | `OPENWEBUI_URL`, `OPENWEBUI_API_KEY` | — | `OpenAiChatModel` | `OPENWEBUI_URL`; 10-minute timeout |
+| `BIFROST` | `BIFROST_API_KEY`, `BIFROST_URL` | — | `OpenAiChatModel` | `BIFROST_URL` (via the shared `Bifrost` helper); 10-minute timeout; virtual key sent as bearer token and `x-bf-vk` header; provider-prefixed model names such as `openai/gpt-4o-mini` |
 
 Every client supplier carries the configured `modelName`, `temperature`, and `seed` into the
-LangChain4j builder. Blablador, DeepSeek, Open WebUI, and the Ollama token variant all go through
-the OpenAI-compatible `OpenAiChatModel`; only OpenAI itself uses the default endpoint without a
-custom base URL.
+LangChain4j builder. Blablador, DeepSeek, Open WebUI, Bifrost, and the Ollama token variant all go
+through the OpenAI-compatible `OpenAiChatModel`; only OpenAI itself uses the default endpoint
+without a custom base URL.
+
+The Bifrost branch is the only one that delegates credential lookup to the shared
+`edu.kit.kastel.mcse.ardoco.llm.util.Bifrost` helper: `Bifrost.baseUrl(environment)` and
+`Bifrost.apiKey(environment)` resolve `BIFROST_URL` and `BIFROST_API_KEY` via `getenvNonNull` (so
+the factory fails fast on either missing variable), and `Bifrost.headers(apiKey)` supplies the
+`x-bf-vk` custom header through which the gateway accepts the virtual key in addition to the
+bearer token. The supplier builds an `OpenAiChatModel` with a 10-minute timeout. Model names must
+be provider-prefixed (for example `openai/gpt-4o-mini`) because Bifrost routes by provider prefix.
+The same environment variables and the same helper are shared with the embedding subsystem
+(see [Bifrost Gateway](../integrations/bifrost-gateway.md)); the other platforms read their
+variables directly here.
 
 For OpenAI, `OPENAI_ORGANIZATION_ID` is optional and is sent to OpenAI only when set; otherwise it
 is omitted from the client. Blablador and DeepSeek hardcode their base URLs, so only an API key is
-needed. Open WebUI points the OpenAI-compatible client at `OPENWEBUI_URL` and, together with the
-native Ollama client, is the only place an explicit 10-minute timeout is set.
+needed. Open WebUI points the OpenAI-compatible client at `OPENWEBUI_URL`; Bifrost points it at
+`BIFROST_URL`. The Bifrost and Open WebUI branches and the native Ollama client are the only places
+an explicit 10-minute timeout is set.
 
 ### Eager validation, lazy construction
 
@@ -236,8 +253,10 @@ environment can reappear (see [Environment and Configuration](../concepts/enviro
 ## Focused tests
 
 - `ChatModelProviderTest` — `exposesSettings` (getters plus `cacheParameters()` equality),
-  `buildsOpenAiModel` (asserts the result is a `LazyChatModel`), `missingCredentialsThrow`
-  (iterates all platforms with an empty `MapEnvironment` and expects `IllegalStateException`), and
+  `buildsOpenAiModel` (asserts the result is a `LazyChatModel`), `buildsBifrostModel`
+  (a Bifrost environment yields a `LazyChatModel`), `bifrostRequiresKeyAndUrl` (Bifrost fails fast
+  when only the key or only the URL is set), `missingCredentialsThrow` (iterates all six platforms
+  with an empty `MapEnvironment` and expects `IllegalStateException`), and
   `usesInjectedEnvironment` (an Ollama-only environment satisfies Ollama but not OpenAI).
 - `ChatConfigurationTest` — `of()` defaults, builder overrides (including `assertSame` on the
   injected environment), the builder's `SystemEnvironment` default, the required-model-name rule

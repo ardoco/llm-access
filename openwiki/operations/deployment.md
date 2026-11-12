@@ -7,6 +7,7 @@ openwiki:
   roles: [operations, delivery]
   change_kinds: [lifecycle]
   source_paths:
+    - .github/workflows/bifrost.yml
     - .github/workflows/format.yml
     - .github/workflows/openwiki.yml
     - .github/workflows/verify.yml
@@ -17,16 +18,18 @@ openwiki:
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-  symbols: [CacheManager, CacheManager.setCacheDir, CacheManager.getDefaultInstance, CacheManager.flush, RedisCache, RestRedisCache, UnifiedRedisClient, CacheType, central-publishing-maven-plugin, flatten-maven-plugin]
+  symbols: [CacheManager, CacheManager.setCacheDir, CacheManager.getDefaultInstance, CacheManager.flush, RedisCache, RestRedisCache, UnifiedRedisClient, CacheType, BifrostIntegrationTest, central-publishing-maven-plugin, flatten-maven-plugin]
   invariants:
     - Redis and REST-Redis fail fast: an unreachable backend or a failed PING at cache construction aborts with an exception; there is no silent fallback.
     - LOCAL cache files are self-contained and are the replication artifact.
     - The Testcontainers REST-Redis integration test skips automatically without Docker.
   validation_commands: ["mvn verify", "mvn -q test -Dtest=RestRedisTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-26T12:15:10.459Z
+  - by: openwiki/0.9.0
+    at: 2026-11-09T15:10:09.905Z
 sources:
+  - id: openwiki-source-606719b2dc777de859e4519b
+    resource: repo://.github/workflows/bifrost.yml
   - id: openwiki-source-f721914ec66a43bd2b76a715
     resource: repo://.github/workflows/format.yml
   - id: openwiki-source-6d3ac2bdfb0e76882a670989
@@ -53,11 +56,13 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
   - id: openwiki-source-40c4513abd4e4ec4b3783b4a
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/UnifiedRedisClient.java
+  - id: openwiki-source-38a704b0c016c8a6264f5154
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java
   - id: openwiki-source-30f99b58023b3a9a8c01b6d4
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-77fcb76d829af13337d04708
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-26T12:15:10.459Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-09T15:10:09.905Z" }
 ---
 
 # Operations and Deployment
@@ -164,7 +169,7 @@ password (`--requirepass`) and/or TLS and put the credentials into the URL, e.g.
 REST-Redis exists for the case where clients can reach the cache only over **HTTP** — restricted
 egress, or a shared team cache whose TLS and authentication are terminated at a proxy. The
 server is [`org.fuchss:rest-redis`](https://central.sonatype.com/artifact/org.fuchss/rest-redis)
-(bundled here at version 0.1.5), published as the Docker image
+(bundled here at version 0.1.7), published as the Docker image
 [`ghcr.io/dfuchss/rest-redis`](https://github.com/dfuchss/rest-redis); the matching client ships
 with this library, so applications only configure `REST_REDIS_URI`.
 
@@ -279,6 +284,11 @@ fallback does and does not buy you: the backends of a hierarchy are created in o
 first `getCache`, so a down Redis still fails cache acquisition even in a `REDIS,LOCAL` setup.
 The `LOCAL` layer provides data fallback and offline reproduction — not startup tolerance.
 
+The same no-silent-fallback philosophy governs the gateway credentials: the Bifrost platform
+reads `BIFROST_URL` and `BIFROST_API_KEY` through `getenvNonNull`, which throws when either is
+missing — the relevant consumers are the `BIFROST` chat model and the Bifrost embedding creator
+(see [Bifrost Gateway](../integrations/bifrost-gateway.md)).
+
 ## Replication packages
 
 Because `LOCAL` cache files are self-contained, the cache directory *is* the replication
@@ -320,9 +330,13 @@ re-run.
   connection settings through a `MapEnvironment`, and exercises the deployed topology end to
   end, including the hierarchical conflict strategies (see
   [Testing Strategy](../testing/strategy.md)). Run it alone with
-  `mvn -q test -Dtest=RestRedisTest` (Docker required).
-- **Coordinates:** the artifact is `io.github.ardoco:llm-access` (currently `0.2.1-SNAPSHOT`),
-  built with Java 21 on the `io.github.ardoco:parent` `2.1.0` parent POM.
+  `mvn -q test -Dtest=RestRedisTest` (Docker required). The live
+  `BifrostIntegrationTest` is gated by `@EnabledIfEnvironmentVariable` on `BIFROST_API_KEY` and
+  `BIFROST_URL` — without them it simply skips locally, and CI runs it through `bifrost.yml`
+  (see below).
+- **Coordinates:** the artifact is `io.github.ardoco:llm-access` (currently `0.2.2-SNAPSHOT`),
+  built with Java 21 on the `io.github.ardoco:parent` `2.1.0` parent POM, with LangChain4j
+  `1.23.0` (via the imported `langchain4j-bom`).
 - **Publishing:** `central-publishing-maven-plugin` is configured with `publishingServerId`
   `central`, `autoPublish=true`, `waitUntil=published`, and `deploymentName=ardoco-llm-access` —
   overriding the parent's default deployment name so the bundle is named distinctly in the
@@ -335,11 +349,12 @@ re-run.
 
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
+| `bifrost.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened) — both with `paths-ignore` for `docs/**` and `openwiki/**` — plus manual | Runs the live Bifrost smoke test: skips on forks and Dependabot (secrets are unavailable there), determines the JDK version from the POM (same inline step as `format.yml`), pins Maven 3.9.16, and runs `mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test` with `BIFROST_API_KEY`/`BIFROST_URL` injected from secrets. Details of what the gateway test exercises are in [Bifrost Gateway](../integrations/bifrost-gateway.md). |
 | `verify.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual | Runs the shared ardoco Maven workflow (`ardoco/actions/.github/workflows/maven.yml@main`) with `deploy: false` and submodules checked out; `paths-ignore` for `docs/**` and `openwiki/**` keeps wiki- or doc-only changes from triggering builds. |
 | `format.yml` | PRs to `main` (no path filter), manual | Checks out with `actions/checkout@v7` (submodules, full history), derives the JDK major version from the POM (see below), installs temurin via `setup-java@v6` with the Maven cache, runs `mvn -B spotless:apply --file pom.xml`, and auto-commits the result with `stefanzweifel/git-auto-commit-action@v7` as "Apply formatting changes". |
 | `openwiki.yml` | weekly schedule (`0 6 * * 1`, Monday 06:00 UTC), manual | Delegates to the shared `ardoco/actions/.github/workflows/openwiki.yml@main` workflow with `contents: write` and `pull-requests: write`, forwarding only `OPENROUTER_API_KEY`. The update logic (commit gating, PR creation) lives in that shared workflow, not in this repository's file. |
 
-The `format.yml` job pins nothing by hand: its "Determine Java version" step evaluates the POM
+The `format.yml` job pins no JDK version by hand: its "Determine Java version" step evaluates the POM
 properties in order — `maven.compiler.target`, then `maven.compiler.release`, then `java.version`
 — via `mvn -B -q -N help:evaluate -DforceStdout`, strips a leading `1.` prefix to turn `1.21`
 into `21`, and exports the first numeric result as the `java_major_version` output. If none of
@@ -347,7 +362,9 @@ the three expressions resolves to a number, the step fails with
 `::error::Could not determine the Java version from the POM`. This keeps the formatter's JDK on
 whatever the build targets (Java 21), so `spotless:apply` rewrites code with the same toolchain
 the build and tests use; a hand-pinned version could drift from the POM as the parent POM's
-compiler settings evolve.
+compiler settings evolve. `bifrost.yml` reuses the same step verbatim, so the Bifrost smoke test
+runs on the same POM-derived JDK (it additionally pins Maven to 3.9.16, the same version the
+shared `maven.yml` workflow uses).
 
 Dependency upkeep is automated: Dependabot opens weekly update PRs for the `github-actions` and
 `maven` ecosystems (Wednesdays 11:00 Europe/Berlin) with the commit-message prefix `Dependency`.
@@ -362,5 +379,7 @@ Dependency upkeep is automated: Dependabot opens weekly update PRs for the `gith
   `SystemEnvironment`/`MapEnvironment` supply every variable above.
 - [Testing Strategy](../testing/strategy.md) — hermetic tests and the Docker-gated integration
   test.
+- [Bifrost Gateway](../integrations/bifrost-gateway.md) — the gateway contract the CI smoke test
+  runs against.
 - [Architecture Overview](../architecture/overview.md) — where the cache subsystem sits and the
   toolchain/release summary.

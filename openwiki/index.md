@@ -13,5 +13,6 @@ okf_version: "0.2"
 - [chat](chat/)
 - [concepts](concepts/)
 - [embeddings](embeddings/)
+- [integrations](integrations/)
 - [operations](operations/)
 - [testing](testing/)
