@@ -144,7 +144,7 @@ public interface Cache<K extends CacheKey> {
                 if (cacheDir == null) {
                     throw new IllegalArgumentException("A cache directory is required for the LOCAL cache type");
                 }
-                yield new LocalCache<>(cacheDir, parameters);
+                yield LocalCache.forFile(cacheDir, parameters);
             }
             case REDIS -> {
                 if (mapper == null) {

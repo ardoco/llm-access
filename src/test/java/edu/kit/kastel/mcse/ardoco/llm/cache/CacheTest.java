@@ -57,8 +57,19 @@ class CacheTest {
     }
 
     @Test
+    @DisplayName("flushAll writes pending entries of all local caches")
+    void testFlushAll() throws IOException {
+        Cache<TestCacheKey> cache = createLocalCache();
+        cache.put("key1", "pending-value");
+
+        LocalCache.flushAll();
+
+        assertTrue(Files.readString(tempCacheDir.resolve("test_cache.json")).contains("pending-value"));
+    }
+
+    @Test
     @DisplayName("Existing cache entries are retrieved from cache file")
-    void testRetrieveExistingEntry() {
+    void testRetrieveExistingEntry() throws IOException {
         Cache<TestCacheKey> cache1 = createLocalCache();
         cache1.put("key1", "value1");
         cache1.flush();
@@ -67,6 +78,7 @@ class CacheTest {
         String value = cache2.get("key1", String.class);
 
         assertEquals("value1", value);
+        assertTrue(Files.readString(tempCacheDir.resolve("test_cache.json")).contains("value1"), "the entry must be on disk");
     }
 
     @Test
@@ -148,8 +160,23 @@ class CacheTest {
      */
     static class TestCacheParameter implements CacheParameter<TestCacheKey> {
         @Override
+        public boolean equals(Object other) {
+            return other instanceof TestCacheParameter;
+        }
+
+        @Override
+        public int hashCode() {
+            return TestCacheParameter.class.hashCode();
+        }
+
+        @Override
         public String parameters() {
             return "test-cache";
+        }
+
+        @Override
+        public LargeLanguageModelCacheMode mode() {
+            return LargeLanguageModelCacheMode.CHAT;
         }
 
         @Override
@@ -162,6 +189,6 @@ class CacheTest {
      * Factory method to create a LocalCache instance for testing
      */
     private Cache<TestCacheKey> createLocalCache() {
-        return new LocalCache<>(tempCacheDir.resolve("test_cache.json").toString(), new TestCacheParameter());
+        return LocalCache.forFile(tempCacheDir.resolve("test_cache.json").toString(), new TestCacheParameter());
     }
 }
