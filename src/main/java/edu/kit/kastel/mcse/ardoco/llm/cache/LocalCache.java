@@ -119,6 +119,13 @@ class LocalCache<K extends CacheKey> implements Cache<K> {
     }
 
     /**
+     * Drops all registered instances without flushing them. Intended for tests whose cache directories are deleted.
+     */
+    static void clearInstances() {
+        INSTANCES.clear();
+    }
+
+    /**
      * Checks if the cache is ready for use.
      * This method ensures that the cache file exists and is accessible.
      *
