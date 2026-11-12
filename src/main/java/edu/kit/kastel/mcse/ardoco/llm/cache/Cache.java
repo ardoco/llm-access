@@ -3,10 +3,9 @@ package edu.kit.kastel.mcse.ardoco.llm.cache;
 
 import org.jspecify.annotations.Nullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Interface for cache implementations.
@@ -109,7 +108,7 @@ public interface Cache<K extends CacheKey> {
         }
         try {
             return mapper.readValue(jsonData, clazz);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             // Backward compatibility for unserialized String values
             if (clazz == String.class) {
                 return (T) jsonData;

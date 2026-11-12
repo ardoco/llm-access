@@ -6,11 +6,10 @@ import java.util.*;
 
 import org.jspecify.annotations.Nullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import redis.clients.jedis.RedisClient;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Implements a Redis-based cache for storing and retrieving values. For multi-layer caching with
@@ -141,7 +140,7 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
     public synchronized <T> void put(String key, T value) {
         try {
             put(key, mapper.writeValueAsString(Objects.requireNonNull(value)));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Could not serialize object", e);
         }
     }
@@ -152,7 +151,7 @@ class RedisCache<K extends CacheKey> implements Cache<K> {
         String data;
         try {
             data = mapper.writeValueAsString(Objects.requireNonNull(value));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Could not serialize object", e);
         }
         String jsonKey = key.toJsonKey();
