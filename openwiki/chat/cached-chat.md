@@ -21,8 +21,8 @@ openwiki:
     - nCachedRequest and cachedRequest never flush; persistence is the caller's responsibility.
   validation_commands: ["mvn -q test -Dtest=CachingChatModelTest,ChatModelUtilsTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
@@ -46,7 +46,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModelTest.java
   - id: openwiki-source-180fe51b7bce3c3ad383cd57
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelUtilsTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Cached Chat Requests
@@ -75,18 +75,20 @@ Cache<ChatCacheKey> cache = CacheManager.getDefaultInstance().getCache(provider,
   the model configuration identity from [Chat Models](chat-models.md). With the default
   `LlmConfiguration` temperature of `0.0`, that identifier omits the temperature component.
 - `getCache(origin, parameters)` derives the cache name from the origin's class simple name plus
-  that parameter identifier, so the cache scope depends on both the origin class and the model
-  configuration; repeated requests with equal parameters return the same memoized instance, and
-  the same name requested with non-equal parameters throws `IllegalArgumentException`.
+  that parameter identifier (with `:` mapped to `__` and `/`, `\` to `--` for file-name safety), so
+  the cache scope depends on both the origin class and the model configuration; repeated requests
+  with equal parameters return the same memoized instance, and the same name requested with
+  non-equal parameters throws `IllegalArgumentException`.
 
 ## Keying inside the cache layer
 
 Both paths hand plain content strings to the cache; the physical key is derived inside the cache
 layer, not by the chat code. `ChatCacheParameter.createCacheKey(content)` builds a
-[ChatCacheKey](../cache/cache-keys.md) whose `localKey` is a deterministic UUID of the content
-with `\r\n` normalized to `\n` by `KeyGenerator` — that is where line-ending normalization
-happens. `LocalCache` addresses entries by `localKey`, while the Redis-based backends address
-them by the serialized JSON key; the storage contract is described in
+[ChatCacheKey](../cache/cache-keys.md) that stores the model configuration (name, seed,
+temperature, `CHAT` mode) alongside the content, and whose `@JsonIgnore localKey` is a
+deterministic UUID of the content with `\r\n` normalized to `\n` by `KeyGenerator` — that is where
+line-ending normalization happens. `LocalCache` addresses entries by `localKey`, while the
+Redis-based backends address them by the serialized JSON key; the storage contract is described in
 [Cache Core](../cache/cache-core.md).
 
 ## CachingChatModel
@@ -155,7 +157,7 @@ and returns all responses:
 - **Persistence:** `nCachedRequest` (and therefore `cachedRequest`) never flushes. Durability with
   the file-backed [LocalCache](../cache/cache-backends.md) depends on an explicit `cache.flush()`
   (as in the README example), `CacheManager.flush()`, or `LocalCache`'s auto-flush after more than
-  50 modifications — unlike `CachingChatModel`, which flushes after every computed response.
+  50 dirty modifications — unlike `CachingChatModel`, which flushes after every computed response.
 
 `cachedRequest(request, llm, cache)` delegates to `nCachedRequest(request, llm, cache, 1)` and
 returns the first element, so single-result requests share the single-result key space.

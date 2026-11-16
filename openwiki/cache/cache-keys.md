@@ -14,20 +14,26 @@ openwiki:
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
   symbols: [ChatCacheKey, ChatCacheKey.of, ChatCacheParameter, ChatCacheParameter.parameters, EmbeddingCacheKey, EmbeddingCacheKey.of, EmbeddingCacheKey.ofRaw, EmbeddingCacheParameter, KeyGenerator, KeyGenerator.generateKey]
   test_paths:
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKeySerializationTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
   invariants:
     - KeyGenerator.generateKey normalizes CRLF to LF and returns a stable type-3 name-based UUID; generateKey("test") must remain 098f6bcd-4621-3373-8ade-4e832627b4f6 because the value is part of the on-disk cache format.
     - ChatCacheParameter.parameters() omits the temperature component when it is 0.0, keeping LocalCache file names compatible with LiSSA caches (<Origin>_<model>_<seed>[_<temperature>].json).
     - EmbeddingCacheParameter.parameters() is the bare model name; EmbeddingCacheKey pins seed and temperature to -1 (information-free backward-compatibility markers) and the mode to EMBEDDING.
     - localKey is a content UUID from KeyGenerator, is excluded from toJsonKey via @JsonIgnore, and is part of equals/hashCode.
     - The mode (CHAT/EMBEDDING) is a serialized key field, so the two domains never collide in Redis; parameters() in the cache file name separates configurations locally.
-  validation_commands: ["mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest"]
+    - toJsonKey() output is byte-stable (property order, escaping, whitespace) because the exact string is the Redis hash key; CacheKeySerializationTest pins golden JSON for both key types.
+    - ArchitectureTest structurally enforces that CacheKey.of reads every CacheParameter attribute and that parameters() accesses every field; violations would silently share cache entries or files across configurations.
+  validation_commands: ["mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest,CacheKeySerializationTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
+  - id: openwiki-source-855ff655bdf1ca8f941195ab
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKey.java
   - id: openwiki-source-4fd2e823addcf84d995a9216
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
   - id: openwiki-source-ba0dc6c01c930c4c675be60f
@@ -44,16 +50,23 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java
   - id: openwiki-source-9c0be2a8e438a2a14ff8210b
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-cc5a2b50d20e43f17b5eed14
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-91e90e06abef694a92ea2a06
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-4feeab6332f6627178c60394
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
+  - id: openwiki-source-9727109b59766f9bf3510846
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKeySerializationTest.java
   - id: openwiki-source-f42e03b15fcff2355b421087
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheKeyTest.java
   - id: openwiki-source-b6ade7291953ac7833ab5561
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKeyTest.java
   - id: openwiki-source-ae96d7bc45dacf528f83daad
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Cache Keys
@@ -108,6 +121,11 @@ The generated keys are part of the on-disk cache format, so they must stay stabl
 - `createCacheKey(content)` → `ChatCacheKey.of(this, content)`; this is the single point where a
   caller-facing content string becomes a cache key.
 
+Production code builds the record straight from the model configuration:
+`ChatModelProvider.cacheParameters()` returns `new ChatCacheParameter(modelName, seed, temperature)`,
+so a chat cache's file identity and its key identity are both derived from the same provider-level
+model settings (see [Cached Chat Requests](../chat/cached-chat.md)).
+
 `ChatCacheKey` is a final class with fields `model`, `seed`, `temperature`, `mode`, `content`, and
 `localKey` (a content UUID from `KeyGenerator`, excluded from JSON). The constructor is private;
 `ChatCacheKey.of` is the package-private preferred factory and pins `mode` to
@@ -122,6 +140,10 @@ identifies the cache:
 
 - `parameters()` returns the bare model name (e.g. `text-embedding-ada-002`).
 - `createCacheKey(content)` → `EmbeddingCacheKey.of(this, content)`.
+
+`CachedEmbeddingCreator` creates the record in its constructor — `new EmbeddingCacheParameter(model)`
+— and immediately obtains the shared cache via `cacheManager.getCache(this, embeddingCacheParameter)`,
+so the model name alone selects both the cache file and the key identity.
 
 `EmbeddingCacheKey` is a final class with fields `model`, `seed` (always `-1`), `temperature`
 (always `-1`), `mode` (always `EMBEDDING`), `content`, and `localKey` (content UUID from
@@ -157,6 +179,12 @@ flowchart TD
 ```
 *How a content string and a cache parameter become the two addresses of one entry: the content UUID `localKey` for file caches and logs, and the configuration-complete JSON key for Redis addressing.*
 
+Inside a `LocalCache` file, the put path addresses entries exactly like the get path:
+`putViaInternalKey` serializes the value and stores it under `cacheKey.localKey()`, and it increments
+the dirty counter only when the previously stored value actually changes
+(`old == null || !old.equals(jsonValue)`). Re-putting identical content therefore neither dirties the
+cache file nor advances the `MAX_DIRTY = 50` auto-flush threshold.
+
 ## Why entries never collide
 
 Two independent mechanisms keep entries of different domains and configurations apart:
@@ -190,6 +218,40 @@ cache entries:
 Redis-backed caches are equally sensitive: `toJsonKey()` is their address, so any change to the
 serialized fields of either key class invalidates stored Redis entries.
 
+## The serialization stability contract
+
+The exact serialized form of a key *is* its Redis address, not merely a hash input. `CacheKey` renders
+with a dedicated shared mapper — `builderWithJackson2Defaults().enable(INDENT_OUTPUT)` — so
+`toJsonKey()` produces pretty-printed JSON with a fixed property order (`model`, `seed`, `temperature`,
+`mode`, `content`), and the resulting string is used verbatim as the Redis hash key
+(`redis.hget(jsonKey, "data")`, `redis.hset(jsonKey, "data", …)`).
+
+`CacheKeySerializationTest` pins that contract byte-for-byte with two golden strings: the chat key for
+`gpt-4o/mini` (seed 42, temperature 0.5) with an adversarial content string (slashes, backslashes,
+quotes, Unicode, control characters) and the embedding key for `text-embedding/3`, which pins the
+serialized `-1`/`-1.0` markers as `"seed" : -1` and `"temperature" : -1.0`. The test's own
+javadoc states the consequence: any change to property order, escaping, or whitespace invalidates all
+existing Redis caches, because the previously stored hash keys would no longer be looked up.
+
+## Structural guardrails against silent key sharing
+
+Two ArchUnit rules in `ArchitectureTest` enforce key completeness structurally, because a missing
+attribute fails silently: entries created under different configurations would collide and return
+wrong cached results instead of raising an error.
+
+- `cacheKeysMustHaveOfMethodWithCacheParameter` requires every concrete `CacheKey` implementation to
+  have a static `of(CacheParameter, String)` method and asserts that this method reads *every*
+  attribute of the parameter type (excluding the non-attribute methods `parameters()` and
+  `createCacheKey()`). Add a new field to `ChatCacheParameter` without reading it in
+  `ChatCacheKey.of`, and the build fails.
+- `cacheParametersMustUseAllFieldsInParametersMethod` requires every concrete `CacheParameter`
+  implementation's `parameters()` to access all of the class's fields. Since `parameters()` generates
+  the cache file name, a forgotten field would make distinct configurations share one file —
+  and with it every entry in that file.
+
+Both rules analyze the production sources only (`ImportOption.DoNotIncludeTests`), so they keep
+guarding new `CacheKey`/`CacheParameter` implementations automatically.
+
 ## Focused tests
 
 - `ChatCacheKeyTest` — `parametersOmitZeroTemperature` (`gpt-4o_42`),
@@ -198,7 +260,11 @@ serialized fields of either key class invalidates stored Redis entries.
   `CHAT`, and content are present and the local key is absent from `toJsonKey()`), and `equality`.
 - `EmbeddingCacheKeyTest` — `parametersAreModelName`, `createCacheKey`, `jsonKeyExcludesLocalKey`
   (asserts `EMBEDDING` present, local key absent), `ofRawCustomLocalKey`, and `equality`.
+- `CacheKeySerializationTest` — `chatKey` and `embeddingKey`, the byte-stable golden JSON strings of
+  the two key types.
+- `ArchitectureTest` — the two structural completeness rules for `CacheKey.of` and
+  `CacheParameter.parameters()` described above.
 - `KeyGeneratorTest` — `deterministic`, `normalizesLineEndings`, `distinctInputs`,
   `stableUuidValue` (the pinned `098f6bcd-4621-3373-8ade-4e832627b4f6`), and `nullInput`.
 
-Run with `mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest`.
+Run with `mvn -q test -Dtest=ChatCacheKeyTest,EmbeddingCacheKeyTest,KeyGeneratorTest,CacheKeySerializationTest`.

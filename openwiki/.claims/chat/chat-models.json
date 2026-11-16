@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:11df3c329f95d6fa11f39e0d2ccf1405c78f0809ff338689455709c9624f0d7a",
+  "pageVersion": "sha256:ddcd59ced049c9c67983e7db33211f628fb9a04ac5c319dc0f1438595d927f98",
   "claims": [
     {
       "id": "claim_752f10b729cf4e51b6ed19a2a684d501",
-      "statement": "ChatModelProvider.createChatModel() exhaustively switches over ChatModelPlatform (OPENAI, OLLAMA, BLABLADOR, DEEPSEEK, OPENWEBUI) and delegates to private per-platform factories that each return a LazyChatModel, so no branch constructs a platform client directly.",
+      "statement": "ChatModelProvider.createChatModel() exhaustively switches over ChatModelPlatform (OPENAI, OLLAMA, BLABLADOR, DEEPSEEK, OPENWEBUI, BIFROST) and delegates to private per-platform factories that each return a LazyChatModel, so no branch constructs a platform client directly.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L109-L117",
-          "version": "repo-lines-v1:sha256:3976b79ff35d66dfd72b7571e3b5f47164fa3d680185e6e54e161ec6aba8ff43:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E5Njg0MWQ3YTQ0MmQxMDlmN2YzMmJhNDQ0ZDAwOTFmZGUxYWY4MTQxZGY1NDQ3ODE3ZmYzNjkwYTQ2MTdkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZiMTJhODMwODllNTIwZDc1MGFmMjBiNTRlOTIxNTBjNGIxZWM1OWJjOWVlMjY3NjE4ZWNiNmQzM2FiYzdkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGMxZDI1ZDg1NTZmYWJkNDFiMWVkMmQ2OGM4NjQ5M2FiOGM1NmFlZDRhYzQ5YjU3ODRjMWMzYWNlZGY1OWU4MiJ9"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L117-L124",
+          "version": "repo-lines-v1:sha256:f1dfe74e3586694aac2b7dc905dbe5b354587133a3e269cc2e1545698dcffaed:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E5Njg0MWQ3YTQ0MmQxMDlmN2YzMmJhNDQ0ZDAwOTFmZGUxYWY4MTQxZGY1NDQ3ODE3ZmYzNjkwYTQ2MTdkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjRmNTE5ZTY5MGFlYjAyMTUyMDY5ODViMTk3NjQ0MDExODM2MTQ2YjExMDczNjM2ZTQzY2NjZTBlMTljZjRhNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZiMTJhODMwODllNTIwZDc1MGFmMjBiNTRlOTIxNTBjNGIxZWM1OWJjOWVlMjY3NjE4ZWNiNmQzM2FiYzdkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzgwODgzZGNjNDU1Y2I0ZTA4OTc0OTE3MzBmZWFiZDM5YzcxNGFhNGZhNTNlNzgzMDVhOGQ3ZWIxZDJmNjFmZiJ9"
         }
       ]
     },
@@ -17,12 +17,16 @@
       "statement": "The per-platform factories resolve environment variables eagerly inside createChatModel() — required ones via EnvironmentProvider.getenvNonNull (IllegalStateException when unset) and optional ones via getenv — while the LangChain4j client is constructed only by the supplier on the first chat call, so missing credentials fail fast at factory time and client/connection errors surface at first use.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L163-L207",
-          "version": "repo-lines-v1:sha256:6c2450be787852084147755c0b140150c150e1b683cac756c4e64bcd7ea8e6bd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3OGZmYmYyZjJhMmRmM2RkODY4MDVkOTdmNTAwNDBkMDA0MDNjZWM1NDJiMzBlMzEwNTA5M2VjMDdlNzBjZjgifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L171-L187",
+          "version": "repo-lines-v1:sha256:1db8db0b8c42b8923aea9b15001cc711e61e44a0e13dc0a103e4c84b65523f39:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZDlmZTRkZDgwZTE1OWZlYzNmODA5M2FjNjE3ZTlhZmExYTk4OTBmZTAzNjM5YjdmYTcxYTM0Y2UwNjM3MTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmOGZiM2E2YzY5NDkyODc4M2Y1ZTA5ZjNlYTU2ZjA2NWNkYzEyZjgxZmFjMDkyNzFhOTk0OTM5ZDIwYTM2NzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5ZmU2ODExNzRiYmMyZTI2OGMzZTEzOTYyN2E3NTBmNGUxZTc2ZmJiNTgxMTgyMDZiMDViM2ExNGJhMTE2NWUifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L253-L264",
-          "version": "repo-lines-v1:sha256:aa451ad5735497377d6d64690a4bd622c21457265dd143ae4f39bbf738e1f390:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiODZjY2UxNmM2NjUwMTg2ZGJlMzMxYjI2MzJlNDY3ZTZmMTMwNjZhOGVmMWMyZmE1YjU5OTJjNjBlOTQwOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxYWZjZTA4MDUzODlkNWRhYmEyMzZmNzkwNjg0OTgyMGFiYjJmZmE1YzAxNTg0YjJmYTIwYzE0MzM1N2JiMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4MWRhYzhjMjk5YWVlYzY0ZWJhNzQ4NWRkNjc3OGNmYjUyZDU5NWM5OWE1NzNhMmU5NTg2YzAzZTg4NzQwNzEifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L205-L219",
+          "version": "repo-lines-v1:sha256:d21c2e22ad5fb79dd0e70dcdaf3bfce3dd807a3e81ad707a52eca8973f3f8811:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMDVhMjFhYzk2MDQzYjFmZjQ4OTIwNzA4ZTI3YjBjODYwZDRhYTYyZGUyZTNmZTMwMTE1YWU1NGE0NTkyZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0NzdhMTlkZWFlYjBjZDZlZTRlMjM3NjJjNWYyYjQxMTU3YzNhZTFjZjAxNDM3OTFlYTgyMzY4OWYyMzVmOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2NThjZmM3OGNjN2FmM2QxNzUwZTU3ZDM4ZTg1ZmI5MTFhYjY5ZGMyODg4ODI2YzYxYWJiNGI5OTYzZmU3YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZTNkYjJiM2Q5MWZmMjMyNWJhOTE5NzFiZWU5ZDE4Y2JhODRiM2FkNTAxOWY5YTBiYzhiMzk4ZWY2NzliZDIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L261-L279",
+          "version": "repo-lines-v1:sha256:6fb0cf3a22156f918b5b256e84d04bda5c5d75bfadd1dc0434b380bf6bd29b79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjE1NjRlYTRjNjQ2M2M3ZGU3YWEwOWE0MGI2N2M4MjJmZjM3YTU2MzdhZWU2Y2VkNWY5NDJjYjM3OTFiNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MTY4YzJkMzlhN2E4MmIwNjA1ZTdiYzdkNjlmODYzZWY0NDU0NmZhMjJiNGM5NDA2ZTgxZDEyZjEyM2I2NGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmNzI3Y2NkZGYyNmY4ZmE4OGYzMzVhNmRmNTYzMDczY2RkNDlmYmM3ZTM5ZTRkNzExMzA4NzRlNWNlMzY3MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxYWZjZTA4MDUzODlkNWRhYmEyMzZmNzkwNjg0OTgyMGFiYjJmZmE1YzAxNTg0YjJmYTIwYzE0MzM1N2JiMWIifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java#L35-L41",
@@ -35,8 +39,8 @@
       "statement": "The OPENAI branch builds an OpenAiChatModel with the configured model name, seed, and temperature, requires OPENAI_API_KEY, and sends OPENAI_ORGANIZATION_ID to OpenAI only when it is set.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L196-L207",
-          "version": "repo-lines-v1:sha256:f98f2e9995ab001caa3880fbb833e9eac60079ac4e968dec9c75e51cd8808e9e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMDVhMjFhYzk2MDQzYjFmZjQ4OTIwNzA4ZTI3YjBjODYwZDRhYTYyZGUyZTNmZTMwMTE1YWU1NGE0NTkyZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2NThjZmM3OGNjN2FmM2QxNzUwZTU3ZDM4ZTg1ZmI5MTFhYjY5ZGMyODg4ODI2YzYxYWJiNGI5OTYzZmU3YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3OGZmYmYyZjJhMmRmM2RkODY4MDVkOTdmNTAwNDBkMDA0MDNjZWM1NDJiMzBlMzEwNTA5M2VjMDdlNzBjZjgifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L205-L219",
+          "version": "repo-lines-v1:sha256:d21c2e22ad5fb79dd0e70dcdaf3bfce3dd807a3e81ad707a52eca8973f3f8811:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMDVhMjFhYzk2MDQzYjFmZjQ4OTIwNzA4ZTI3YjBjODYwZDRhYTYyZGUyZTNmZTMwMTE1YWU1NGE0NTkyZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0NzdhMTlkZWFlYjBjZDZlZTRlMjM3NjJjNWYyYjQxMTU3YzNhZTFjZjAxNDM3OTFlYTgyMzY4OWYyMzVmOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2NThjZmM3OGNjN2FmM2QxNzUwZTU3ZDM4ZTg1ZmI5MTFhYjY5ZGMyODg4ODI2YzYxYWJiNGI5OTYzZmU3YzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZTNkYjJiM2Q5MWZmMjMyNWJhOTE5NzFiZWU5ZDE4Y2JhODRiM2FkNTAxOWY5YTBiYzhiMzk4ZWY2NzliZDIifQ"
         }
       ]
     },
@@ -45,8 +49,8 @@
       "statement": "The BLABLADOR and DEEPSEEK branches build OpenAI-compatible OpenAiChatModel clients against hardcoded base URLs (https://api.helmholtz-blablador.fz-juelich.de/v1 and https://api.deepseek.com/v1) and require only their respective API keys BLABLADOR_API_KEY and DEEPSEEK_API_KEY.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L216-L243",
-          "version": "repo-lines-v1:sha256:0e19b17e056f0810245d488aa9cdc433329d0252abb570df4c63fb9fc53b692f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOGRmMzg4NzNlYWYxMjkxODliYmY0ODkyMzkyMDdlZWNmODJhYjY1ZjM3OTVhYjljMGVmYzMyYzk3ZTliYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5MWEwYjMwYTU1MjdmMzgzZjkwMjEzYzEzNDdkNzRlMTE5ZGZmYjUwZjU5NjJkZjJhYTcxNjhhZjRhZjdiZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ZWE4YmVjMzU0NWFkYzczYTUxMTY1ODcwODJmZmVhYTI3OGY3ZGRlNjE1ZDYwY2ZjYjg4YmIzOTYyMTMzMjYifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L225-L253",
+          "version": "repo-lines-v1:sha256:2bf9f22a1e5c4a8e41060456c7388772d0910dc13a52ac8fb952cd66a2027165:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOGRmMzg4NzNlYWYxMjkxODliYmY0ODkyMzkyMDdlZWNmODJhYjY1ZjM3OTVhYjljMGVmYzMyYzk3ZTliYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5MWEwYjMwYTU1MjdmMzgzZjkwMjEzYzEzNDdkNzRlMTE5ZGZmYjUwZjU5NjJkZjJhYTcxNjhhZjRhZjdiZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4NmFiZGRkZjA5NjMyOTNmYjllYjNlNWViMTVmNGQ0MjU0MjQ3ZDE1YzIxMTNhNzQyYjEyNzNkOWM0ZmQwOWUifQ"
         }
       ]
     },
@@ -55,8 +59,8 @@
       "statement": "The OPENWEBUI branch requires OPENWEBUI_URL and OPENWEBUI_API_KEY and builds an OpenAI-compatible OpenAiChatModel at the configured URL with a 10-minute timeout.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L253-L264",
-          "version": "repo-lines-v1:sha256:aa451ad5735497377d6d64690a4bd622c21457265dd143ae4f39bbf738e1f390:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiODZjY2UxNmM2NjUwMTg2ZGJlMzMxYjI2MzJlNDY3ZTZmMTMwNjZhOGVmMWMyZmE1YjU5OTJjNjBlOTQwOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxYWZjZTA4MDUzODlkNWRhYmEyMzZmNzkwNjg0OTgyMGFiYjJmZmE1YzAxNTg0YjJmYTIwYzE0MzM1N2JiMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4MWRhYzhjMjk5YWVlYzY0ZWJhNzQ4NWRkNjc3OGNmYjUyZDU5NWM5OWE1NzNhMmU5NTg2YzAzZTg4NzQwNzEifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L283-L297",
+          "version": "repo-lines-v1:sha256:347e23fa6a9b11d8e6b547a91e6df6cc29c06d2e534ae06f3832a54600f24424:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiODZjY2UxNmM2NjUwMTg2ZGJlMzMxYjI2MzJlNDY3ZTZmMTMwNjZhOGVmMWMyZmE1YjU5OTJjNjBlOTQwOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyMzEyNjIwODU5M2E3NzdlZGM4MGE1MDQwYWE2NzVkMzQwNTJmYWQ4YzVlOTAxNjM4ZDQwMDQ5YzY1ZGY4MjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcxYWZjZTA4MDUzODlkNWRhYmEyMzZmNzkwNjg0OTgyMGFiYjJmZmE1YzAxNTg0YjJmYTIwYzE0MzM1N2JiMWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1ZTRjMGVjMDdmMTUxMmMwNDM2NWI4Y2QyODI4MDM2Zjc3OGI0NjczODg5NzY4M2EyM2I0Yzg2Yzc0NDJiNzIifQ"
         }
       ]
     },
@@ -65,8 +69,8 @@
       "statement": "The OLLAMA branch requires OLLAMA_HOST and defers the authentication decision to the client supplier: when OLLAMA_USER and OLLAMA_PASSWORD are both non-empty it builds a native OllamaChatModel with a Basic Authorization header and a 10-minute timeout (basic auth takes precedence); otherwise, when OLLAMA_TOKEN is non-empty, it builds an OpenAI-compatible OpenAiChatModel at the Ollama host using the token as API key; otherwise it builds an unauthenticated OllamaChatModel with the 10-minute timeout.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L163-L187",
-          "version": "repo-lines-v1:sha256:2bb70c2a957e151bebefcc8def6a2e56a92638a335b11978c14d7eb7b6f478fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMTM1N2QzMWYxMjkwODVmYzdkMzcyZDVjNmY3NzdkNzI2YTMyMzFhNTg0MTNhMmJmMzlmNzc0OTk5OTNiZTcifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L171-L187",
+          "version": "repo-lines-v1:sha256:1db8db0b8c42b8923aea9b15001cc711e61e44a0e13dc0a103e4c84b65523f39:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZDlmZTRkZDgwZTE1OWZlYzNmODA5M2FjNjE3ZTlhZmExYTk4OTBmZTAzNjM5YjdmYTcxYTM0Y2UwNjM3MTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVmOGZiM2E2YzY5NDkyODc4M2Y1ZTA5ZjNlYTU2ZjA2NWNkYzEyZjgxZmFjMDkyNzFhOTk0OTM5ZDIwYTM2NzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5ZmU2ODExNzRiYmMyZTI2OGMzZTEzOTYyN2E3NTBmNGUxZTc2ZmJiNTgxMTgyMDZiMDViM2ExNGJhMTE2NWUifQ"
         }
       ]
     },
@@ -103,7 +107,7 @@
       "statement": "ChatModelPlatform.fromString(name) resolves enum values case-insensitively and throws IllegalArgumentException for unknown platform names.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelPlatform.java#L47-L54",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelPlatform.java#L53-L60",
           "version": "repo-lines-v1:sha256:e8a895c052c23deaa238ea6cbc26b790aed6d7ed13fe855ce138d3b460dd9dd7:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjVmNjkxMzdkZTllZjA3ZTUzNjA4N2ZkODUxNjcxZDZkYTM1YmM2MTQyNjk1YmY4YTMwMTA3MzJiYTc4Y2JiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTA0YTA5YzdhMWJmYTJjYzI2OTU1ZmYxZTE5MmI1N2UwNWYzMGJiZmI5NzQ2Y2UzMTIyZTAxMDk5N2Y3ZDJmYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
         },
         {
@@ -145,12 +149,12 @@
           "version": "repo-lines-v1:sha256:dc3eb84409e5e5bd66e98113eb891c5c06f556c7433d5db70dde7bcd78b5c160:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4OTU3NTE3ZGJkOTc5ZjZhNDQ5MjRmNjJiMzNiZjJmMThjYTA2MWYxOWVmN2I4MTE4YmRjY2Q1ZTJkZDVkOTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3ZTIwZDk2YjJhM2NhNWViZmIzOGIwNzhlMzVmYzMxMzYwYmY3ZGUwZWI3YzkzOGQzM2Q1ZDVjNzdmZTMwNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L266-L274",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L296-L304",
           "version": "repo-lines-v1:sha256:9967545e7869be67968c684735511f20992247c69fb5fc00ae013d84bdc9b764:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzljYmJjNjU0NjlkYjFjYTI4NDJlZmQ5N2RmN2VlMmNlNmNjMTU3MTQ4MmQwMWExOGI3OTBhMTBjN2M1MTBmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWVmNWI5MzE1ZGY2ODA4ZTA3MjQyODJkMDdlNDRiMTIxY2EwYzJkNjQ0OWIwNmUyNDVmM2E1OTIyOTk5MzRkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
         },
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatConfigurationTest.java#L89-L93",
-          "version": "repo-lines-v1:sha256:a6ac5bf5571a1282346a697987d6243a0599b0a026f342736d87a428d4747248:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZThkYTc2NGFmZTZmMGRkMzBlMDBkZDdmNGQ3ZDZkMzk0OTczNDA2ZmI0ZTcxMWM3NzU5ZWUzYzQzYWYxMWY4MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGUyYWQ4MGRkNDUzNzUyMDc4NTE2NjA2MmQ4ZThlY2RlN2YzMDAxOTRhNzIxNjI4MWVhMjg2ZDU1NDY4ZTkzNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzc5NGQwMmE4MTIxOTQ0ZDE3NmQyNjVlOWJiOWNjNTlmNmFiODkwYmNhZGY4YWVmZGViZGJiYjRmMmVhODQ0NCJ9"
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatConfigurationTest.java#L79-L93",
+          "version": "repo-lines-v1:sha256:d360f2645155a9ad0091d19195dd709e4ed2a8fa5575a102a114df437a8cef68:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlZmVlODFlOWIzYmNiYWUzNmY5YzM4ZWQ3OTFmNzc2MjM5Y2ZmNDk5MGFlZTM2MzIwYzk1MzA0MGUwNGJlZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ZGE3NjRhZmU2ZjBkZDMwZTAwZGQ3ZjRkN2Q2ZDM5NDk3MzQwNmZiNGU3MTFjNzc1OWVlM2M0M2FmMTFmODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE2ZjE3YmRjYTk1NGJiMmM5ZWVjMTRlYTMwOGIxOWExY2NlMjU4OWEyMGMxZmNkYWYyY2U0N2M3NjkyMGQzMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
         }
       ]
     },
@@ -159,14 +163,64 @@
       "statement": "With an empty environment, createChatModel() throws IllegalStateException for every platform — each supported platform requires at least one environment variable — and credentials are consulted only in the injected EnvironmentProvider, so an Ollama-only environment satisfies the Ollama branch but not the OpenAI branch.",
       "evidence": [
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L56-L71",
-          "version": "repo-lines-v1:sha256:788906785e83f696e84bb43cd5742a0b994d2c0213cc6d99940716baef49e4a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNWJiMmZlMGM4YTU0ZGUyNmY5Mjg0MzA1YTJmMTg4ZjlhNTNkMGFlODFiYzM0NzFmMjJmNGZjMzBhMzU1YTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4ZWFmM2UxZGIyODRmNmE2ZmQ0ZTA2NmFlMmZiNjU0YWU2OGZkZmNmM2U3ZTRkY2E0YzJkZDIxNGE0OWI5ZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJiNzFjYjE4NDJmZjczOTZiNjFhNGMxNDE4MjExMTQ0ZDVjNjU2ODZiZjgwMzJkMzA2ZDg2YzgxZWVkMDFiOWIifQ"
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L75-L88",
+          "version": "repo-lines-v1:sha256:0c06e3c62aede4feb12d1eddad1b937e97d8508e31f7e20ac88592358b60eeb5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiM2YzZmVkZTJjMmJkYTA2YWVlYTBhZjA5Mzg1NGJjMzQzMTQ0YTdhZDhmNjQ1OTRlZWZhYTU5MzkwMDcwNmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwY2E5NWFkNTJlZDE2NjVlYmZhYWFjMzJmM2Q3NDM2MDVjYjEwY2VjNDRkOThiZjdiNmQ0N2NlNjAyNDNlMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg4YjUxNzYzYWU1MjhjZjNiMmIwYjljY2NiZmI5N2UyZDNjMjMyNTNhYTY2NTA5NzU0MzEzNTYxNWQ3YTQxZGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFlNTE4NWZlMjgzY2ExMjBmOWFkODBkMTA4M2ViN2RmOWVjMmJmODVkYWFlMDcyYjk1OWU0OTBiNGNlZmRhMWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c4a6c074d0974473ae0bdd9bf827bfef",
+      "statement": "The BIFROST chat branch reads its settings through the shared edu.kit.kastel.mcse.ardoco.llm.util.Bifrost helper rather than inline variable names: BIFROST_API_KEY (the Bifrost virtual key) and BIFROST_URL are both required and resolved eagerly via getenvNonNull, the same key is sent both as the OpenAI bearer token and as the custom x-bf-vk header, and the OpenAI-compatible OpenAiChatModel client is built at BIFROST_URL with the configured provider-prefixed model name (for example openai/gpt-4o-mini), seed, temperature, and a 10-minute timeout.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L261-L279",
+          "version": "repo-lines-v1:sha256:6fb0cf3a22156f918b5b256e84d04bda5c5d75bfadd1dc0434b380bf6bd29b79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3YjE1NjRlYTRjNjQ2M2M3ZGU3YWEwOWE0MGI2N2M4MjJmZjM3YTU2MzdhZWU2Y2VkNWY5NDJjYjM3OTFiNWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MTY4YzJkMzlhN2E4MmIwNjA1ZTdiYzdkNjlmODYzZWY0NDU0NmZhMjJiNGM5NDA2ZTgxZDEyZjEyM2I2NGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmNzI3Y2NkZGYyNmY4ZmE4OGYzMzVhNmRmNTYzMDczY2RkNDlmYmM3ZTM5ZTRkNzExMzA4NzRlNWNlMzY3MDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxYWZjZTA4MDUzODlkNWRhYmEyMzZmNzkwNjg0OTgyMGFiYjJmZmE1YzAxNTg0YjJmYTIwYzE0MzM1N2JiMWIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L59-L64",
+          "version": "repo-lines-v1:sha256:c69cd0502dee48aec83ef9837d58fbd16f902fbac4b19e1207f7804e2c9c0f2c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTAxNTk2NDk1YzdiNmI2YjYyMTJhYzdjNTA5Y2VjMGVmYjJjODc2MGRhNzY1ZTg3NDk0NzQ4N2RhNmE3Njk2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2I2YjAwOTRmNGRhYzU5ZmI1NWYwYzA4YzUyYTk3MDQ1ZTNlMDA0Yjk4NTk0Y2ZiYTNhMDY4M2JlYjBkYWI5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDYyNzBjNWUxNzdlMTE2MzQ4YzJlYThkNTFkMTg1OTE5NDQ1YWE2ODc1ODhlMjI4NDZkZTgyMzQwNGY2ZmVkYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjgwOWY1OWM1ZmY3NmQxM2QyODMzNTVhM2FkYTliMWQ1YWQ2Y2RhOGY2OTI0NjNiMTY1YTcwNDA4NzVkOTE0OSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L14-L57",
+          "version": "repo-lines-v1:sha256:a16a0e92125e1c50e1f19fb6eb102898e92044d2e40e7208e1a9a17a474950f9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2NDczMjE5MWU3ZDg3OWMyNzI4NDE3MjI2ZjUwODBkODA0Y2E3NjljYTJmODEyMWQ1ZGYzNmNjZjUwYTVhNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_833de8abcd93497fa1a47436b29d415a",
+      "statement": "The Bifrost key-without-URL and URL-without-key combinations both fail fast: ChatModelProviderTest.bifrostRequiresKeyAndUrl expects IllegalStateException from createChatModel() for each partial environment, and BifrostTest asserts that BIFROST_URL and BIFROST_API_KEY are each required on their own and that Bifrost.headers(\"k\") produces exactly Map.of(\"x-bf-vk\", \"k\").",
+      "evidence": [
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L55-L72",
+          "version": "repo-lines-v1:sha256:b6832fe315030ec8bd27b343e3de06949ad62de0b758757ca4383b9123be7584:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmYjQ4OTM2MTJkYzk5YjgxYjg5NTc3ZDE2OTJjOWI1OWZkMDc3NzI2NTI1ZmNmMTUwYzA5YWIwNTMzYzcxMDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRjNDQ1NTgxZmYxMGQ5NDY5ZDBlYmU4MjE2MzljMjQ5Nzk1YTIyMzBhNTAwZWVhNTEzNDg0NThiNzY0ODI1ODcifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/BifrostTest.java#L17-L42",
+          "version": "repo-lines-v1:sha256:f87306b249a46f217c97fd8264afff91fb5820f53c54c697bf0471d9993f6ada:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkzYjU1ZGE5MTBmMzRiMTQ0OWY2NGMxMDFjYzk4ZTk0MThkYjNlOWVmM2ZmODQ5NTJmMTYwZjg2YzYzODA1ZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a6bb921ce904974abb1c69a7877015c",
+      "statement": "Bifrost settings are shared between the chat and embedding subsystems: the util.Bifrost helper documents that the same two variables are used for chat and embedding models, BifrostEmbeddingCreator builds its OpenAiEmbeddingModel from Bifrost.apiKey/baseUrl/headers with the same bearer-token-plus-x-bf-vk pattern, and BifrostIntegrationTest live-verifies both a chat and an embedding request against a real gateway but is skipped unless both variables are set.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L48-L57",
+          "version": "repo-lines-v1:sha256:9a3c9cba94445c6a52377602672442e1ad790f44a587d129f11968909192d7fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljMTdmM2FmY2Y4YmFkMWEwNDUwOGM5MWIyOGFlMDY4MTkyMDYxZGE1OGE2NzY3NzNlNjZhNzNhMDU1NzM1ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L1-L10",
+          "version": "repo-lines-v1:sha256:effee800320af02e2cd8419424a79f3c114b98def5a361b9700438d6e9aa517d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzOGVmY2QxOWJkN2NlZjhmOGZmZjFkOTk0YmVhOTQyMzA0YTkwNDFiNjQ0YjgwZmFkZjkxZmYyMDZlOTFjN2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4N2IwZGIyMWVmMWI0MTgyNWE4OGQyMjhlZjNlM2FjNmRlYWQwN2JlNjk2MDY0NmNiMGI0ZjAwN2U5NGVmYzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NDczMjE5MWU3ZDg3OWMyNzI4NDE3MjI2ZjUwODBkODA0Y2E3NjljYTJmODEyMWQ1ZGYzNmNjZjUwYTVhNmIifQ"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java#L20-L24",
+          "version": "repo-lines-v1:sha256:a6b3fb0bb64f0435ce447c8f8cb7d254e2dfe327a333132987784d018b07f4df:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWExNDY1YjcyMzZjMWUxMzhiY2YzYjRhN2YxYWY3ZDkzNGJjODZmNzA5YTU5YWI4OGJmNWFiZjMwM2M5NDRiOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg2OThlMzA1YzM3MDA3YmM3MDY5NDM0OTc2YTNhM2U5OTMzMjM1N2YzZDc0ZDVjZDQxZmEyOGRhYThmZTE0OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2U4NDdmYmY3YTU5NGMyNzBkZTVhZjNkYzc0NTc4MDdiY2FiMTEyNDA3ZjA0Y2NhNjRmY2YwNTY4MzkzODFjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDdiYWY4ZWVhZTYyNWRiZmI5MzU4OTgyZDQ2ZDc2ZWUxMjlmNDk1YmQ4NTY3ZDUzNTY1MzBhNjNkZTc2MTI1NCJ9"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-13T13:30:47.057Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-16T14:46:55.207Z"
   }
 }

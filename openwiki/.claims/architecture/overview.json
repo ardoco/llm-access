@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:4bc659a04d1a8d8fb8293736e7a03122f0f222a2de2c8c43d3aca9c6803c40d0",
+  "pageVersion": "sha256:0c1d33d26daaeff196890c5e38cf57501a968d558eded2d87e1dc009747bd031",
   "claims": [
     {
       "id": "claim_bf23446d81314d1083ee2afba138eb2e",
@@ -8,23 +8,23 @@
       "evidence": [
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L78-L91",
-          "version": "repo-lines-v1:sha256:095f7d9fbbc80c76d2ce1c89f0ac4a747616c2a01e7353a2d77109a70dffa93c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Yzk4ZDdiNGZlMzRlMzg2NzkxM2I4ODUxZmQzOGE0M2YxYTI3ODNjZDM0MDUxZDNjMzdjMTFkY2ExN2Y2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkNjcyYWIzYzkzZTI5MmM4ZGJhZWI2YTg3N2RkNGIxMWJhZTUzMTIyZDcwMDk1YTdjMjI4ZjkzNjIwOGQzNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlZGNkMDRlNjNkNWRjMmJhNTlkYTNlZGI4NGRhZDM4YjVjM2EyMzM1NTg5MGJjNGY3MzFjOTlkOWU1NWRhNDEifQ"
+          "version": "repo-lines-v1:sha256:eac14f0a9d6df97c5cdbb64a68429f3e970f1f8a8c9ba942000d8bfce157e9f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlYTFiMmI3OGRhMDgxN2Y5NGJmZjNmYWIzM2E3MzYzMTc5ODY2YzFhNmRkMDVmNTczM2JjNzU5NmU2YzE0M2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1ODYxNTRmNTExNjQ3MzEyMjdlOGQ2YTlmNmQ1MGQzYWFkNzFlODFlYzhiOTJlNzQ2NmU1OTlhOWI0NmQ5ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzYzJmYmM4OGU4MDJkYjJhNTUwNGRiNWI0Njg5Yjc2MzcwNmQzZTc0NmFkZTY2NDRlYjQyNTRiZTllOTI2NTIifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java#L32-L46",
           "version": "repo-lines-v1:sha256:a2e35d217a79505df3746a1799b85120d62f15fdbc306204be5e5619c1984016:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5Njg4NzVkZWI4NmMwYWIwM2VjZTQ1MjMwODViNWNkZDk5MzBhNDkyMzMzY2ZjMThkOTE2MmMzY2FjYzZiYTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIxZjlkMWIwZDAyY2EwMDBmNWZlOTAyMTc4MDA2OGE4YWU4MmI3OThjZGFmNWY5NjY1M2VmYTkyYzY2NTkzYmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkNjgzNjAzNzQ0YWI0M2FjYjVjNDJkNDA5YjA4YmEzODcxYmQzZTJjNmEwNzNhYTFlMjkyYjVmZWIwYjUzNzIifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L266-L274",
-          "version": "repo-lines-v1:sha256:9967545e7869be67968c684735511f20992247c69fb5fc00ae013d84bdc9b764:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzljYmJjNjU0NjlkYjFjYTI4NDJlZmQ5N2RmN2VlMmNlNmNjMTU3MTQ4MmQwMWExOGI3OTBhMTBjN2M1MTBmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWVmNWI5MzE1ZGY2ODA4ZTA3MjQyODJkMDdlNDRiMTIxY2EwYzJkNjQ0OWIwNmUyNDVmM2E1OTIyOTk5MzRkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L300-L305",
+          "version": "repo-lines-v1:sha256:6d2f927e1bab396f88d9d489852a84cadfae08f62892826aa7eeeca49be0b723:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIyMmQ3NDQ1Y2IzMDA4OGEyZTk2MTE0MGU5MDM2NGFkOGQyYzdjODU2MWY2NDgxZjNiZGE4OWFiYmZhODQ0YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjViYzIyMDlhOTYxNTkzMWQ1MTFjOWZlODM3MGYyMWUyNDRkZDhhZDE3YWI2ZTI1YWY0NTgyNTllYjFhMTZkYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L63-L73",
-          "version": "repo-lines-v1:sha256:4dcf69062e324e4c2083b51c35cb9721007efc7a40da4a09ae6819c31eff2847:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1YTdkZGJmYjI3N2QyODkxMDk4NWU0NTJmMDhiMTBhMTMwNDE1Njg0MjgzNTRjMTlkNzIwM2ZlZjcwZGE2MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkyYmQxNTc0ZDQwZWY3M2VlZDUwMmYyZjA5N2VhMjM1YTI1ODlkOGUxZWMxZWJjYmRkMjljMjEwNzRhNTdmZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNGUyMDY4M2Q4NTE4Y2JhMmE1MjhmOGM1NmE3YWJjYmFjMzMzYmYzY2NkZmU3NTc5M2I0ZTNkMTY1NTVkZjAifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L69-L83",
+          "version": "repo-lines-v1:sha256:ef331a2750fa29ffe246d8623a148c953dab6bae50e981ed1bc4f2b915c25db9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkZjdjMTI1MDYyOTUzMDI3MzdjMTNiMjIzZmYwNTYwOWU0MmM4NjkzYzI3OGVkNzg4ODA3NmYzYmRjMTI2YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1YzQ1MWIyYjNhYzViMDBkZjA5Y2YwMTM3MWEwYTZmYTI5NjNiNzlhZjExYTcwY2FjZDA1YjQzYjRjZmM3MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjYzk1NWY5MjdiMzRjZWI5ZTZiMmZmYmQwYzU3NDQ3MTkxYjI3N2ZmNTEyNWIwOTBhMTEzYzkzZWRiNThkMWIifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L93-L105",
-          "version": "repo-lines-v1:sha256:663e990f979a128236be63f27ed64455dd01c18c0ef2e10a85ee40693fbd81dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjZhZTU1YTY3Yjg5NDg1YTNiZDkxZmMyMzBiNTk4N2M4YjdmNmNmYzBiZjYwZjY2Y2MwNTU3MWFiMGUxOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhODQxNWJlNjkwOTdmOTY1ZGQwYmI0NDc2MDI4ZWI4NjUwN2Y4NjU0ZDQ5NjgxMjUwOTI1MDcwMTY5MmI4YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwYjRkYWIyNjQxMmVhOTc1OTEwMGZlMzA4OTE0ZjQxYzQyNDZhMjQyNmFjMjViZGM1OTAxNWEyNmY3YjI3MDUifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L99-L110",
+          "version": "repo-lines-v1:sha256:b9f3c4572cd2aded25a92193b2d50a57a68c911d38de01ff525434ad5f10f8b0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjZhZTU1YTY3Yjg5NDg1YTNiZDkxZmMyMzBiNTk4N2M4YjdmNmNmYzBiZjYwZjY2Y2MwNTU3MWFiMGUxOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmMTdjNGUzMzY1Y2NmOTQ2NzY1YjIwYzgxNGIwN2IxYmEwMDYxNGQ3YzQ4NTYzYjZiNmY1ZTM4MzI1OTQ1MzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhODQxNWJlNjkwOTdmOTY1ZGQwYmI0NDc2MDI4ZWI4NjUwN2Y4NjU0ZDQ5NjgxMjUwOTI1MDcwMTY5MmI4YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MDg4M2RjYzQ1NWNiNGUwODk3NDkxNzMwZmVhYmQzOWM3MTRhYTRmYTUzZTc4MzA1YThkN2ViMWQyZjYxZmYifQ"
         }
       ]
     },
@@ -33,11 +33,11 @@
       "statement": "Model settings travel as the framework-neutral records LlmConfiguration (platform, modelName, seed, temperature, environment) and EmbeddingConfiguration (platform, modelName, optional ONNX model/tokenizer paths, environment); platform endpoints are read from the environment (OLLAMA_HOST, OPENWEBUI_URL) or hardcoded per platform in ChatModelProvider, so nothing in the library depends on an application-specific configuration object.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L163-L187",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L172-L196",
           "version": "repo-lines-v1:sha256:2bb70c2a957e151bebefcc8def6a2e56a92638a335b11978c14d7eb7b6f478fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMTM1N2QzMWYxMjkwODVmYzdkMzcyZDVjNmY3NzdkNzI2YTMyMzFhNTg0MTNhMmJmMzlmNzc0OTk5OTNiZTcifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L216-L243",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L225-L252",
           "version": "repo-lines-v1:sha256:0e19b17e056f0810245d488aa9cdc433329d0252abb570df4c63fb9fc53b692f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOGRmMzg4NzNlYWYxMjkxODliYmY0ODkyMzkyMDdlZWNmODJhYjY1ZjM3OTVhYjljMGVmYzMyYzk3ZTliYmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5MWEwYjMwYTU1MjdmMzgzZjkwMjEzYzEzNDdkNzRlMTE5ZGZmYjUwZjU5NjJkZjJhYTcxNjhhZjRhZjdiZDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ZWE4YmVjMzU0NWFkYzczYTUxMTY1ODcwODJmZmVhYTI3OGY3ZGRlNjE1ZDYwY2ZjYjg4YmIzOTYyMTMzMjYifQ"
         },
         {
@@ -55,7 +55,7 @@
       "statement": "Chat cache identity is ChatCacheParameter(modelName, seed, temperature) and every ChatCacheKey embeds model, seed, temperature, the CHAT mode, and the request content, so with a fixed seed and temperature identical requests are served from cache instead of being re-sent to the model (cost/latency reduction and reproducible runs); EmbeddingCacheKey pins seed and temperature to -1 and uses the EMBEDDING mode, so chat and embedding entries never collide and different models, seeds, and temperatures stay apart.",
       "evidence": [
         {
-          "resource": "repo://README.md#L151-L158",
+          "resource": "repo://README.md#L156-L163",
           "version": "repo-lines-v1:sha256:ac0f23759bb6decdeefcb7eea93744f2a7973e482e93aa2a210e992d23e203c5:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjdmMWMyYzRmZGI4YzY2MDEyMDgyOGM1NTlkZDBlMjMzYTViODczNzY1M2M3MTMzMmIzNTVlOTU2NjNkZTgwOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODRjMDcxZTlkYzQ1NjM1OWY5ZTI4MmUyNTM5OGY3ZGEyYzk4N2FmYWQwZjhjM2ExYTU2YjRhMWMzNzZiZWRiZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGM4M2NiMWQxMmE1MzI2NDA5OWQzYzJmNTM2NmNmN2MwNjJkMTEyODRiYThjNGYwNzYzYjViZTllYWE3NTEzYyJ9"
         },
         {
@@ -84,23 +84,27 @@
     },
     {
       "id": "claim_b869c396933748f5a943708d36f3d334",
-      "statement": "CachedEmbeddingCreator caches every embedding under a content-derived key, parallelizes batches with per-platform thread counts (OpenAI uses 40 threads; Ollama, ONNX, and Open WebUI use 1), and recovers from over-long inputs by jtokkit-driven binary-search truncation to MAX_TOKEN_LENGTH 8000 whose result is cached under a separate _fixed_ key.",
+      "statement": "CachedEmbeddingCreator caches every embedding under a content-derived key, parallelizes batches with per-platform thread counts (OpenAI and Bifrost use 40 threads; Ollama, ONNX, and Open WebUI use 1), and recovers from over-long inputs by jtokkit-driven binary-search truncation to MAX_TOKEN_LENGTH 8000 whose result is cached under a separate _fixed_ key.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L102-L139",
-          "version": "repo-lines-v1:sha256:d17d7779a9994c6ae54130ce082a6e92a666f9ac8b0ea836d2f63fd82ecf8c98:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYzJiMzExYWJlODc1NzJlOGE3Y2MwZDk5NmE2NTg0NDA3NmU1MjMyZDIxYjdhODU0NzVmOWI0MDU1Yjc0OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU0YjdjMDM3ZmJjY2E4MjljZDRlYjUwNDhhZTY3MGQyYTE4N2FmNmM2MjRhODA2ZTlhMDUwZGI2YjZjMmY2ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NGI2MGE0YzUyMjgyOGZjMDA4Y2ZkNjJiMjEzOTZhYmE5ZDBlMTYxZjM2NjY1Nzc4NDk5MTIzZmE3NDljZTcifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L20-L34",
+          "version": "repo-lines-v1:sha256:e14b883b4d369c0cf9e26581121af06c6119eaad0f7e7ec5288fa049bc894b93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyM2NiNGMxM2Q2Nzc1OWQ1NGY3NjcxZDQ0MDM0OTcyZDA5MDNhMzlkMDhhZmFlNzNiYjk4MWViOWFiMGRjZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzOGJiNTBhY2VkOTViZGFlMzE2ZTRjZjg2NjU3ZDAwMGE1YzMyN2UwMjlkYWEwNmY3ODk3MzQ3MzQ3NmQ5ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcxMjUyNGQ0ZWM0MDcyNTM1ZjY5NGY5ZTY2NGFmMTAwYzFlN2M0ZjFjNDYwYWM5NzM1MDdhYzI0YTM4NWM1MmYifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L209-L250",
-          "version": "repo-lines-v1:sha256:3609441115da5d22216ef052ae54453cfbd38f8a4464cd21b290f001b3f6cfa3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMGZkMzk0Zjc3YjkyOGJjOTA4MmZhYmQ1NjA1NmIxMGY3YTkzNTkyYTYxZWE2MjAwNmExNjYyMDRkNTk3MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2YWNmOWQ4Mzc0NTUyMGQzMjNjZDc5ZGI5NmNmNGVjNzQyMzZjNzE0ZDFjMmFkNGE4ZmU0YmE2NjU1ODQ0NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwNzM4YTUxOWU3MDYyY2VhZjcxYTY0ZWEzOThmMTM0Y2QzOWJhMTU2ODA5YjMyNjhmYzVjNzViYmY5NGUyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM3OTRkMDJhODEyMTk0NGQxNzZkMjY1ZTliYjljYzU5ZjZhYjg5MGJjYWRmOGFlZmRlYmRiYmI0ZjJlYTg0NDQifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L101-L139",
+          "version": "repo-lines-v1:sha256:a0be7543d3c7e02a40e618db2529307694ced373442bc489fe760d185312ff0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA2YmExMGE0ZmEzZDljOTMzZTJkMGJhMmUxMDMxZGNmMThlODg4MjNkOTFiNzQyM2U0NjNjY2EzOTEzMjJlNzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2NGI2MGE0YzUyMjgyOGZjMDA4Y2ZkNjJiMjEzOTZhYmE5ZDBlMTYxZjM2NjY1Nzc4NDk5MTIzZmE3NDljZTcifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L37-L73",
-          "version": "repo-lines-v1:sha256:c0a72db39cbcb116b94f6731dfdb861d060124f0725723f80499b50bbd806b0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwNzEwOWM4ZmMzY2YyZjYxMzVkNmNmNjc2NjRhMzk3YjUwMzNmNGYyMjcxMjExNDVhMzNmNmNmNTBkMjFhNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NzVjMmM4MzZjMzNkZTIxOWFjM2VjMWQxY2FiYTcyZjM1ZWI0YjBkNzRjYzUzMTgzZGFlNmIwMjBhMmY2YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlNGUyMDY4M2Q4NTE4Y2JhMmE1MjhmOGM1NmE3YWJjYmFjMzMzYmYzY2NkZmU3NTc5M2I0ZTNkMTY1NTVkZjAifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L207-L251",
+          "version": "repo-lines-v1:sha256:9fa85ba60fb5e0f8398c15f678f870672bf2864cf8fee0087d83258a1a286c78:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1YWEzMWM4NTc1NTUzMTEyZmEyNDU2NWViYzdlN2UyYWZmMGY4Njg4NmNiNjYwYTE5NTBlMTNkNGExZGZlYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1OWZlNmY4OTJmNDAyNzgxNTU2ZWM4NzlmNGY3ODQ4NDY2MTA3ODE5MGM5MWQ4NmUzMWYxNzhjN2IzMjQxODciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2OTMzNTk5NDA5MjlmZjdmMjQ2ZThjYTkwZTVlNWIyNDQxMzQ5ZDU5NGMyNmM5NmI0NjRmNDZhYTg1NjMyY2MifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java#L21-L34",
-          "version": "repo-lines-v1:sha256:c66a8e7339236038aa6c9c481c8eb9739c3150ac99269fa139776e7bfcb99c03:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4NWMwZDJlODliN2JjZmNjYjMzOTNkODNlOTJlNmQ4NzVlOTNhYmMxMDNhZDJjMmUyNmQwNGQ5MTcyOTJmYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmOWMyYTRhNmMyOGI2ZjU3MDk5N2M5NGE1N2M2NjQ1YWZlZDFiNzA4N2I1MTUzNWJlOGIxMjY2YTA4MjY5N2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzYzI2YTUxNzVkY2U0NTc1MjY1ZGEwM2RkYTNiODJkNDEwZjg4ZDczYjdiY2U2MjhhZDNmZTBiNTlkMDNlZDgifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L37-L83",
+          "version": "repo-lines-v1:sha256:a9774ee3d3abc80320af7dd656ac888dfb7ceafe3a6e4730ad2420b02489a539:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwNzEwOWM4ZmMzY2YyZjYxMzVkNmNmNjc2NjRhMzk3YjUwMzNmNGYyMjcxMjExNDVhMzNmNmNmNTBkMjFhNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3NzVjMmM4MzZjMzNkZTIxOWFjM2VjMWQxY2FiYTcyZjM1ZWI0YjBkNzRjYzUzMTgzZGFlNmIwMjBhMmY2YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjYzk1NWY5MjdiMzRjZWI5ZTZiMmZmYmQwYzU3NDQ3MTkxYjI3N2ZmNTEyNWIwOTBhMTEzYzkzZWRiNThkMWIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java#L18-L34",
+          "version": "repo-lines-v1:sha256:199f79924ace4f1c57f141f5d280ed26a353e59fc5cf1fd380032e036ad0a8c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3YzJlM2NiOThkNzAzNzc3MDU1ZmNhNjZkNjYxOTZkN2Q1NjIxZDAxZjhhZTMwNTZkNWU5MzM2MjljZjlhYzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5MDBmZWFiMTg0N2E1ZjUzOGEzNTExMzBkODMwMTFlYzc2NWRlYWNlNjQ3MzZhNjlkMTdiOGMxMDM2MmM4ZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzYzI2YTUxNzVkY2U0NTc1MjY1ZGEwM2RkYTNiODJkNDEwZjg4ZDczYjdiY2U2MjhhZDNmZTBiNTlkMDNlZDgifQ"
         }
       ]
     },
@@ -119,7 +123,7 @@
       "statement": "EmbeddingCreator.create(configuration) resolves the default CacheManager only for caching platforms: for the MOCK platform it returns a MockEmbeddingCreator (zero vectors of length 1, no cache, no environment reads) before the manager is touched, so a mock creator requires no cache setup.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L117-L123",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L124-L130",
           "version": "repo-lines-v1:sha256:692b1a8a54a7ab201ba8ebce16f2a1fe0d28c1f1bb495bfe008543fe89467fc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWNhN2M2NDJkZmQ3Zjk2YjI5ZDMxYjJkM2U5NTZkZTQyOWYxOTI3MjhmM2ZhNGUzN2E0ZjE4MmJmYTY1OTY2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDBmNGY5MTkxYTkxODRhMTY3N2QwZjI4N2M2NzVlZTFlODI2MTYwNTA4ODI1ZTE4MWIzYzkxOTU3OTg5ZTIwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
         },
         {
@@ -133,20 +137,20 @@
       "statement": "Chat model creation is fail-fast but lazy: createChatModel() reads the required platform credentials eagerly from the configuration's environment (missing variables throw IllegalStateException before any model object exists, for every platform), while each platform branch returns a LazyChatModel that constructs the real LangChain4j client on first use via thread-safe double-checked locking.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L109-L117",
-          "version": "repo-lines-v1:sha256:3976b79ff35d66dfd72b7571e3b5f47164fa3d680185e6e54e161ec6aba8ff43:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E5Njg0MWQ3YTQ0MmQxMDlmN2YzMmJhNDQ0ZDAwOTFmZGUxYWY4MTQxZGY1NDQ3ODE3ZmYzNjkwYTQ2MTdkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZiMTJhODMwODllNTIwZDc1MGFmMjBiNTRlOTIxNTBjNGIxZWM1OWJjOWVlMjY3NjE4ZWNiNmQzM2FiYzdkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGMxZDI1ZDg1NTZmYWJkNDFiMWVkMmQ2OGM4NjQ5M2FiOGM1NmFlZDRhYzQ5YjU3ODRjMWMzYWNlZGY1OWU4MiJ9"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L117-L125",
+          "version": "repo-lines-v1:sha256:634311aa8349a275f506be1f428aeb8004283f5a3b4c056ee35796e1bd5c7e58:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2E5Njg0MWQ3YTQ0MmQxMDlmN2YzMmJhNDQ0ZDAwOTFmZGUxYWY4MTQxZGY1NDQ3ODE3ZmYzNjkwYTQ2MTdkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzVjZGVmODA4NWFlNzRhYjYzNmQ2NDU5ZjVjNmQ1ZmJmYjBkYjI2NGYxYjBkNzViYWM1MTljOWIzZjY3MTdhYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmZiMTJhODMwODllNTIwZDc1MGFmMjBiNTRlOTIxNTBjNGIxZWM1OWJjOWVlMjY3NjE4ZWNiNmQzM2FiYzdkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWUyYjllMjFmZGM4NmZjMmMyZWU0NDcyMTg1ZDY3NjQ2N2JkZDFjYmYyZTI0YjRkYzY0NGFiMWFiYjMzMjU0NyJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L163-L187",
-          "version": "repo-lines-v1:sha256:2bb70c2a957e151bebefcc8def6a2e56a92638a335b11978c14d7eb7b6f478fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMTM1N2QzMWYxMjkwODVmYzdkMzcyZDVjNmY3NzdkNzI2YTMyMzFhNTg0MTNhMmJmMzlmNzc0OTk5OTNiZTcifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L172-L192",
+          "version": "repo-lines-v1:sha256:83e198907c597063901f6e0149abe2486a2cb6c3ade69b2e99afd9837b9ddfca:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYmQwZDUyM2YyMWQ1ZjI3ZjcyMzdlYzQyNDUzM2Q3YzVjYjQwMTk2ODRiNTYwYzFmMGMyZTNmNDE3MDA4OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlODIyYjU5MjZlNTllYTUzYWIxNjI5ZDQxYWJjMDM2NmFiMWExY2QxMjQ4NTg5MDQ5YzI2MTJlNGE1YmY0YTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjYWM4YzE5ZmFlODJjZTE0NjcwMjU3NTQ5YzJkODg4YWI2MGFlY2M0NGRkNWNkOWJiMzQwYzNmMzlhMDM4ZjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYxODc3ZGM0NzA2NTMwNTc2ZmE3YjZlZTQzYmIwZDViZjMyNWYwMTY4YjY1MjJhMzRjMzIwMjk3OWQ3MGJkMTMifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java#L43-L53",
           "version": "repo-lines-v1:sha256:2aa1fa3e1615c68bdd5ec1e8ada1d13d9f7b34925186056fbc0ccbda304d4c62:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYwMmU1NDIyZmMyMmRlNDE0MGJiNDZjMWFlMjRkYjdhM2ZiNTIxNjA4ODBmZjVkMmE0MDZmNzI3ZTc1Mzc4NmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE1ZDA0YmEyYjIwNmUzZDE3MTc0NDczN2VkZTAwNDc0Y2I2M2MwZmU0NzRmMTE1NDhmMTZiNTEwYTBlOTcxZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlNDY2NDg3Mzk2NTc2OTNjY2I0MmQxMDdhZTNiOWE4Y2I1Y2I1ZWRlZjg2ZTIxNTdkYmViZGUwOWFkMjJhNTMifQ"
         },
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L55-L62",
-          "version": "repo-lines-v1:sha256:38e559dd026b6b0a718a9cfbcbba5dac8d81fc08091b59de0b4138825912b3e2:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNmMDllYjBjNTc0NGZiOTczMzFiOThmZjNmYmYwNWE2MDJiYTNmN2Y2N2U1ZGE1YmU5MDk1MDMzZjYyNTgyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDI0ZTliYmExYWIyMmNmNjBmOTA1MzFjYzE0MzExOThhNzk1OGIzNWYyYTBmZDdlMDg4MDliNjdkNTU1OWZjMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDRkY2JiYTA4Mjc0MjFjZjVhYmM5YWZlNDRjMjZiYjc2N2ZkODk4ZjI2MDk3ZDNmNWNjYTdkMTMyNjNkYjFlNSJ9"
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java#L74-L80",
+          "version": "repo-lines-v1:sha256:1150d1279cee512334b6f1d91f15ee05b79a771caaad62fb9f4b7e1266c84287:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmQ1YmIyZmUwYzhhNTRkZTI2ZjkyODQzMDVhMmYxODhmOWE1M2QwYWU4MWJjMzQ3MWYyMmY0ZmMzMGEzNTVhMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZThlYWYzZTFkYjI4NGY2YTZmZDRlMDY2YWUyZmI2NTRhZTY4ZmRmY2YzZTdlNGRjYTRjMmRkMjE0YTQ5YjlkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDRkY2JiYTA4Mjc0MjFjZjVhYmM5YWZlNDRjMjZiYjc2N2ZkODk4ZjI2MDk3ZDNmNWNjYTdkMTMyNjNkYjFlNSJ9"
         }
       ]
     },
@@ -155,20 +159,28 @@
       "statement": "CacheManager is the cache entry point: setCacheDir(dir[, environment]) must run before getDefaultInstance() (which throws IllegalStateException until then), getCache(origin, parameters) memoizes caches by sanitized name and rejects reuse with unequal parameters, builds the backend stack from CACHE_HIERARCHY (default LOCAL) folding multiple CacheTypes into HierarchicalCache with the CACHE_REPLACEMENT_STRATEGY (default NONE), and flush() persists every managed cache.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L186-L231",
-          "version": "repo-lines-v1:sha256:ac150f6de5ad5f77198ab5fed49cecbec52e27469b648b1faf1c35199b8be5e7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNTg2ZmYxMDI5MGFmYzRhZTQ3YmQxYzk4NTNjOTEwNmQ0ZjFlNjg0YzExZDdiNWYwNGRjYTY5NmJjNzgyNjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUxNTk3MTk3MWMxMzU4NjAzZmQyNmE0MjMzZjM0NmUzMGYxM2E1MDIzOGI0ZmMzODhmOWJkNjVjNWMxMTYyNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmZjRiZjFlMTAwMjRjNzg2MjEwYWZiNDRlOTBkYjJiMzRjOTE2OWQ0Y2JlMGZmMzQ2NDU2YzUyZjdhMWQ0NGIifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L188-L195",
+          "version": "repo-lines-v1:sha256:fbaa8204e2b63da7af777c48e0569cd3911ecc1a38cdc540cf4545117feb5725:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M1ODZmZjEwMjkwYWZjNGFlNDdiZDFjOTg1M2M5MTA2ZDRmMWU2ODRjMTFkN2I1ZjA0ZGNhNjk2YmM3ODI2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODZlOTg0ZDE2OTYyYmUyZDZiNjM5YTU3NTEwOTU2YTI2YTkyMWJhZmQ0OTFjZjQwMmI2MjRkOGI2NDQwNGI5OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTE1OTcxOTcxYzEzNTg2MDNmZDI2YTQyMzNmMzQ2ZTMwZjEzYTUwMjM4YjRmYzM4OGY5YmQ2NWM1YzExNjI0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGU5ODk3ZjA2ZDlmN2EwNTAzZTA3NDJkMjUzYTNkMDgyNDkxNmJmYjMxYzU0ODk1ODIyOWY5Zjk2MDU5ZTc1NCJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L245-L260",
-          "version": "repo-lines-v1:sha256:12f6ca99bd4232b3fb99969134b3cbd75f2fe890931405a401813620cd1e2dfa:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MmYxZTgxNGE1YzY3MjQ0MDg3ZGFhN2Q5NDQxNjMzMDAyYjQxODUwNzJiOWI3YTBiYTVjMTMxYmQ3ZTEyM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4N2Q1OTcwZTU2NGI4MjM1NTQ2YTA5YWM3YzE2Nzk1NDhkYzBmMTgzOGIxODljOTQxMmY5Y2E0ODk2NDQ4OWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyNTU0M2MzZTIzN2UxNTA2ZWU3YmE4MWRlMmJhZThjZGI4NDdiYjRjZGNhMDZiMWIxNTE3ZWM0NTgwMmZhYTAifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L205-L237",
+          "version": "repo-lines-v1:sha256:ed7b884cd4855c88b9a4bf1904be19a458b1d0726c5b9e2e9d999c0107c24c19:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3N2U1YTgzMzNjMjU4OWMyZTA3NGVmODkyYmExZWNjNDg5MTAyMDFiNmFiNTg4Y2NjODE0M2M2MTIzODU2M2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjODU5ZTNkOGQ4OGEyZTVhMDQxMjdhMDllNjkxZTkyOWJiMzkwYzk4YmQxZGNhOGVkNjBkZjY1ZjUyNzM4ZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0NDVjOTAxMWVmNWMwOGNkZTQ2OTAwNzZjMWZjOWU4NTA5ZjNjOTQ5Yzg0Mzk2OWU3N2M5NjIxNGE4YjZiNjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3NmViNTgzMTZmNmM4YjM5ZWU4OWE1YmFkYmNhZTc1YTEzNzMxMmM5NzBiYzNkYTFmNzgxM2VjNmQzNjY1OTkifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L294-L298",
-          "version": "repo-lines-v1:sha256:16c5918286a8d49303674f2f8757af63f44b5fe5ea0cf3d6d6fa478b8448f6ae:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4ODQ0NTE1MDIyNDMwOGFiZjA4MDM1OGJkMzAwM2FkNDJmM2U4MjI2MTZjNWYwZGUyZGJkNzM4NDViNGE3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjczYmYxZGEyNzVhNjk2YmEyYTQxMzNkOGMxMTllNDdkNTYzYWE5MmJmMDFiY2NmODQwODU5MGU5OTFiMjNjNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTRlZThlOWRkYWQyZTg4NGFiZjc3NTQ1MWU1YThjZmE2ZDYwYmExNWJhMjRjYTBmYTE5Y2YzZmZiMDc0YjNhNyJ9"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L248-L262",
+          "version": "repo-lines-v1:sha256:4cb9072845d0a0f170ec06b9fdacf3512d319d6a20b6329df30f1698bc95ee60:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MmYxZTgxNGE1YzY3MjQ0MDg3ZGFhN2Q5NDQxNjMzMDAyYjQxODUwNzJiOWI3YTBiYTVjMTMxYmQ3ZTEyM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4N2Q1OTcwZTU2NGI4MjM1NTQ2YTA5YWM3YzE2Nzk1NDhkYzBmMTgzOGIxODljOTQxMmY5Y2E0ODk2NDQ4OWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIyNTU0M2MzZTIzN2UxNTA2ZWU3YmE4MWRlMmJhZThjZGI4NDdiYjRjZGNhMDZiMWIxNTE3ZWM0NTgwMmZhYTAifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L65-L80",
-          "version": "repo-lines-v1:sha256:d297a8ba1033cedeec4a8d72aac6c8f7be00a73a48a7bd53947c64df7f2ba656:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlOWUwMDNkYzNhOWE1M2I2MjIwMmQ1MzEzYjNhY2VlZWYwZTMxYWNmODEyMGE2YzYxNTQxMWI4OGY0ODQ4NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2NDFmNTg2OGRkNzg2NTI0OGYwYzc1OWY3NGJkYWM0Y2U4MTA1MDQ1NTA1NzAzOTUyYjYzNjVlY2ViNGMxNTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0YTczN2MyZjIxNzUwMDVlZTFmZmYyYjZhNmE0ZTlkY2I0MWQyNTg5ZDEzNjdkY2ZkMzdkMzgyNDk2NGEyYzUifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L26-L35",
+          "version": "repo-lines-v1:sha256:c2a03c39fef4a4099c731a6e3d41f08f03d63ce478bb6b4475616b73ff10639e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3OTk1MTk4MmY0M2ZjZjU1MTU4NmVkMzdkNmNhMGIwMGEzNWQ1NDlkOTZhOGQxY2NlMmQzNGVkNTk3YzNjZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmNjc5OGExMmVlMjRlYmU0NGYwYzdkNGQzNDRkMDg2Y2UxNGJlNTEwMjI2ZmMxOTIxNWE5ZTJiYzliNDkyNGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk4MjM5YWFiZWU4Yzg2N2ExMDJhNjdhMTdmNWI2NDVmNDYxYTExYjI4N2MzYmM2YmJmM2Q4YmQ5ZjAzMzY4ODUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L295-L299",
+          "version": "repo-lines-v1:sha256:9ed4eebdc3701b1cf1a0bb5290f16ca0a08cd8531412c54af5a28826ce2f0e71:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QxZTFlMjYwYmRhNzcyZmFhOTgxNTVkMzgwOGYwOTVjOGJkMmE3ZTlhNTM2Y2I3N2I5YTQ3YzcxNDQ2MTY3OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmNlZTllMTM3Y2ZkZGE0ZWQ2YmQ4NjhiNzVkZjI2Njc5Y2I4NzY3ZDEzYjUzZTEyMzZmNDFhZDU1MDEzMThkMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWUyYjllMjFmZGM4NmZjMmMyZWU0NDcyMTg1ZDY3NjQ2N2JkZDFjYmYyZTI0YjRkYzY0NGFiMWFiYjMzMjU0NyJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L52-L67",
+          "version": "repo-lines-v1:sha256:c6505d8f5e976565b0b342fe130c68c09a8e0f9a07d90faf75c51a5575ba8870:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNDA3Nzk5NGVkNGY0YzdiZDRmNjg5ZWRjMjBkNjAzMTUyNjVmZTQ2YjU3NjI5OWIwZTMxYmMzYjE4ZTI2MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlOWUwMDNkYzNhOWE1M2I2MjIwMmQ1MzEzYjNhY2VlZWYwZTMxYWNmODEyMGE2YzYxNTQxMWI4OGY0ODQ4NjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYWU5ODIyMDQ0ZjllMTVkMDg0MTU3MGQ1NGMwZjRjODdjZjk2OGNkYTg4ZDBjMDU5MjUyYTJhOTI1ZWI2NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExZjRmMGYyMzI0ZmEyN2E2NTM5OTlhOGU5OTMxMTU3MGI1NWFkNjBlN2I1MGEwZDljZjgyMWQ2YzY2NzEyMjgifQ"
         }
       ]
     },
@@ -181,15 +193,15 @@
           "version": "repo-lines-v1:sha256:e4799860d63a37b6e8d6c8468fa08c1d5777af6f05b0c431bf1121dc297ad628:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQxMGY0ZDUwYjM0N2U3Y2FmOWM2MWRjMDRjNGMyMGMxYmI3MzBhNGM2Zjg2ZjRhMjMxZGYzN2Q2MDYwMTYwYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTcyYTQyOTM4MmIyZTE0NzE4ZTBlMzdiMDU3MGE4YTE3MDI5OTFmY2Q4NDk4Y2Q4NDA2MGE4YmY0ZjA1MDE3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmVjYjYwOWQ4NTE4YjVlMWMxOWMxODZmZjIxMmJlNmM3YmQ5OTdlZWNiOTI4NjVjYzY2OGQ2YjVmYzE5OGQxYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTYxMmVhOWNhYTU1MTJlYzg2NmY2OTZhZWRhNmU1ODEzY2Q3N2IxMTgyOTRlMzAyMmQ0OWZlMGQ0NjBmM2JjNiJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L94-L120",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L96-L122",
           "version": "repo-lines-v1:sha256:71967fcfbc6841be7f570de59026878f11a8d78eab70942d030016401f3d4ddd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmZGU5ODU1NjU1ODM5YWQ3NjM4NGJhOTI2MWFmYmM4MDhlOWI0ZmE1NDA1ZjViYThiNzZkNTA3MDEwNzM5YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjZDg5YjJjZDQ0OTFjMjE4OGVlNTE0NjhjMGNiYWI2YmVhMjE0Y2RmZmExMjRmYWM0NmFmZTdlMWRjNGEyN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4NTQ1NzZjYmU3NTY1OWUzYWFlMjY0YjQzYzEzMmJhYzBmNmEyZWJjY2Q2ZWU5ZWQ4MTlhMDk3N2EzODIzYTEifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L78-L91",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L77-L90",
           "version": "repo-lines-v1:sha256:095f7d9fbbc80c76d2ce1c89f0ac4a747616c2a01e7353a2d77109a70dffa93c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Yzk4ZDdiNGZlMzRlMzg2NzkxM2I4ODUxZmQzOGE0M2YxYTI3ODNjZDM0MDUxZDNjMzdjMTFkY2ExN2Y2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkNjcyYWIzYzkzZTI5MmM4ZGJhZWI2YTg3N2RkNGIxMWJhZTUzMTIyZDcwMDk1YTdjMjI4ZjkzNjIwOGQzNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlZGNkMDRlNjNkNWRjMmJhNTlkYTNlZGI4NGRhZDM4YjVjM2EyMzM1NTg5MGJjNGY3MzFjOTlkOWU1NWRhNDEifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L43-L68",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L42-L67",
           "version": "repo-lines-v1:sha256:1d1fd2aac1ffce78f4c4cdc239d43f3cb7a9fa84151e62fa58f822449402e98f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlMTBiZmE4Mzg2ZTcwOTY5OGQ0N2Y1NTkwNzVhZjY0OTU3NTI0MjA3OGY3MWZjNjNlN2JjMDY2M2ZkYTBkNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkYTY2Njk0Yzc4YzZhNDIzNWY3NTY3MDllN2I4ZDhiYWVkMjIyODY4ZTk4NTAxNzUxZjcwOWJkODk5NjlhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
@@ -199,11 +211,11 @@
       "statement": "The LOCAL backend stores one self-contained JSON file per caller and model configuration named <Origin>_<model>_<seed>[_<temperature>].json (the temperature component is omitted when it is 0.0 for backward compatibility with LiSSA's existing caches), which makes a cache directory an offline replication package: layer LOCAL under REDIS/REST_REDIS while experimenting, flush at the end, ship the directory, and replicators re-run with CACHE_HIERARCHY=LOCAL without API keys or model access.",
       "evidence": [
         {
-          "resource": "repo://README.md#L344-L360",
+          "resource": "repo://README.md#L349-L365",
           "version": "repo-lines-v1:sha256:5369d3657c36ec902a63d41c0be4e0d93a75b7a75c86b7e4529badd1aaa448cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZDA3MDkyMTI0NzI3Y2VmZGVhOWNiMGM0ZjVjNGM1MGQ0MDUzZGZkMTA3N2U1YzA1ZWMxYzIwZmY5OWIxZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MTliZWQxY2QxOTI3ZTNkM2IzODM4MmJhOTlkNDRiYzZiZjMxNTQyMWZhZTZiODg1MmE4MmEyYWVkNDJlZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5NmU4OTk5NjY4N2MzZjcxOGRhZDc0MzdkMzRhNjkwOGQ5MDNmYTk5ZWFiYjk0NDg3YjI5OTQ2MWVmZDY5NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5Yzc1OTBhMTY3NGVlNzk1MWE2OTkxZWE1NWRiM2I0ZDFhZTcyODA2YjRmZDQ5OTc4ZDQ4ZGQ1NzdmMjA3MDYifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L205-L211",
           "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
         },
         {
@@ -214,29 +226,95 @@
     },
     {
       "id": "claim_1c220db2a20b45c8a6d06688939cdef0",
-      "statement": "The library builds on Java 21 with the io.github.ardoco:parent 2.1.0 parent POM and LangChain4j 1.22.0 imported as a BOM, using jtokkit 1.1.0 for token counting, org.fuchss:rest-redis 0.1.5 for the REST-Redis client, dotenv-java 3.2.0 for .env support, and Testcontainers (2.0.5 BOM, test scope) for the Docker-gated integration test; flatten-maven-plugin is pinned to 1.7.3 because the ardoco parent references it unversioned and 1.8.0 has an NPE regression in its CI-friendly interpolator, and central-publishing overrides deploymentName to ardoco-llm-access with autoPublish and waitUntil published.",
+      "statement": "The library builds on Java 21 with the io.github.ardoco:parent 2.2.0-SNAPSHOT parent POM (artifact io.github.ardoco:llm-access, version 0.2.2-SNAPSHOT) and LangChain4j 1.23.0 imported as a BOM, using jtokkit 1.1.0 for token counting, org.fuchss:rest-redis 0.1.7 for the REST-Redis client, dotenv-java 3.2.0 for .env support, ArchUnit 1.5.1, and Testcontainers (2.0.5 BOM, test scope) for the Docker-gated integration test; flatten-maven-plugin is pinned to 1.9.0 because the ardoco parent references it unversioned and 1.8.0 has an NPE regression in its CI-friendly interpolator, and central-publishing overrides deploymentName to ardoco-llm-access with autoPublish and waitUntil published.",
       "evidence": [
         {
-          "resource": "repo://README.md#L23-L26",
-          "version": "repo-lines-v1:sha256:12f74cb58e198c00022abda7b66b954397f73169f9b234e3621faeee98bfa96f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg0MTZmMTg2M2NlNTI5MGYwZjQxZmE1MzNmYjllMTBmZWY1ZDQwNWMxMzAwYzAzZTI3NmEwYTg5NDM4MmI2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWYyNjBkNzE0NzE3M2ZjYTY3NTdmMWE0NmY4N2U4MTU1MjJlY2EzMDk5ZjhjYjg1NzQwZWE5ZGVhNTk3MTBmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY3ZjhmNzc4ZDk0YjAyMjBlMmJmMzE2ZjExYzY3MDkzYTNlYzkxYjRiMzVkZDk5MjI3Yjc5ZTQ3OWQwODkwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQwMDI0ZDkwNzViNDM4Y2ZiOWNkNTcwNzI2MGIzYjExNjZmY2ZiZWYxYTdjNzJjZmJmNTE3OWE1OGVlODNiNCJ9"
+          "resource": "repo://README.md#L23-L27",
+          "version": "repo-lines-v1:sha256:f5908182a8f7b775cf7cd4006add26f2e26ed1b988d50da6e630b414fcdacd1e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDg0MTZmMTg2M2NlNTI5MGYwZjQxZmE1MzNmYjllMTBmZWY1ZDQwNWMxMzAwYzAzZTI3NmEwYTg5NDM4MmI2MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjY3ZjhmNzc4ZDk0YjAyMjBlMmJmMzE2ZjExYzY3MDkzYTNlYzkxYjRiMzVkZDk5MjI3Yjc5ZTQ3OWQwODkwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTdjN2U0OTNmZDZjNjJiNjU2NGFkZTE5OGQ0MmZjZGJmY2NiZjJkMDVkOTZkMDQ4YWM3MmU5OGYwODljNTMxYSJ9"
         },
         {
-          "resource": "repo://pom.xml#L122-L148",
-          "version": "repo-lines-v1:sha256:00addb994e8cccb4d096c7d2d2879d8f2d6f3d95a5afe691a10e5de52364f9a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiZjlkNmFmMmVmOTY1Y2ZiNGI0ZmMwZmU2Mzg3NmMwOTVjYzgzYzljYmZmZTlhMTk5ODgzNDM2OTViMzQ4N2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMGQwZjhjMjFhM2VhYjNjZDJjZmU1OTAxNDQyYTA1YmU1OGI1MDQwOTU5NDQzNTRiY2ZiNWEzMjM5ZjhlNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjUyNjUyMzAyMWU5NzlkYzM3MDIxNjljZmI4ZjUwODM5YjFmN2Q4YmRmMmMwMTEyNzAzOTE4NTgxMTIyMDJlYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3YWQxMmI1ZWE5MGFkMTUyNTExYWYzZWU3OTQzYjMxZDZmOGFlOWZkNTE0YmEzOTUxYjk5ODJhYmQyZWMzYjkifQ"
+          "resource": "repo://pom.xml#L159-L166",
+          "version": "repo-lines-v1:sha256:07d5c0edae51ccdcfaf9dc37517929cc8a5dced14b554a9e4941f1bf1ae90294:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWZmM2Y3Y2VmNmE3MWI2ODk0YTE4ZmZiNDRmOWEyZDhlOGQzNjI4NGI0ODQ4NDU2Y2JjMWVmMDQ4MzcxOTM5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUxMmZiNzZiNDJmNTI2N2E1NDdmYjBhMGFhMjI5MDg1Nzc5NWI3MzAxOTgwMzJmY2Y0ZWIwY2U5MGM5ODE3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzI1MmUzNDQ1NDkyYTVhYjU1M2IzNmUzYjE2ODk1YjI1YmJiOWU5NzRhYjFhMDQyZjRkNjgyMjIxZDIwZDc0ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU3YzYwYjUyMzhjMzQyYTFmMjk1OTZiZGI1Zjc0YWExZGYzZmRkMDhjZDFjODdhNWM1ZDY0ZGRjMWNlOGY4ZSJ9"
         },
         {
-          "resource": "repo://pom.xml#L29-L35",
-          "version": "repo-lines-v1:sha256:02a0838ee87e3704b244b375f0fab29b76eb3da53653063bb783ab39b6afea62:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAxZDQyOTFlM2NlYWE2NWYzOGY3N2U5ZjI2ZGI3Nzg0YWE2Mjg4Y2I3ZGE1MTRiOWZjNTY0NWQzODlhMGRmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDA4ZTI4OTE5NGM2ZmUxMjhjNmZhZGEzMzllYWZmNThjMjJiOTc2ZTkyZjExODJhOTg3MDgzNmVlYTU2MTJlYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWYxZTE2YTE4NTlhZjQ5OGVjMmJjM2U3YjkzNjIxZWQ2NDBiZWIxMmM2YWViMmM3MGJmOGI3MDJiNTljMzg0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDNjZGRlZGQxNWIxM2MyMjU5OWE3YmM5Yjc5NmQxMWUyODQxY2RjZGJhMDNhOGZlY2E5ZTMwZjI3ODNkNzE1NCJ9"
+          "resource": "repo://pom.xml#L168-L182",
+          "version": "repo-lines-v1:sha256:821fdb69c7aa79c0613b27abe7d36a570c99fe6ccb463ac5dd26b47350a9eba4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkY2NiODBiMjYyOTIzYWZhOWQyMTE1NDZlZjRlMzI5ZDliMjEzNTFmYzgwN2IyNWU5YWVjZDExMjVhOWUxNGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiNWJlODQxOTNmZjQ4MjM5ZDA4ZjhiN2RjODYyMDQwODk4OTk5ZjZmNjI5YmQwZDQ5NTBhZDQ0NDA4Mzc0MTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0OTEzNGJhMWE4YmZkZDgzMDMyMjdkNTI5YTFlM2E3MTM1MzRmNjc4ZGJjYzIxZmMxNzE1NjM4ZDdlMDI1YzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU4OGViZTAwNzZlZmU4ZGQyNzRmNDdhMjE1ZmRmZTgzM2MwN2I3NDFkYzBkOTg3MjUzMDYzNTFhYzU0NWQxZDAifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L28-L35",
+          "version": "repo-lines-v1:sha256:9b69481d84cd4af7421f7f181199f391b8bb06340fef1e797cf2403ed112ea92:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGExNmZkZjM5ZWVkNDkwNDVlYTMxMTNhNTQ4MGY3NzYwYWU2ZDJiZTFjOGIyMjNiZDZjZDRjMmE3MzczYTVlNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2QyNGQzN2VlNzk0OWFlNTEzYTA0M2QwM2NiNzFlYjQ4ZTM3MmEzOWFkMTQ5ZjhiODk1ODIwYzFjZDg0NGM0OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODkxMjY1ODQxMTZjYzIzNzg1OWQyYTZhNTZkYzI5NjVlMjE5MGE3MWY4MTQ4ODNiODVlNjU1NDkzM2I1YTM2ZiJ9"
         },
         {
           "resource": "repo://pom.xml#L5-L15",
-          "version": "repo-lines-v1:sha256:04d4acb6642eb0ec6ccfe450763df2fa4bedfac5023857b2f021545b9a2b8a0b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YTQxNGFhNmJhNTA2MjEwNjNmNmM4YTk0NTNkODI4MTA5ODI1Mzc5OWI1ZTBhOWQ2MTZlOWE0NDM4MDhlZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MzE3NGEwODkxMzg1YWFiNzZjZmJlNzFiNWIxYzlkMzE5OTY5MTQ1ZjZkNWExZmZiYThlOTM3OGY4NjE5ODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMjM2M2NjNmE3MzM3MDhiMzFkMDc3NTE0Y2FhYzQzODExOWE0MTVhYmQxMzA0ZDQ4ZTViMGQ5ZTFmOTBjZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5NzUzZjMzMzVjZTQzYjNjYjY2MWIwMjdjNWNkZDFjOGQ3YTc4NzZkODNmMjQ5NmE2OWVhNzU0MGIyNjA3OTcifQ"
+          "version": "repo-lines-v1:sha256:b38e7713e28e1154febe434fbf9caeebccd52af01b168724396b58cf73229a29:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YTQxNGFhNmJhNTA2MjEwNjNmNmM4YTk0NTNkODI4MTA5ODI1Mzc5OWI1ZTBhOWQ2MTZlOWE0NDM4MDhlZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MzE3NGEwODkxMzg1YWFiNzZjZmJlNzFiNWIxYzlkMzE5OTY5MTQ1ZjZkNWExZmZiYThlOTM3OGY4NjE5ODMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMjM2M2NjNmE3MzM3MDhiMzFkMDc3NTE0Y2FhYzQzODExOWE0MTVhYmQxMzA0ZDQ4ZTViMGQ5ZTFmOTBjZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM5NzUzZjMzMzVjZTQzYjNjYjY2MWIwMjdjNWNkZDFjOGQ3YTc4NzZkODNmMjQ5NmE2OWVhNzU0MGIyNjA3OTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6b3bdda3a54546e1bc5cda1aa5f6accb",
+      "statement": "Both Redis-backed cache flavors operate behind the UnifiedRedisClient seam: RedisCache holds a UnifiedRedisClient backed by RedisAdapter (wrapping a Jedis UnifiedJedis), RestRedisCache extends RedisCache and connects through RestRedisAdapter (wrapping the org.fuchss rest-redis Client); both adapters implement the same ping/exists/hget/hset interface, and both connection setups fail fast with IllegalStateException when the server cannot be reached.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisAdapter.java#L16-L27",
+          "version": "repo-lines-v1:sha256:b6e3468a1c2feab7eea8d474fd15349b6e40026866238ea292ef121afdffd3be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzMmJmZjU4ZjVlMjA4ZjYzMDYxMjFlMmY4YjA0ZWM5NTRiYWIxZjUyN2I1NDkwYzgwMmYzN2RhMDBjMGI2OWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1OWE1YmJhNTlkOTc3NDYzOWY3YTQ0YzA3NTFmNWQ3MDU1ZjJhMmE0M2Y5YzNjZjZjYzJjYzcyNjUzZWRkYWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkYTQwMGVlYWNmNzNjODA3ZTVhOGQzYzQwNzFkZmVlMmRiOTJhYmYzMzY4NDVlNjQwYTI2MTNmMGMyYjAyOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliMzczMDU0ODFiYWE2MmQ5NGFjZTQ2ZmRkMDY5Y2RhOGZjNjZlMGQ5MjRmYTc5ZDMzZDE2N2M4Y2EzM2ZmOWMifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L28-L91",
+          "version": "repo-lines-v1:sha256:9a4535f810ce17b092e94f1851c43a5dc6a906499fae4f907931898fd41b7e07:eyJzZWxlY3RlZExpbmVDb3VudCI6NjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwM2YxYmJkNzI4NmY4YWRmMWFlNDljZTg3NWM5MWY3ODViMjk3Y2VhMGM2ZmNmY2Y4YTIyNDEwOGFiYmVhNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIwZmE4OGUyNTU4MjRlYzdjOGUzNWMyOTc4OTcxZGI4YjAwZTkyZjQ4Y2U4NzlmNmE1YjJiZmVhN2IyNzQzYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzYzJmYmM4OGU4MDJkYjJhNTUwNGRiNWI0Njg5Yjc2MzcwNmQzZTc0NmFkZTY2NDRlYjQyNTRiZTllOTI2NTIifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisAdapter.java#L20-L33",
+          "version": "repo-lines-v1:sha256:13d2b068c6f69d63c5e9624265fe65ab192cc383bf0e624dd1c68cefa6638379:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkMWUxZTI2MGJkYTc3MmZhYTk4MTU1ZDM4MDhmMDk1YzhiZDJhN2U5YTUzNmNiNzdiOWE0N2M3MTQ0NjE2NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3MjlkZDVhNTAyN2M1ZjY4MzUxYTliZTUxYWQ3MGZmMmY5NGQwMjczYzE1NjI2NWY1M2Y2OTg0YzhmY2ZjNzIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFjNzcyYTA5MDRhNjk2YTAyODJmOGJkZDY3YjE0NTRiNWRiZDIyMDhmNzUxYTc4Mjc3YzYzNTY2ZWVjYTU0OTYifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L15-L56",
+          "version": "repo-lines-v1:sha256:28ad272eab27d6cb83147474fbf93a858200a4b790a5b2676f84c86a8dc9d704:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyNGVmZDk5ZjcxZGE5ZDgzYTRkMmU5Y2FiYmNhODlhOGVjMzExMzFkNzUzZGJmYWVmMjg2YTljZTNhNTEyMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5ZmFiNGYwMjViOGQ4MmRmYmViYTdlZDJjOTI2NzczMDY3ZjRlNTdhMmIzNjliZjdiYTU5YjhkNDk3OWFhODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkZmE0YmZhODMxNjUyYzEzM2M0MjM2MzE5NGZlYzQzODljYTI4N2FlOGJlOGNmOGE0NjdmYjg4MWIzYzFmZDAifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/UnifiedRedisClient.java#L10-L16",
+          "version": "repo-lines-v1:sha256:9a541ab1308ec9edb034927131b5c4bfd00037de24f1b924e5ecedcd49de9702:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTZmNjM4MzFjYTUyYTRhMjc3YjAzNDI5MTg2MWI3YWZkNWQ5NTc5Nzk3OGIxYTJiMzAyZmU0ODNkNDVjYjI1NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2QxZTFlMjYwYmRhNzcyZmFhOTgxNTVkMzgwOGYwOTVjOGJkMmE3ZTlhNTM2Y2I3N2I5YTQ3YzcxNDQ2MTY3OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjRiMTE1YWZhYjExNDk1YTlmODQ1M2MyNGJjMjUxNDZmODc4NzQxMjgxZGFkMTcyMzUwOWJiNmZiMTIxMTViMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTM3ZDIzM2Y0MzAzZjc3OWVjYjJjNDE0ODdhOTUzYzE4YTZjOWI0YTI1YzQ4ZjdmOTE2MTQ0ZGUxNTI1ZDA5YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6ddd907d40947eb947366cac6ce114b",
+      "statement": "The Bifrost LLM gateway is a first-class platform for both chat and embeddings: ChatModelPlatform.BIFROST and EmbeddingPlatform.BIFROST route through the util-layer Bifrost helper, which reads the required BIFROST_URL and BIFROST_API_KEY variables (failing fast when either is missing) and sends the virtual key as bearer token plus the x-bf-vk header; model names are provider-prefixed, for example openai/gpt-4o-mini.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java#L255-L274",
+          "version": "repo-lines-v1:sha256:b6e84f364a2a44748cc40060202d44c9a254e7e5f49ebbce17424da0fc8fc46f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyNDhkYjVmZmY4NTgxN2ViNTNhYjkzNmRjYzk4MTMxZDVjM2JjMWIwNDI0ODE5MWE1ODE4ODk0YjQxZmNlNmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMmI5ZTIxZmRjODZmYzJjMmVlNDQ3MjE4NWQ2NzY0NjdiZGQxY2JmMmUyNGI0ZGM2NDRhYjFhYmIzMzI1NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4MzExNzdhYmU0MGFiNGM4MDM4YThkMTFhMzI2NGNlMGU4ZjNhOGI1ZDJjM2UzMWIwYTZjYTQ4Y2MxMTYzZWQifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L36-L58",
+          "version": "repo-lines-v1:sha256:4770f8e95472b3855e3ee5750663036ef384d2535f43366a844c32f605e7ddfb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0NmQzZGUyOWE1YTMwY2YxZGMzMzBmNDQzN2FmNThjY2YzMGZhZTExN2M3MDk2NGUwNDcyYzViZmIyOTkzOWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4NjNkMDE2M2E0NWE5MzFkZTJiNWZlMTBhY2M2MjBjYWYxYjdlZTY3ZjA3ODljZTNkNjAwNTExNzc0NTYwZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L109-L109",
+          "version": "repo-lines-v1:sha256:d44b4be4ac7f53b62da7c6fb31580197fc6285766ddc046e6a762b6cb1dc7f08:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDQ0YjRiZTRhYzdmNTNiNjJkYTdjNmZiMzE1ODAxOTdmYzYyODU3NjZkZGMwNDZlNmE3NjJiNmNiMWRjN2YwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDQ0YjRiZTRhYzdmNTNiNjJkYTdjNmZiMzE1ODAxOTdmYzYyODU3NjZkZGMwNDZlNmE3NjJiNmNiMWRjN2YwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWRmNzBjNjYwOTNlOWQ4YTc4YmMwZTkxYjVlNmUzMTE1NGE3OGUwZTBhYTk2OWRmNzgzOGEzNTNkMTIxNWM0MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzBhNWMyYTM0NTc3YzQ0YTBmNmRkNjM1NTQ0NDAxNDEzY2E4ZmU3OTljZmE3MjU4YmIxZDY2MjNmZGY1MWViYSJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L15-L19",
+          "version": "repo-lines-v1:sha256:e31d8831592e8c6daa5089b0038edabaf1662343f244747359ad6d0adfa7fb4d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODMwZTY4MDgwZjE2MWYwYWYwZWU2ZDdiYjY3NzhiZDI4NWUxZTYyMzk5OTk2ZTI2MzdjNWIwZjdkNDE2YzE1YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjBlODRlOTI2NDhkNmZhNzAzYWRhMmVmODRhOTU1MzA2NDVhMDFhMTJlZTRlNzQzM2VkOGVlOWMyYmE3ZTA1NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTUwNjk3ZmIwNzRkYjQ4ZTViYjlhMzBiNmQ2ODZmYWQ5YzJjNTM5MDgyZjc3Zjk2NzRiYjkwNTg3OWZjZGEwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTJiZTU4OGM1MDRkNDRkZmY3MzhhZDcxYjMwMTEyZDkwN2IxZWRhZjE2NWY2NmE2NWUxZmIyM2ExZGM5YWU5YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_aea39e34c4bf474c94ba123638e7a582",
+      "statement": "CacheManager.resetDefaultInstance() is package-private and exists solely for test isolation: it flushes the current default instance (if any) and clears it, so tests must call setCacheDir again before using the default instance; public consumers initialize the default instance via setCacheDir and getDefaultInstance.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L300-L314",
+          "version": "repo-lines-v1:sha256:2a88c2855fdf5808f3e7db27ce03aebe561a7a1d117f67ab31db035bff7f853f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2Zjk0ZWNmZmQxMGNkYTM0NDhlYmJjYmRlMjM5NzY1OGExMjY4ZTlkMGZjYzY1Y2MyYmUwMmE5NWI2ODAyMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L52-L67",
+          "version": "repo-lines-v1:sha256:c6505d8f5e976565b0b342fe130c68c09a8e0f9a07d90faf75c51a5575ba8870:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNDA3Nzk5NGVkNGY0YzdiZDRmNjg5ZWRjMjBkNjAzMTUyNjVmZTQ2YjU3NjI5OWIwZTMxYmMzYjE4ZTI2MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlOWUwMDNkYzNhOWE1M2I2MjIwMmQ1MzEzYjNhY2VlZWYwZTMxYWNmODEyMGE2YzYxNTQxMWI4OGY0ODQ4NjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYWU5ODIyMDQ0ZjllMTVkMDg0MTU3MGQ1NGMwZjRjODdjZjk2OGNkYTg4ZDBjMDU5MjUyYTJhOTI1ZWI2NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjExZjRmMGYyMzI0ZmEyN2E2NTM5OTlhOGU5OTMxMTU3MGI1NWFkNjBlN2I1MGEwZDljZjgyMWQ2YzY2NzEyMjgifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-09T23:10:07.903Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-16T14:46:55.207Z"
   }
 }

@@ -1,7 +1,7 @@
 ---
 type: Architecture
 title: Cache Core
-description: The Cache interface with its factory and JSON conversion, the CacheKey jsonKey/localKey split, CacheParameter, CacheType, and LargeLanguageModelCacheMode — the storage abstractions all chat and embedding caching builds on.
+description: The Cache interface with its factory and JSON conversion, the CacheKey toJsonKey/localKey split, CacheParameter, CacheType, and LargeLanguageModelCacheMode — the storage abstractions all chat and embedding caching builds on.
 tags: [cache, architecture]
 openwiki:
   roles: [architecture, domain]
@@ -12,21 +12,25 @@ openwiki:
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheParameter.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheType.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LargeLanguageModelCacheMode.java
-  symbols: [Cache, Cache.createByType, Cache.convert, Cache.getViaInternalKey, Cache.putViaInternalKey, CacheKey, CacheKey.toJsonKey, CacheKey.localKey, CacheParameter, CacheType, LargeLanguageModelCacheMode]
+  symbols: [Cache, Cache.createByType, Cache.convert, Cache.getViaInternalKey, Cache.putViaInternalKey, CacheKey, CacheKey.MAPPER, CacheKey.toJsonKey, CacheKey.localKey, CacheParameter, CacheType, LargeLanguageModelCacheMode]
   test_paths:
     - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
+    - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKeySerializationTest.java
     - src/test/resources/cache/test-local-cache-sample.json
   invariants:
     - Cache values are stored as JSON strings; on failed deserialization a String-typed value is returned raw (legacy unserialized entries), any other failure throws IllegalArgumentException.
     - Cache.createByType requires a cacheDir for LOCAL and an ObjectMapper for REDIS and REST_REDIS; the EnvironmentProvider is forwarded to the Redis-based backends for their connection settings.
     - CacheKey.toJsonKey serializes all fields except the @JsonIgnore localKey and is the Redis hash key; localKey is a deterministic content UUID used by LocalCache and log output.
+    - CacheKey.MAPPER is a tools.jackson JsonMapper (builderWithJackson2Defaults, INDENT_OUTPUT); the @JsonIgnore on localKey comes from com.fasterxml jackson-annotations 2.x — both are direct pom dependencies.
     - LargeLanguageModelCacheMode separates CHAT from EMBEDDING, so serialized keys of the two domains never collide.
     - getViaInternalKey and putViaInternalKey are deprecated and reserved for the long-text embedding recovery path and layer conflict resolution.
-  validation_commands: ["mvn -q test -Dtest=CacheTest"]
+  validation_commands: ["mvn -q test -Dtest=CacheTest", "mvn -q test -Dtest=CacheKeySerializationTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
+  - id: openwiki-source-2355f81d7cf522f8dbdaabd4
+    resource: repo://pom.xml
   - id: openwiki-source-824a85d7be154153c14cda51
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java
   - id: openwiki-source-855ff655bdf1ca8f941195ab
@@ -51,14 +55,19 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java
   - id: openwiki-source-9c0be2a8e438a2a14ff8210b
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-406400bb0fa6384c6e01eaf2
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-91e90e06abef694a92ea2a06
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-9727109b59766f9bf3510846
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKeySerializationTest.java
   - id: openwiki-source-80764162ff1e0089fe344077
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
   - id: openwiki-source-bf8ab9bc4c233ef5bca4a282
     resource: repo://src/test/resources/cache/test-local-cache-sample.json
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Cache Core
@@ -107,14 +116,15 @@ internal-key methods bypass that derivation.
   directory throws `IllegalArgumentException`.
 - `REDIS` and `REST_REDIS` require a non-null `mapper` → `RedisCache` / `RestRedisCache`, which
   receive the [Environment](../concepts/environment-provider.md) and read their connection
-  settings from it (`REDIS_URL` for `RedisCache`; URI and credentials for `RestRedisCache`).
-  A missing mapper throws `IllegalArgumentException`.
+  settings from it in their constructors (`REDIS_URL` for `RedisCache`; `REST_REDIS_URI`,
+  `REST_REDIS_USERNAME`, and `REST_REDIS_PASSWORD` for `RestRedisCache`). A missing mapper throws
+  `IllegalArgumentException`. The Redis-based constructors fail fast with
+  `IllegalStateException` when the ping to the configured endpoint fails.
 
 ## CacheKey
 
-`CacheKey` identifies a cache entry. It exposes a shared static `MAPPER` (`ObjectMapper`
-configured with `SerializationFeature.INDENT_OUTPUT`) and two addressing methods that are
-deliberately kept apart:
+`CacheKey` identifies a cache entry. It exposes a shared static `MAPPER` and two addressing methods
+that are deliberately kept apart:
 
 - `toJsonKey()` — default method that serializes the whole key with `MAPPER`; a serialization
   failure throws `IllegalArgumentException`. This JSON string is the **Redis hash key**:
@@ -125,6 +135,17 @@ deliberately kept apart:
   `nameUUIDFromBytes` over the CRLF-normalized UTF-8 content; `ChatCacheKey.of` and
   `EmbeddingCacheKey.of` both set it this way), so `LocalCache` maps identical content to the
   same entry within its file.
+
+The serialization stack mixes the two Jackson generations deliberately: `CacheKey.MAPPER` is a
+Jackson 3 `tools.jackson.databind.json.JsonMapper` built with
+`JsonMapper.builderWithJackson2Defaults()` and `SerializationFeature.INDENT_OUTPUT` enabled,
+while the `@JsonIgnore` that hides `localKey` from `toJsonKey()` comes from
+`com.fasterxml.jackson.annotation` (Jackson annotations 2.x). After the Jackson 3 migration both
+are direct dependencies in `pom.xml` (`tools.jackson.core:jackson-databind` and
+`com.fasterxml.jackson.core:jackson-annotations`), so the annotations remain effective for the
+new databind. Because the serialized byte form is the Redis address,
+`CacheKeySerializationTest` pins the exact JSON of a chat and an embedding key — any change in
+property order, escaping, or whitespace invalidates every existing Redis cache.
 
 The split is deliberate. Redis-backed caches need an address that carries the full configuration
 (mode, model, seed, temperature, content) so entries of different configurations cannot overwrite
@@ -174,6 +195,11 @@ implementations.
   unserialized string values — and reads all three entries, which is exactly the path where
   `convert`'s String fallback applies).
 - Run with `mvn -q test -Dtest=CacheTest`.
+- `CacheKeySerializationTest` — pins the exact serialized form of cache keys, asserting a
+  byte-stable expected JSON for a chat key (with escaping-sensitive content) and an embedding
+  key (`seed`/`temperature` pinned to `-1`, mode `EMBEDDING`). The JSON key addresses entries in
+  Redis, so any change to property order, escaping, or whitespace invalidates all existing caches.
+  Run with `mvn -q test -Dtest=CacheKeySerializationTest`.
 
 ```mermaid
 classDiagram

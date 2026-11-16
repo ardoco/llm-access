@@ -7,6 +7,8 @@ openwiki:
   roles: [operations, delivery]
   change_kinds: [lifecycle]
   source_paths:
+    - .github/workflows/bifrost.yml
+    - .github/workflows/deploy-snapshot.yml
     - .github/workflows/format.yml
     - .github/workflows/openwiki.yml
     - .github/workflows/verify.yml
@@ -24,9 +26,13 @@ openwiki:
     - The Testcontainers REST-Redis integration test skips automatically without Docker.
   validation_commands: ["mvn verify", "mvn -q test -Dtest=RestRedisTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-26T12:15:10.459Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
+  - id: openwiki-source-606719b2dc777de859e4519b
+    resource: repo://.github/workflows/bifrost.yml
+  - id: openwiki-source-42f45bc41f41d8a905bc2d9e
+    resource: repo://.github/workflows/deploy-snapshot.yml
   - id: openwiki-source-f721914ec66a43bd2b76a715
     resource: repo://.github/workflows/format.yml
   - id: openwiki-source-6d3ac2bdfb0e76882a670989
@@ -57,7 +63,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-77fcb76d829af13337d04708
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-26T12:15:10.459Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Operations and Deployment
@@ -164,7 +170,7 @@ password (`--requirepass`) and/or TLS and put the credentials into the URL, e.g.
 REST-Redis exists for the case where clients can reach the cache only over **HTTP** — restricted
 egress, or a shared team cache whose TLS and authentication are terminated at a proxy. The
 server is [`org.fuchss:rest-redis`](https://central.sonatype.com/artifact/org.fuchss/rest-redis)
-(bundled here at version 0.1.5), published as the Docker image
+(bundled here at version 0.1.7), published as the Docker image
 [`ghcr.io/dfuchss/rest-redis`](https://github.com/dfuchss/rest-redis); the matching client ships
 with this library, so applications only configure `REST_REDIS_URI`.
 
@@ -321,13 +327,19 @@ re-run.
   end, including the hierarchical conflict strategies (see
   [Testing Strategy](../testing/strategy.md)). Run it alone with
   `mvn -q test -Dtest=RestRedisTest` (Docker required).
-- **Coordinates:** the artifact is `io.github.ardoco:llm-access` (currently `0.2.1-SNAPSHOT`),
-  built with Java 21 on the `io.github.ardoco:parent` `2.1.0` parent POM.
+- **Coordinates:** the artifact is `io.github.ardoco:llm-access` (currently `0.2.2-SNAPSHOT`),
+  built with Java 21 on the `io.github.ardoco:parent` `2.2.0-SNAPSHOT` parent POM.
+- **Dependencies:** versions are property-driven in `pom.xml` — LangChain4j `1.23.0` via its
+  BOM, Testcontainers `2.0.5` via its BOM, `org.fuchss:rest-redis` `0.1.7`, `jtokkit` `1.1.0`,
+  `dotenv-java` `3.2.0`, and ArchUnit `1.5.1` (test scope). Dependencies resolve from three
+  repositories: Maven Central, the Sonatype snapshot repository
+  (`central.sonatype.com/repository/maven-snapshots`), and the read-only ARDoCo mirror group on
+  `gitlab.kit.edu` (`ardocoSnapshots`).
 - **Publishing:** `central-publishing-maven-plugin` is configured with `publishingServerId`
   `central`, `autoPublish=true`, `waitUntil=published`, and `deploymentName=ardoco-llm-access` —
   overriding the parent's default deployment name so the bundle is named distinctly in the
   Central Publisher Portal.
-- **Pinned plugin:** `flatten-maven-plugin` is pinned to `1.7.3`. The ardoco parent references
+- **Pinned plugin:** `flatten-maven-plugin` is pinned to `1.9.0`. The ardoco parent references
   it without a version, so Maven would otherwise resolve the latest `1.8.0`, which has an NPE
   regression in its CI-friendly interpolator (see the comment in `pom.xml`).
 
@@ -336,18 +348,20 @@ re-run.
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
 | `verify.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual | Runs the shared ardoco Maven workflow (`ardoco/actions/.github/workflows/maven.yml@main`) with `deploy: false` and submodules checked out; `paths-ignore` for `docs/**` and `openwiki/**` keeps wiki- or doc-only changes from triggering builds. |
+| `bifrost.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual; `paths-ignore` for `docs/**` and `openwiki/**` | Runs `BifrostIntegrationTest` against the real Bifrost gateway with the `BIFROST_API_KEY` and `BIFROST_URL` secrets. Because secrets are unavailable to forks and Dependabot, the job is skipped for both (`github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]'`). It derives the JDK major version inline from the POM (see below), installs temurin plus Maven 3.9.16 (the same Maven version as the ardoco actions workflow), and runs `mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`. |
 | `format.yml` | PRs to `main` (no path filter), manual | Checks out with `actions/checkout@v7` (submodules, full history), derives the JDK major version from the POM (see below), installs temurin via `setup-java@v6` with the Maven cache, runs `mvn -B spotless:apply --file pom.xml`, and auto-commits the result with `stefanzweifel/git-auto-commit-action@v7` as "Apply formatting changes". |
+| `deploy-snapshot.yml` | manual (`workflow_dispatch`) only | Deploys the selected branch to the GitLab package registry via the shared `ardoco/actions/.github/workflows/maven-snapshot.yml@main` workflow, passing `gitlab-project-id: "203213"` — the read-only mirror `kit/kastel/sdq/research-projects/ardoco/llm-access` on `gitlab.kit.edu` — with secrets inherited. |
 | `openwiki.yml` | weekly schedule (`0 6 * * 1`, Monday 06:00 UTC), manual | Delegates to the shared `ardoco/actions/.github/workflows/openwiki.yml@main` workflow with `contents: write` and `pull-requests: write`, forwarding only `OPENROUTER_API_KEY`. The update logic (commit gating, PR creation) lives in that shared workflow, not in this repository's file. |
 
-The `format.yml` job pins nothing by hand: its "Determine Java version" step evaluates the POM
-properties in order — `maven.compiler.target`, then `maven.compiler.release`, then `java.version`
-— via `mvn -B -q -N help:evaluate -DforceStdout`, strips a leading `1.` prefix to turn `1.21`
-into `21`, and exports the first numeric result as the `java_major_version` output. If none of
-the three expressions resolves to a number, the step fails with
-`::error::Could not determine the Java version from the POM`. This keeps the formatter's JDK on
-whatever the build targets (Java 21), so `spotless:apply` rewrites code with the same toolchain
-the build and tests use; a hand-pinned version could drift from the POM as the parent POM's
-compiler settings evolve.
+The `format.yml` and `bifrost.yml` jobs pin nothing by hand: their "Determine Java version" step
+evaluates the POM properties in order — `maven.compiler.target`, then `maven.compiler.release`,
+then `java.version` — via `mvn -B -q -N help:evaluate -DforceStdout`, strips a leading `1.`
+prefix to turn `1.21` into `21`, and exports the first numeric result as the
+`java_major_version` output. If none of the three expressions resolves to a number, the step
+fails with `::error::Could not determine the Java version from the POM`. This keeps the
+formatter's and the integration test's JDK on whatever the build targets (Java 21), so
+`spotless:apply` rewrites code with the same toolchain the build and tests use; a hand-pinned
+version could drift from the POM as the parent POM's compiler settings evolve.
 
 Dependency upkeep is automated: Dependabot opens weekly update PRs for the `github-actions` and
 `maven` ecosystems (Wednesdays 11:00 Europe/Berlin) with the commit-message prefix `Dependency`.

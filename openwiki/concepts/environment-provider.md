@@ -1,11 +1,11 @@
 ---
 type: Concept
 title: Environment and Configuration
-description: The EnvironmentProvider seam — SystemEnvironment (system variables with a lazy .env fallback) and MapEnvironment (in-memory, secret-safe) — which variables each subsystem reads, and the no-global-environment invariant.
+description: The EnvironmentProvider seam — SystemEnvironment (system variables with a lazy .env fallback) and MapEnvironment (in-memory, secret-safe) — which variables each subsystem reads, including the BIFROST_* gateway settings shared by chat and embeddings, and the no-global-environment invariant.
 tags: [environment, configuration, credentials, dotenv, dependency-injection, secrets]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-13T13:30:47.057Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
@@ -21,6 +21,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProvider.java
   - id: openwiki-source-fac3ed967ea0ee2556a0e7eb
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-d750b4fe48944bf1f4e1e0d7
@@ -35,6 +37,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java
   - id: openwiki-source-4cb1f7f9ff22fa760910f687
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenWebUiEmbeddingCreator.java
+  - id: openwiki-source-74ec3f5f99ed6a20eea5c444
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
   - id: openwiki-source-f933314cddd3af5c44148dcf
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java
   - id: openwiki-source-424e35b1b23cbd6261f4135e
@@ -45,15 +49,19 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-9004cbdc8e51b2de64d3e116
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatConfigurationTest.java
+  - id: openwiki-source-4b6b4f64ed3940f2c842548e
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java
   - id: openwiki-source-65cab9f1c35cb70c3750cd65
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java
+  - id: openwiki-source-f159a5e43c937a689a95c1b6
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/BifrostTest.java
   - id: openwiki-source-53173e335c62f63857b13264
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/MapEnvironmentTest.java
   - id: openwiki-source-6657b8392fc18b157b18e55c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
   - id: openwiki-source-7450881a125d4b9c7b67cf6c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/SystemEnvironmentTest.java
-generated: { by: "openwiki/0.7.2", at: "2026-10-13T13:30:47.057Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Environment and Configuration
@@ -73,6 +81,8 @@ explicitly, and the configuration records carry one as a component
 ([Architecture Overview](../architecture/overview.md)). This design replaces the removed legacy
 `util.Environment` singleton with its global `overwrite(Path)` API (see
 [Relationship to the removed legacy configuration](#relationship-to-the-removed-legacy-configuration)).
+One cross-platform setting — the [Bifrost](../chat/chat-models.md) LLM gateway — is factored into the
+helper class `Bifrost`, which resolves its `BIFROST_URL` and `BIFROST_API_KEY` through the same seam.
 
 ## The EnvironmentProvider interface
 
@@ -186,6 +196,7 @@ flowchart TD
     LLM["LlmConfiguration"]
     EMB["EmbeddingConfiguration"]
     PROV["ChatModelProvider"]
+    BF["Bifrost helper"]
     FACTORY["EmbeddingCreator.create"]
     CEC["CachedEmbeddingCreator subclasses"]
     MGR["CacheManager"]
@@ -200,9 +211,12 @@ flowchart TD
     LLM -- "configures" --> PROV
     EMB -- "configures" --> FACTORY
     FACTORY -- "returns" --> CEC
+    PROV -- "delegates Bifrost reads" --> BF
+    CEC -- "delegates Bifrost reads" --> BF
     MGR -- "forwards when a cache is created" --> BACKENDS
     PROV -- "reads platform credentials" --> IFACE
     CEC -- "reads platform credentials" --> IFACE
+    BF -- "reads BIFROST_API_KEY and BIFROST_URL" --> IFACE
     BACKENDS -- "reads connection settings" --> IFACE
 ```
 
@@ -215,7 +229,10 @@ There are two distinct consumption paths, and they may use different environment
 - **Model credentials and hosts** come from the `environment` component of `LlmConfiguration` and
   `EmbeddingConfiguration`. `ChatModelProvider` reads them inside `createChatModel()`
   (fail-fast for required variables); the embedding creators read them when the creator is
-  constructed.
+  constructed. The Bifrost branch of both paths does not read its variables inline — it goes
+  through the `Bifrost` helper in `util`, whose `baseUrl(environment)` and `apiKey(environment)`
+  resolve `BIFROST_URL` and `BIFROST_API_KEY` via `getenvNonNull` and which supplies the
+  `x-bf-vk` header carrying the virtual key.
 - **Cache settings** come from the `EnvironmentProvider` each `CacheManager` was created with.
   `CACHE_HIERARCHY` and `CACHE_REPLACEMENT_STRATEGY` are read once at construction; the Redis
   connection settings are read from the same environment when the first cache is requested from
@@ -255,6 +272,7 @@ variables from the configuration's environment, cache variables from the `CacheM
 | `BLABLADOR_API_KEY` | chat (Blablador) | yes | `IllegalStateException` |
 | `DEEPSEEK_API_KEY` | chat (DeepSeek) | yes | `IllegalStateException` |
 | `OPENWEBUI_URL` / `OPENWEBUI_API_KEY` | chat and embeddings (Open WebUI) | yes | `IllegalStateException` |
+| `BIFROST_API_KEY` / `BIFROST_URL` | chat and embeddings (Bifrost, via the `Bifrost` helper) | yes | `IllegalStateException` |
 | `OLLAMA_EMBEDDING_HOST` | embeddings (Ollama) | yes | `IllegalStateException` |
 | `OLLAMA_EMBEDDING_USER` / `OLLAMA_EMBEDDING_PASSWORD` | embeddings (Ollama) | no | basic auth header not sent |
 | `CACHE_HIERARCHY` | `CacheManager` | no | `LOCAL` |
@@ -318,6 +336,8 @@ or `CacheManager` is not a violation precisely because their defaults are fresh
   but not `.env`; later changes to the source map do not affect the environment (defensive copy);
   `toString()` lists keys but never values (`sk-very-secret`, the Ollama host are absent);
   environments with the same entries are equal and hash-equal.
+- `BifrostTest` — `BIFROST_URL` is returned when set and required otherwise, `BIFROST_API_KEY` is
+  required, and `Bifrost.headers("k")` produces exactly `Map.of("x-bf-vk", "k")`.
 - `NoGlobalEnvironmentTest` — the two ArchUnit rules described above.
 
 ## Relationship to the removed legacy configuration
