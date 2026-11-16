@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9a262998028e4e30a9cf3c8db4ae3d544a6ec4f9bd021f71f56978e1e69c2940",
+  "pageVersion": "sha256:863c31dc8edbe11d2b4fd95261ccd16ae943d3101e55f96ddb37329b820ad8c6",
   "claims": [
     {
       "id": "claim_7ffb40acfcf843d69feb2a08c376de13",
-      "statement": "EmbeddingCreator.create(EmbeddingConfiguration, CacheManager) requires both arguments to be non-null (even for MOCK) and dispatches on the configuration's platform, instantiating OllamaEmbeddingCreator, OpenAiEmbeddingCreator, OnnxEmbeddingCreator, OpenWebUiEmbeddingCreator, or MockEmbeddingCreator; the four caching creators receive the CacheManager as a constructor argument rather than resolving CacheManager.getDefaultInstance() themselves, so cache settings come from the manager while model credentials come from the configuration's environment.",
+      "statement": "EmbeddingCreator.create(EmbeddingConfiguration, CacheManager) requires both arguments to be non-null (even for MOCK) and dispatches on the configuration's platform, instantiating OllamaEmbeddingCreator, OpenAiEmbeddingCreator, OnnxEmbeddingCreator, OpenWebUiEmbeddingCreator, BifrostEmbeddingCreator, or MockEmbeddingCreator; the caching creators receive the CacheManager as a constructor argument rather than resolving CacheManager.getDefaultInstance() themselves, so cache settings come from the manager while model credentials come from the configuration's environment.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L93-L105",
-          "version": "repo-lines-v1:sha256:663e990f979a128236be63f27ed64455dd01c18c0ef2e10a85ee40693fbd81dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwNjZhZTU1YTY3Yjg5NDg1YTNiZDkxZmMyMzBiNTk4N2M4YjdmNmNmYzBiZjYwZjY2Y2MwNTU3MWFiMGUxOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJhODQxNWJlNjkwOTdmOTY1ZGQwYmI0NDc2MDI4ZWI4NjUwN2Y4NjU0ZDQ5NjgxMjUwOTI1MDcwMTY5MmI4YzciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwYjRkYWIyNjQxMmVhOTc1OTEwMGZlMzA4OTE0ZjQxYzQyNDZhMjQyNmFjMjViZGM1OTAxNWEyNmY3YjI3MDUifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L95-L115",
+          "version": "repo-lines-v1:sha256:62624f4dcedebdb8291bfabcdcd3607d4d69e2c9cdf5cc8fa1b335748ecc88e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1ZmJlZjk3MDY3NmRjYzhhMDM4MjdhMjY0MmU5N2JlMWFiNjMxMzAyYzQxNDRmNTdlNTY1MTU1MWFhN2RhNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmNDc2ZDZjM2E4N2U2NDUwM2UyNjg3OTk3ZWRhZDQ2ODQyNTNmOGRhODk1NWE1YTljNDVjYzM2NzQ5YWM1MzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1ODM5ZTdkODFmNDkwNmM4MGM3MjJmZTI2OGU4YzA4NzY0ODk3ODEwZmU3MDI0ODc5OTJlYzk3N2RhOTU3ZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NmYzM2E4NTNkMzc1ZjU1MzcxMTAzNDViN2Q1ZTljMzg0MzZjNjg5NzIxYjRjMDIyZGNhMGE3ZmRiZjUxYTAifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java#L32-L34",
@@ -108,11 +108,11 @@
     },
     {
       "id": "claim_330842c775184bca8271c553b002c4cb",
-      "statement": "EmbeddingPlatform has the five constants OLLAMA, OPENAI, ONNX, OPENWEBUI, MOCK, and its static fromString resolves names case-insensitively while throwing IllegalArgumentException for unknown names.",
+      "statement": "EmbeddingPlatform has the six constants OLLAMA, OPENAI, ONNX, OPENWEBUI, BIFROST, MOCK, and its static fromString resolves names case-insensitively while throwing IllegalArgumentException for unknown names.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingPlatform.java#L19-L55",
-          "version": "repo-lines-v1:sha256:695301d0666361c5119b317e512844702d944d078743c2744b963d35572a68ed:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdhYjc0MTE2MzExMjdjODkzYjYzOTk5N2FlZWFlZWU1YTE1YWRkNTU0YTZlZDQ4Mzg1NDYyNTk3ZTYwYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjZWZmNTQ5NzgxNzVhNjBiODVmZWUzMTgyMjY2M2NhZjUxNDUxMWUzNTc4MGI0YzZkMGYyOTA2YmVkYjYyZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingPlatform.java#L20-L60",
+          "version": "repo-lines-v1:sha256:bc7a24a07a6da5e189e022a767f696dc6002771c72a5bc94919febd3e8ac8b43:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMTdhYjc0MTE2MzExMjdjODkzYjYzOTk5N2FlZWFlZWU1YTE1YWRkNTU0YTZlZDQ4Mzg1NDYyNTk3ZTYwYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjZWZmNTQ5NzgxNzVhNjBiODVmZWUzMTgyMjY2M2NhZjUxNDUxMWUzNTc4MGI0YzZkMGYyOTA2YmVkYjYyZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
     },
@@ -121,7 +121,7 @@
       "statement": "The single-argument EmbeddingCreator.create(EmbeddingConfiguration) short-circuits the MOCK platform before resolving CacheManager.getDefaultInstance(), so the mock platform needs no cache directory; for caching platforms it delegates to the two-argument factory with the default instance, and that getDefaultInstance() call is the single call site the NoGlobalEnvironmentTest ArchUnit rule defaultCacheManagerOnlyInConvenienceOverload permits.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L117-L123",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L124-L130",
           "version": "repo-lines-v1:sha256:692b1a8a54a7ab201ba8ebce16f2a1fe0d28c1f1bb495bfe008543fe89467fc9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWNhN2M2NDJkZmQ3Zjk2YjI5ZDMxYjJkM2U5NTZkZTQyOWYxOTI3MjhmM2ZhNGUzN2E0ZjE4MmJmYTY1OTY2NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDBmNGY5MTkxYTkxODRhMTY3N2QwZjI4N2M2NzVlZTFlODI2MTYwNTA4ODI1ZTE4MWIzYzkxOTU3OTg5ZTIwNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSJ9"
         },
         {
@@ -135,11 +135,11 @@
       "statement": "For caching platforms the single-argument create overload fails with IllegalStateException when CacheManager.setCacheDir has not installed the default cache manager, because getDefaultInstance throws IllegalStateException until the directory is set.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L186-L190",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L188-L192",
           "version": "repo-lines-v1:sha256:113bbc227f2e0a4d1782ca9f34de435d80a36316d4a49a65f9ef51e9bc169170:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M1ODZmZjEwMjkwYWZjNGFlNDdiZDFjOTg1M2M5MTA2ZDRmMWU2ODRjMTFkN2I1ZjA0ZGNhNjk2YmM3ODI2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTE1OTcxOTcxYzEzNTg2MDNmZDI2YTQyMzNmMzQ2ZTMwZjEzYTUwMjM4YjRmYzM4OGY5YmQ2NWM1YzExNjI0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzBjMmM1ZDNmYzVkNmI4ZmNiMTYzMjU5NjU4NWYwODg4MThhNTZjNDgyYjNhMzY4YzZjYTViYTA1MTBmY2Y2YyJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L107-L123",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingCreator.java#L114-L130",
           "version": "repo-lines-v1:sha256:d6a65b43b26184cc6c184dc0d2f63f4f18b3a2877dcefcf9917b0e736f770802:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM5Y2JiYzY1NDY5ZGIxY2EyODQyZWZkOTdkZjdlZTJjZTZjYzE1NzE0ODJkMDFhMThiNzkwYTEwYzdjNTEwZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4MDg4M2RjYzQ1NWNiNGUwODk3NDkxNzMwZmVhYmQzOWM3MTRhYTRmYTUzZTc4MzA1YThkN2ViMWQyZjYxZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
@@ -163,11 +163,11 @@
       "statement": "The embedding cache name is derived by CacheManager.getCache(origin, parameters) as the concrete creator's simple name plus the model name (with colons replaced by double underscores), so each creator/model pair persists in its own cache file inside the manager's directory; CachedEmbeddingCreatorTest asserts the file lands in the injected manager's directory.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L202-L208",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L205-L211",
           "version": "repo-lines-v1:sha256:3460d518bfea30594fff0a3deaa5b414dbe4ba462fa5892aa40a6d396e133260:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDc3ZTVhODMzM2MyNTg5YzJlMDc0ZWY4OTJiYTFlY2M0ODkxMDIwMWI2YWI1ODhjY2M4MTQzYzYxMjM4NTYzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ0NWM5MDExZWY1YzA4Y2RlNDY5MDA3NmMxZmM5ZTg1MDlmM2M5NDljODQzOTY5ZTc3Yzk2MjE0YThiNmI2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE5YTgxYzcwNTc0YjdiZDBkMDU2ZGJkNzI4MDUyMzIwMTkxOGQwNmY4YTgwMDA0ODBjYmJhOWVlMWI2MTYwMSJ9"
         },
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java#L150-L158",
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java#L204-L212",
           "version": "repo-lines-v1:sha256:5655323615a2ebd96e5669f0b6f2cb13783791ecac9aa2183612848da7d15628:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGNmMDllYjBjNTc0NGZiOTczMzFiOThmZjNmYmYwNWE2MDJiYTNmN2Y2N2U1ZGE1YmU5MDk1MDMzZjYyNTgyNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzQzZjUxZjFjNjdmMTg3ZmQwZWNhZDZiNTczZjE5ODhkYWExODE0M2YwODQ0YTNjNmMyODc3OGY2NGY5MDYwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODdjYzg3OWE2NDllNGZlOWZhYWFjNmNmYzAxY2E0NWQxNDRmNTA0OGE4YmIyMGUwM2ZkM2U5MDVmNzExMjI1NCJ9"
         }
       ]
@@ -223,7 +223,7 @@
       "statement": "On any embed failure, CachedEmbeddingCreator.tryToFixWithLength first probes a cached fixed embedding under the key localKey + '_fixed_' + 8000, built through the deprecated EmbeddingCacheKey.ofRaw with the '(FIXED::8000): <content>' JSON content marker and read/written via the deprecated Cache.getViaInternalKey/putViaInternalKey methods — the sanctioned embedding use of the internal-key path kept for backwards compatibility with existing caches; a hit returns the truncated embedding without contacting the model.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java#L36-L59",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/Cache.java#L35-L58",
           "version": "repo-lines-v1:sha256:cb40c7b9387f02f84951002c17811b115f79f278942080d8bdc4683d5a7528e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkZDdlY2MwOGU2MmI0NWE1NGY5OGIwNDVhMDliNjRjMDE4ZWI0ZTJmMzZhZWY4YmE4NjFlYjBhNzRlNDUzNDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MWQ0NTZmYzM2MDZlYzY5MDVmZWE1MTc4MzhiODk3OGRkNmQ0ZmVjMmUwMmYxZDY0MDJhZmM3OTQ5NGVlMjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMDlmYjQzYjA5YjJiMGM0N2JmZjkyYmI3ZDQ4OTA3NzM1NjQzOTZhYTJmMDQ2Y2I1OTY0YWFjZGQwM2JiOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2MDk0OWZmZTdjOWQ3MzZhMzVmYWMwNDc1ZWU2NzY1ODcwMzU0OGJmYTczMWNiZWZhOWY3ZDBmMDViN2MyMWUifQ"
         },
         {
@@ -238,11 +238,11 @@
     },
     {
       "id": "claim_17bd99d5f5414552bc89b52a303cad3f",
-      "statement": "In tryToFixWithLength, failure attribution uses jtokkit: if the configured model name has no known encoding, or the full content counts fewer than MAX_TOKEN_LENGTH tokens, the original failure was not a token-length problem and the method throws IllegalArgumentException instead of returning an embedding.",
+      "statement": "In tryToFixWithLength, failure attribution uses jtokkit via findEncoding: if the configured model name has no known encoding — after provider-prefixed names are retried without the prefix before the last '/' — or the full content counts fewer than MAX_TOKEN_LENGTH tokens, the original failure was not a token-length problem and the method throws IllegalArgumentException instead of returning an embedding.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L224-L229",
-          "version": "repo-lines-v1:sha256:4c825d3318e4087c03c000a1b92e672566098542d8c0a9bac909bb73b8905dc3:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjNlNjgzMjQwNjZlMzkyNjQyZDE5MjFjZDA2YWI4ZGZhZDQ0NGEwM2ExMTBlMmQ2MGViZDlhODNiYjcyZTlmNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWIyMTczNWU2ZDMwZTJkODQwNDUzNGNjOGZhM2VkN2E5NjViOTM5YjRhNjk2MWQyYWM4NDE2YThhY2ExMGE3ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmIwZDMwMmM1YTRmMmIzMzVjM2I5ZTk2ODUwNDkyYTg4MDExYWFiZjczYmU1ZTZkOGUyZTNjNDNmMjMxODEwYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODM2NTFhZDI2ODQ4ODk4NWQzZWMzYjVkOWI4YWEzNzYzODY2Mzc3MmEwYTNhMjcyYWRiYzZlOTRmMGU3YTk3YSJ9"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java#L224-L245",
+          "version": "repo-lines-v1:sha256:05c20e3dabfcf4118b22827548d0ce38d4ac59ec8455fdc6b94e0506fd5484ef:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzZTY4MzI0MDY2ZTM5MjY0MmQxOTIxY2QwNmFiOGRmYWQ0NDRhMDNhMTEwZTJkNjBlYmQ5YTgzYmI3MmU5ZjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NGY1M2EyMWQ2MDcyMjMxNTA0ZTY0YmNmZTY0ZjEzNGRkOWY5YTkxZmJmZmM0NTc3YTg0NDYyNmU4NTlhNGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiMGQzMDJjNWE0ZjJiMzM1YzNiOWU5Njg1MDQ5MmE4ODAxMWFhYmY3M2JlNWU2ZDhlMmUzYzQzZjIzMTgxMGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhODMwNzU1NjY4ZGIyMjI3NjljOWUwZDIyOGUwNWVhYzgwOGNmYjE4ODQ2ZDdjNzNhZDI5MjBhYTlmNDFlMDkifQ"
         }
       ]
     },
@@ -262,27 +262,41 @@
     },
     {
       "id": "claim_7313daa208a44783a532bbec628eaeaa",
-      "statement": "CachedEmbeddingCreatorTest pins the creator contract through a recording subclass with a stubbed model: second calls hit the cache (one embed call total), results preserve input order, empty input triggers no model call, values persist across a flush-and-reload with zero further model calls, the parallel path forwards params to every per-thread model, the injected environment is visible during construction, and EmbeddingCreator.create fails fast on missing credentials while using the injected cache manager's settings (an unreachable REDIS configuration surfaces as a failure from create).",
+      "statement": "CachedEmbeddingCreatorTest pins the creator contract through a recording subclass with a stubbed model: second calls hit the cache (one embed call total), results preserve input order, empty input triggers no model call, values persist across a flush-and-reload with zero further model calls, the parallel path forwards params to every per-thread model, the injected environment is visible during construction, create fails fast on missing credentials (including BIFROST_API_KEY/BIFROST_URL) while using the injected cache manager's settings, a provider-prefixed oversized input is truncated and retried, and an unreachable REDIS configuration surfaces as a failure from create.",
       "evidence": [
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java#L53-L173",
-          "version": "repo-lines-v1:sha256:cebfa1b54ad9dc9ff294f63f8d168276810417c94e17c202ee8e1b7616c54f00:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0Y2YwOWViMGM1NzQ0ZmI5NzMzMWI5OGZmM2ZiZjA1YTYwMmJhM2Y3ZjY3ZTVkYTViZTkwOTUwMzNmNjI1ODI1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ODkzZjQwZTM3ODFlYjg5NmM4MmQwNDZhMDgwNjdhMTFlMzVjZGYyZjFkZmFmMjZmZWE5MGI4ZGI2Njc2NDEzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ODFmMjJmN2RiYWJiZjFkY2E5YjUzMmE2MmIwNGVlMTcxZDIxMDYwZDJkNzc3ODg4OWUzZDEyZGQ1N2VjYjQ1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3MGJlZWVkNDdiYThlNGQ1NjkzNDZiYzBhNjM4YmE5NWQxMjE0MTA1MzZjYmVkYTJmZWMxNTk4ZmViYzBiOTYzIn0"
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java#L53-L227",
+          "version": "repo-lines-v1:sha256:ae299f6ccba3a376bb901b4bc0cd4a1f5c972875790ba86498431059be130361:eyJzZWxlY3RlZExpbmVDb3VudCI6MTc1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0Y2YwOWViMGM1NzQ0ZmI5NzMzMWI5OGZmM2ZiZjA1YTYwMmJhM2Y3ZjY3ZTVkYTViZTkwOTUwMzNmNjI1ODI1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ODkzZjQwZTM3ODFlYjg5NmM4MmQwNDZhMDgwNjdhMTFlMzVjZGYyZjFkZmFmMjZmZWE5MGI4ZGI2Njc2NDEzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI3ODFmMjJmN2RiYWJiZjFkY2E5YjUzMmE2MmIwNGVlMTcxZDIxMDYwZDJkNzc3ODg4OWUzZDEyZGQ1N2VjYjQ1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3MGJlZWVkNDdiYThlNGQ1NjkzNDZiYzBhNjM4YmE5NWQxMjE0MTA1MzZjYmVkYTJmZWMxNTk4ZmViYzBiOTYzIn0"
         }
       ]
     },
     {
       "id": "claim_c6d7f755bfbc4346bb4fb8d24f79a952",
-      "statement": "EmbeddingConfigurationTest pins the configuration API: of() sets platform and model, builder validation requires a model name except for MOCK, the environment defaults to a new SystemEnvironment, onnx() carries both file paths, fromString is case-insensitive and rejects unknown names, the MOCK creator returns zero vectors, and an ONNX configuration without file paths fails create with a NullPointerException.",
+      "statement": "EmbeddingConfigurationTest pins the configuration API: of() sets platform and model, builder validation requires a model name except for MOCK, the environment defaults to a new SystemEnvironment, onnx() carries both file paths, fromString is case-insensitive (including BIFROST) and rejects unknown names, the MOCK creator returns zero vectors, and an ONNX configuration without file paths fails create with a NullPointerException.",
       "evidence": [
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java#L32-L90",
-          "version": "repo-lines-v1:sha256:b9fd9191aeb0c42ff6d7b41368609eb0d81c6ba299d11be68fb990712333dade:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4ZGIyMTU0MTg3Mjc3MDFlOWVhM2IyOGU0YzRmMjcxNzhmZjg4NzJmNGIzY2FlMzAwMGVmZTIwMTU1NjRmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java#L32-L91",
+          "version": "repo-lines-v1:sha256:15d028e3d57dacf86f2328032861e8ba6325e04e52bf1cd55518fc813bb0f2e3:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4ZGIyMTU0MTg3Mjc3MDFlOWVhM2IyOGU0YzRmMjcxNzhmZjg4NzJmNGIzY2FlMzAwMGVmZTIwMTU1NjRmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_602d44ce46eb4d9cb2fde77debb12616",
+      "statement": "BifrostEmbeddingCreator is a 40-thread creator for the Bifrost LLM gateway's OpenAI-compatible API: Bifrost.apiKey/Bifrost.baseUrl read BIFROST_API_KEY and BIFROST_URL via getenvNonNull (missing either fails fast with IllegalStateException), the virtual key is sent as the bearer token and in the x-bf-vk custom header, the OpenAI client builder gets a five-minute timeout, and model names are provider-prefixed such as openai/text-embedding-3-small.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java#L22-L55",
+          "version": "repo-lines-v1:sha256:cc54cf9088ac54cc32d3dbdab1e9270dee492e5891fabdd16d967a47f6c634e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlNGI0MGE4OTU1MGY3NWZhMDI2MjFkYmNlMDQ0NWE1NTM3MmJmODE2NjYwOTg4NzcxMmM1ODM5YmYyODI0ZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5YzdiMzY3NDU4YmFjOGFlZDk1OTAzMTMzY2ZjMDBhMzE5NTVkYjA3MDBkNWE3MzNiMzM3NjUxMDg2ZDY4ZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxNmU5NDUwOTI2OTIyZTc0N2EyNjQ2Mzc0NWNlMjVjNjc1YzE1MzI3YmUxN2MyZjNiNzc0ZGNmNjBhZjQxZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZmMDMzYTNiYTI0NDA5MTQ5YzgzNDMwNGYwOTMyZjc1NTc1MDNmZmQ0YjNjMWQzZGM3NTI3YjFhMTExY2UzMTkifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java#L14-L57",
+          "version": "repo-lines-v1:sha256:a16a0e92125e1c50e1f19fb6eb102898e92044d2e40e7208e1a9a17a474950f9:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2NDczMjE5MWU3ZDg3OWMyNzI4NDE3MjI2ZjUwODBkODA0Y2E3NjljYTJmODEyMWQ1ZGYzNmNjZjUwYTVhNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-13T13:30:47.057Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-16T14:46:55.207Z"
   }
 }

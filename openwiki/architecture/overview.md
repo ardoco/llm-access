@@ -28,8 +28,8 @@ openwiki:
     - createChatModel fails fast on missing credentials but constructs the platform client lazily via LazyChatModel.
   validation_commands: ["mvn verify"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
   - id: openwiki-source-2355f81d7cf522f8dbdaabd4
     resource: repo://pom.xml
@@ -43,10 +43,16 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/chat/ChatCacheParameter.java
   - id: openwiki-source-277faa567866b847ad915298
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/embedding/EmbeddingCacheKey.java
+  - id: openwiki-source-3271c6eda3989c506bd0f1f0
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisAdapter.java
   - id: openwiki-source-9c0be2a8e438a2a14ff8210b
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-1b5f9de2685a5c30b15a20e4
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisAdapter.java
   - id: openwiki-source-406400bb0fa6384c6e01eaf2
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
+  - id: openwiki-source-40c4513abd4e4ec4b3783b4a
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/UnifiedRedisClient.java
   - id: openwiki-source-85b58b8b1c96d35aae37196c
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java
   - id: openwiki-source-cc5a2b50d20e43f17b5eed14
@@ -55,6 +61,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LazyChatModel.java
   - id: openwiki-source-fac3ed967ea0ee2556a0e7eb
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/LlmConfiguration.java
+  - id: openwiki-source-acfc0031619891f89bff6e82
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/BifrostEmbeddingCreator.java
   - id: openwiki-source-99c1b1a119adf90d8c3c650f
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreator.java
   - id: openwiki-source-d750b4fe48944bf1f4e1e0d7
@@ -65,10 +73,13 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/MockEmbeddingCreator.java
   - id: openwiki-source-bbadcb97ac85a13457f94d29
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/embedding/OpenAiEmbeddingCreator.java
+  - id: openwiki-source-74ec3f5f99ed6a20eea5c444
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/Bifrost.java
   - id: openwiki-source-4b6b4f64ed3940f2c842548e
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/ChatModelProviderTest.java
   - id: openwiki-source-6657b8392fc18b157b18e55c
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Architecture Overview
@@ -84,8 +95,8 @@ change areas to the dedicated pages; this page is the map of how the parts fit t
 
 | Subsystem | Package(s) | Core types | Depends on |
 | --- | --- | --- | --- |
-| util | `...llm.util` | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `KeyGenerator`, `Futures` | nothing internal (dotenv-java, slf4j) |
-| cache | `...llm.cache` (+ `cache.chat`, `cache.embedding`) | `Cache`, `CacheKey`, `CacheParameter`, `CacheType`, `CacheManager`, `HierarchicalCache`, `LocalCache`, `RedisCache`, `RestRedisCache` | util (`EnvironmentProvider`) |
+| util | `...llm.util` | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `Bifrost`, `KeyGenerator`, `Futures` | nothing internal (dotenv-java, slf4j) |
+| cache | `...llm.cache` (+ `cache.chat`, `cache.embedding`) | `Cache`, `CacheKey`, `CacheParameter`, `CacheType`, `CacheManager`, `HierarchicalCache`, `LocalCache`, `RedisCache`, `RestRedisCache`, `UnifiedRedisClient`, `RedisAdapter`, `RestRedisAdapter` | util (`EnvironmentProvider`) |
 | chat | `...llm.chat` | `ChatModelProvider`, `LlmConfiguration`, `ChatModelPlatform`, `LazyChatModel`, `CachingChatModel`, `ChatModelUtils` | cache (typed chat keys and parameters), util |
 | embedding | `...llm.embedding` | `EmbeddingCreator`, `EmbeddingConfiguration`, `EmbeddingPlatform`, `CachedEmbeddingCreator` and platform creators | cache (`CacheManager`), util |
 
@@ -97,16 +108,21 @@ Two rules hold across the whole map:
    embedding creator receives a `CacheManager` and stores embeddings in a
    `Cache<EmbeddingCacheKey>` obtained from it. The cache backends in turn read connection settings
    from the `EnvironmentProvider` the manager carries — `REDIS_URL` for direct Redis,
-   `REST_REDIS_URI` (plus optional `REST_REDIS_USERNAME`/`REST_REDIS_PASSWORD`) for REST-Redis.
-   The util layer depends on nothing internal; it is the base of the stack.
+   `REST_REDIS_URI` (plus optional `REST_REDIS_USERNAME`/`REST_REDIS_PASSWORD`) for REST-Redis —
+   and both Redis flavors operate through the `UnifiedRedisClient` seam: `RedisCache` talks to a
+   `RedisAdapter` over a Jedis client, while `RestRedisCache` (a subclass of `RedisCache`) talks to
+   a `RestRedisAdapter` over the org.fuchss rest-redis client. The util layer depends on nothing
+   internal; it is the base of the stack.
 2. **Nothing depends on an application-specific configuration object.** Model settings travel as
    the framework-neutral records `LlmConfiguration` and `EmbeddingConfiguration` (plus, for
    caching, a `CacheManager`). Platform endpoints are either read from the environment
    (`OLLAMA_HOST`, `OPENWEBUI_URL`) or hardcoded per platform
    (`https://api.helmholtz-blablador.fz-juelich.de/v1` for Blablador,
-   `https://api.deepseek.com/v1` for DeepSeek) inside `ChatModelProvider`. This neutrality is the
-   deliberate replacement for the coupling LiSSA originally required, and it is what lets LiSSA,
-   ardoco, and other tools share one implementation.
+   `https://api.deepseek.com/v1` for DeepSeek) inside `ChatModelProvider`; the Bifrost gateway's
+   URL and virtual key come from the util-layer `Bifrost` helper (`BIFROST_URL`,
+   `BIFROST_API_KEY`). This neutrality is the deliberate replacement for the coupling LiSSA
+   originally required, and it is what lets LiSSA, ardoco, and other tools share one
+   implementation.
 
 ## Subsystem flow
 
@@ -144,6 +160,9 @@ flowchart TD
         LOCAL["LocalCache"]
         RC["RedisCache"]
         RRC["RestRedisCache"]
+        URI["UnifiedRedisClient"]
+        RJA["RedisAdapter"]
+        RRA["RestRedisAdapter"]
     end
 
     APP --> LLM
@@ -170,12 +189,19 @@ flowchart TD
 
     RC -- "reads REDIS_URL from" --> ENV
     RRC -- "reads REST_REDIS_URI from" --> ENV
+
+    RC -- "operates through" --> RJA
+    RRC -- "operates through" --> RRA
+    RJA -- "implements" --> URI
+    RRA -- "implements" --> URI
 ```
 
 *Configuration records carry an `EnvironmentProvider`; providers and creators build the LangChain4j
 models; `CachingChatModel` and `CachedEmbeddingCreator` obtain their `Cache` instances from a
-`CacheManager`, which creates the concrete backends (folding multiple ones into `HierarchicalCache`)
-and whose backends read connection settings from the manager's environment.*
+`CacheManager`, which creates the concrete backends (folding multiple ones into `HierarchicalCache`).
+Both Redis backends operate through `UnifiedRedisClient` adapters — `RedisAdapter` over Jedis for
+`RedisCache`, `RestRedisAdapter` over the org.fuchss rest-redis client for `RestRedisCache` — and
+read their connection settings from the manager's environment.*
 
 ## Public API surface
 
@@ -184,7 +210,7 @@ The library's entry points are deliberately small:
 - **Chat** — build an `LlmConfiguration` (`of(platform, modelName)` or the builder; defaults
   `DEFAULT_SEED = 133742243`, `DEFAULT_TEMPERATURE = 0.0`), then
   `new ChatModelProvider(config).createChatModel()` for platforms `OPENAI`, `OLLAMA`,
-  `BLABLADOR`, `DEEPSEEK`, or `OPENWEBUI`. Wrap the result in
+  `BLABLADOR`, `DEEPSEEK`, `OPENWEBUI`, or `BIFROST`. Wrap the result in
   `new CachingChatModel(model, cache)` for transparent caching, or use `ChatModelUtils` for
   single (`cachedRequest`) and n-fold (`nCachedRequest`) requests. `provider.cacheParameters()`
   yields the `ChatCacheParameter` used to obtain a matching cache from a `CacheManager`
@@ -193,12 +219,14 @@ The library's entry points are deliberately small:
 - **Embeddings** — build an `EmbeddingConfiguration` (`of(platform, modelName)` or
   `onnx(model, pathToModel, pathToTokenizer)`), then
   `EmbeddingCreator.create(configuration[, cacheManager])` for platforms `OLLAMA`, `OPENAI`,
-  `ONNX`, `OPENWEBUI`, or `MOCK` (see [Embeddings](../embeddings/embeddings.md)).
+  `ONNX`, `OPENWEBUI`, `BIFROST`, or `MOCK` (see [Embeddings](../embeddings/embeddings.md)).
 - **Cache** — either `CacheManager.setCacheDir(dir[, environment])` followed by
   `CacheManager.getDefaultInstance()`, or a standalone `new CacheManager(path[, environment])`.
   `getCache(origin, parameters)` hands out memoized `Cache` instances; `flush()` persists all of
   them (see [Cache Hierarchy and Manager](../cache/cache-hierarchy.md) and
-  [Cache Core](../cache/cache-core.md)).
+  [Cache Core](../cache/cache-core.md)). The package-private `resetDefaultInstance()` exists purely
+  for test isolation (it flushes and clears the default instance so tests start clean); library
+  consumers still rely on `setCacheDir`/`getDefaultInstance`.
 - **Environment** — an `EnvironmentProvider` implementation passed to the configurations and the
   manager: `SystemEnvironment` (system variables with a lazy `.env` fallback) or `MapEnvironment`
   (immutable in-memory map for tests and programmatic setups)
@@ -222,7 +250,7 @@ Two mechanics make this practical:
   on a hit without contacting the delegate, and flushes immediately after each newly computed
   response so file-backed caches persist incrementally.
 - `CachedEmbeddingCreator` caches each embedding under a content-derived key, parallelizes batches
-  (per-platform thread counts; OpenAI uses 40), and recovers from over-long inputs by
+  (per-platform thread counts; OpenAI and Bifrost use 40), and recovers from over-long inputs by
   jtokkit-driven truncation to `MAX_TOKEN_LENGTH` (8000), cached under a separate `_fixed_` key.
 
 The `LOCAL` backend is what makes the results portable: its files are self-contained, and their
@@ -257,24 +285,24 @@ one (see [Environment and Configuration](../concepts/environment-provider.md)).
 
 ## Toolchain
 
-- **Build**: Java 21 on the `io.github.ardoco:parent` 2.1.0 parent POM; the artifact is
-  `io.github.ardoco:llm-access` (`0.2.1-SNAPSHOT`). CI runs `mvn verify` via the shared ardoco
+- **Build**: Java 21 on the `io.github.ardoco:parent` `2.2.0-SNAPSHOT` parent POM; the artifact is
+  `io.github.ardoco:llm-access` (`0.2.2-SNAPSHOT`). CI runs `mvn verify` via the shared ardoco
   workflow; `mvn spotless:apply` gates formatting.
-- **Model access**: LangChain4j `1.22.0` imported as a BOM — `langchain4j-core`, `langchain4j`,
+- **Model access**: LangChain4j `1.23.0` imported as a BOM — `langchain4j-core`, `langchain4j`,
   `langchain4j-embeddings`, `langchain4j-ollama`, and `langchain4j-open-ai` (used for OpenAI,
-  Blablador, DeepSeek, and Open WebUI endpoints).
+  Blablador, DeepSeek, Open WebUI, and Bifrost endpoints).
 - **Caching support**: `jtokkit` `1.1.0` (token counting for the long-text fallback),
-  `org.fuchss:rest-redis` `0.1.5` (REST-Redis client), Jackson (cache serialization).
+  `org.fuchss:rest-redis` `0.1.7` (REST-Redis client), Jackson (cache serialization).
 - **Environment**: `dotenv-java` `3.2.0` (the `.env` support inside `SystemEnvironment`), slf4j
   for logging.
 - **Testing**: Testcontainers (`2.0.5` BOM, test scope) for the Docker-gated REST-Redis
-  integration test, plus ArchUnit for the architecture rules above
+  integration test, plus ArchUnit `1.5.1` for the architecture rules above
   (see [Testing Strategy](../testing/strategy.md)).
-- **Release plumbing**: `flatten-maven-plugin` is pinned to `1.7.3` because the ardoco parent
-  references it without a version and Maven would otherwise resolve `1.8.0`, which has an NPE
-  regression in its CI-friendly interpolator. The `central-publishing-maven-plugin` overrides the
-  parent's `deploymentName` to `ardoco-llm-access` (with `autoPublish` and `waitUntil published`)
-  so the bundle is named distinctly in the Central Publisher Portal.
+- **Release plumbing**: `flatten-maven-plugin` is pinned to `1.9.0` because the ardoco parent
+  references the plugin without a version and `1.8.0` has an NPE regression in its CI-friendly
+  interpolator. The `central-publishing-maven-plugin` overrides the parent's `deploymentName` to
+  `ardoco-llm-access` (with `autoPublish` and `waitUntil published`) so the bundle is named
+  distinctly in the Central Publisher Portal.
 
 ## Where to read next
 

@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:0db583dcf295445229b625c592dde8c6d36eb91f4688435007515e1fed71e80f",
+  "pageVersion": "sha256:88e0618971fd9be6fbca2bca4b2c3a0d5d1701e82d9188374a75b8820f402abc",
   "claims": [
     {
       "id": "claim_1ab7c570d759475992727836a5d6aa47",
       "statement": "RedisCache connects eagerly when the cache is constructed: it reads REDIS_URL from the manager's environment (unset or blank falls back to redis://localhost:6379) and pings through a Jedis-backed adapter. An unreachable server surfaces as the client's JedisConnectionException, and a server whose PING does not answer PONG causes the client to be closed and an IllegalStateException (\"Could not connect to Redis. Make sure the container is up and running.\") to be thrown — there is no silent fallback to another backend.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L78-L91",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L77-L90",
           "version": "repo-lines-v1:sha256:095f7d9fbbc80c76d2ce1c89f0ac4a747616c2a01e7353a2d77109a70dffa93c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE0Yzk4ZDdiNGZlMzRlMzg2NzkxM2I4ODUxZmQzOGE0M2YxYTI3ODNjZDM0MDUxZDNjMzdjMTFkY2ExN2Y2ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkNjcyYWIzYzkzZTI5MmM4ZGJhZWI2YTg3N2RkNGIxMWJhZTUzMTIyZDcwMDk1YTdjMjI4ZjkzNjIwOGQzNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlZGNkMDRlNjNkNWRjMmJhNTlkYTNlZGI4NGRhZDM4YjVjM2EyMzM1NTg5MGJjNGY3MzFjOTlkOWU1NWRhNDEifQ"
         },
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java#L131-L141",
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java#L165-L175",
           "version": "repo-lines-v1:sha256:63b1c7b71c131c743a173316446177be7da55e0ed69dbeb00b9bf0e055562338:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjOGQ2MzNiOTQwZjc2ZjZjYTk0MzM2M2ZlNzkwMjI0Nzc5N2EwZDI2NWMxZGJmNWFjODQxOTczN2I3NGVkZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkMTYzYTRmOTc3NjcxZWU5NDhjOGJkY2Y2ODdjNmM3NWQ2NTdjYjZiZmNiZmU0ZGFhYzkyMWQ2MDJlMmUwNGQifQ"
         }
       ]
@@ -21,15 +21,15 @@
       "statement": "RestRedisCache extends RedisCache and overrides only the connection setup (injected via RedisCache's protected constructor that accepts an already-connected UnifiedRedisClient); all storage behavior — Redis hashes keyed by the JSON form of the cache key with data and timestamp fields, and a no-op flush — is inherited, so both Redis transports store entries identically.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L122-L128",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L121-L127",
           "version": "repo-lines-v1:sha256:06221cc6010b9c5d512d41852ed7faf486158d748fea85fa49ad715c548cfffb:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzE5NjVjZTNjY2EzMTcwOGQ0MGViZmQ2NjczYmI1ZGM5ZjY1MTViZDc2MmE4ODBhODk2YTU2N2U1NjNmN2UxYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjYwOTQ5ZmZlN2M5ZDczNmEzNWZhYzA0NzVlZTY3NjU4NzAzNTQ4YmZhNzMxY2JlZmE5ZjdkMGYwNWI3YzIxZSJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L53-L57",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L52-L56",
           "version": "repo-lines-v1:sha256:86af536cc3e0049307718076d201af3488ee010fd35a9c01563ff91debef8176:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhlZjVkNTlkOGZkZDA1NjQyNjljYzMyYzFlYmY2NzdiZWJlNTg0MmIzMjY0MmE2NGRkYTMyMWRhMjZlZTJiZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzJkNzg5ZjUxMzhhMDNhY2VjN2U2N2RjZWIzYjhmOGU3YTJmM2Q0MDZjNmIxY2U2ZTA3ZWQ2ODA4NzFiYTJkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODJmODFmZTc5MzA0MWRjNjM3NThlMTBkNDNhZmIxM2E4M2E3ZjgxYzJmN2NlNGQzNjI1OTBlMTljMTY5NmM3ZSJ9"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L16-L29",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L15-L28",
           "version": "repo-lines-v1:sha256:93647afceee95f5578c60c39509ed55f3d39a38dd35c5f96d270cb7ba2a617e7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyNGVmZDk5ZjcxZGE5ZDgzYTRkMmU5Y2FiYmNhODlhOGVjMzExMzFkNzUzZGJmYWVmMjg2YTljZTNhNTEyMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc5ZmFiNGYwMjViOGQ4MmRmYmViYTdlZDJjOTI2NzczMDY3ZjRlNTdhMmIzNjliZjdiYTU5YjhkNDk3OWFhODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiODFiMTgyMzAxZTcxNzcxNzg4MjM4Y2U4YWEzMWVkZTM1OTE2YWI4MjMxOGZiYzNlNzI0NjgwM2RlYjZmNDQifQ"
         }
       ]
@@ -39,38 +39,34 @@
       "statement": "RestRedisCache reads REST_REDIS_URI (default http://localhost:8080) plus optional REST_REDIS_USERNAME and REST_REDIS_PASSWORD — blank values are treated as unset and the credentials are sent as HTTP Basic auth only when set — and applies the same fail-fast contract as RedisCache: a failed PING closes the client and throws IllegalStateException (\"Could not connect to Redis at <uri>\").",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L43-L68",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L42-L67",
           "version": "repo-lines-v1:sha256:1d1fd2aac1ffce78f4c4cdc239d43f3cb7a9fa84151e62fa58f822449402e98f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlMTBiZmE4Mzg2ZTcwOTY5OGQ0N2Y1NTkwNzVhZjY0OTU3NTI0MjA3OGY3MWZjNjNlN2JjMDY2M2ZkYTBkNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZkYTY2Njk0Yzc4YzZhNDIzNWY3NTY3MDllN2I4ZDhiYWVkMjIyODY4ZTk4NTAxNzUxZjcwOWJkODk5NjlhOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
         }
       ]
     },
     {
       "id": "claim_cb0d43fcca394f7387e9e55b5e4e30e6",
-      "statement": "All cache configuration is read from the CacheManager's EnvironmentProvider at two distinct times: CACHE_HIERARCHY (default LOCAL) and CACHE_REPLACEMENT_STRATEGY (default NONE) are read once at construction, while the Redis connection settings are read when a cache is first requested via getCache — a manager configured for REDIS performs no network I/O until that first call. The cache directory is not an environment variable: it is set in code via CacheManager.setCacheDir (null selects the default \"cache\" directory, which is created if missing), and getDefaultInstance throws IllegalStateException until setCacheDir has been called.",
+      "statement": "All cache configuration is read from the CacheManager's EnvironmentProvider at two distinct times: CACHE_HIERARCHY (default LOCAL) and CACHE_REPLACEMENT_STRATEGY (default NONE) are read once at construction, while the Redis connection settings are read when a cache is first requested via getCache — a manager configured for REDIS performs no network I/O until that first call. The cache directory is not an environment variable: it is set in code via CacheManager.setCacheDir (null selects the default cache directory, which is created if missing), and getDefaultInstance throws IllegalStateException until setCacheDir has been called.",
       "evidence": [
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L146-L148",
-          "version": "repo-lines-v1:sha256:9c0e3ae5e609505e71cda669084e72095840e800387fd06be10ed336e0f4519a:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmFmNzE4YWY0NzAxNjFiMjA4YjM0YTY5OTg2OTM4MjBmN2ZjYmFlYTJkMzMzN2U3OGVjYjllODU0ZjM2ZGIzZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTEwZDg2NGI5MzU1NjAxMTQyZWMyYmYxOTU4Mzg2NTM3MjJhNjkwOWJmNDdiOWIwMGYzMmY2NDNlYmNiNTE3OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGI5ZGQxYmM1ZmVkMGM2N2VjNmQ5ZDQyODA5NTcwM2RiOTAyNTEzMzBhN2VlMGY1Mjc2MWQ4Yjg3NWJmNWZlMiJ9"
+          "version": "repo-lines-v1:sha256:3bac875fba9eab985e08128e939b354d94ada3bae9accb866d076ac8e8c4026b:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGJkOTE5NDk3NTIwMDViNzA2ODdmMmZhNDc4NWZhMmZjNmJhMWY3ZjQ3NjUxOWM0NmVmMGVjMTk0Mzg2NzgxMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmFmNzE4YWY0NzAxNjFiMjA4YjM0YTY5OTg2OTM4MjBmN2ZjYmFlYTJkMzMzN2U3OGVjYjllODU0ZjM2ZGIzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWRjMTI1ZDVjMjRkOTM2MzUyYjQzOWIyOTRiMDk0ZjJlZDY5YjE0MDMwYjIzNzc4Nzc5YWMzZWQ5YTcwMzE5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmVhNjc5YjhjMWJlYWM3MGY1NzJlNjY2ZDVhYWVjY2U0MmEzNmRlZDAwMjdhYzFlODlkMzgwMDFkMDE4MTY2NCJ9"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L186-L190",
-          "version": "repo-lines-v1:sha256:113bbc227f2e0a4d1782ca9f34de435d80a36316d4a49a65f9ef51e9bc169170:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2M1ODZmZjEwMjkwYWZjNGFlNDdiZDFjOTg1M2M5MTA2ZDRmMWU2ODRjMTFkN2I1ZjA0ZGNhNjk2YmM3ODI2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTE1OTcxOTcxYzEzNTg2MDNmZDI2YTQyMzNmMzQ2ZTMwZjEzYTUwMjM4YjRmYzM4OGY5YmQ2NWM1YzExNjI0YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzBjMmM1ZDNmYzVkNmI4ZmNiMTYzMjU5NjU4NWYwODg4MThhNTZjNDgyYjNhMzY4YzZjYTViYTA1MTBmY2Y2YyJ9"
-        },
-        {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L245-L253",
-          "version": "repo-lines-v1:sha256:3fe3aa47118f2dbbfe8e91c0bc0688968f2ac5bd0ae55dbc28bcf3ed88955938:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQyZjFlODE0YTVjNjcyNDQwODdkYWE3ZDk0NDE2MzMwMDJiNDE4NTA3MmI5YjdhMGJhNWMxMzFiZDdlMTIzYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTZiMDQ0OTE0Njk3MjJlODM2M2E5NGU0MDQ0NTM4ZTAxM2EyYTIxN2UzNmIxZTU2OGJhNjBhY2I3YjRjOGYyZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTg3ZDU5NzBlNTY0YjgyMzU1NDZhMDlhYzdjMTY3OTU0OGRjMGYxODM4YjE4OWM5NDEyZjljYTQ4OTY0NDg5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDY0NTE2NjA1Y2ZiMTY5OTRlY2ZkM2U3MTE0OGY4NTg3YTNkNjczMTZiNGViZjc3OGZlMGE4MmYzYmFlYWM0MCJ9"
+          "version": "repo-lines-v1:sha256:2d1a94b0bbb52cf3b6d490c2eade0eeb5cbb443680f847be88a662b8df6dc8dd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmIxZWIzNjllNjRhNjJhZTYzYzI3ZTY0NGM3MTBmZjg3MDRiMjdhMzA2OTVkM2UxYmYxN2U4ZTVmNzYzNzA1NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjFjNmI5MDQ0MTM2NzcyN2I1YjczNDdjNWU2NjU3MzA3YWI4NGQ1YmZmMTYxOTMzOTZjMjNkYzY2M2NhMTE0MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjAzMDUxZDJiM2NmNjdiNmY3ZDI1MzM0ZjhkZjE4OWNhZTUyYTg0NDRhNTQ0YWNmMzliZjUxODRiZDNkNjYxOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDkxYjFmZDczNjAwM2ExZDVmOWZlYzBlOWZiYzUwNWRiMmFkZTgwMzVjYmJjNjVjNjgwZTMyNGY5NzFkM2M4ZSJ9"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L65-L80",
-          "version": "repo-lines-v1:sha256:d297a8ba1033cedeec4a8d72aac6c8f7be00a73a48a7bd53947c64df7f2ba656:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlOWUwMDNkYzNhOWE1M2I2MjIwMmQ1MzEzYjNhY2VlZWYwZTMxYWNmODEyMGE2YzYxNTQxMWI4OGY0ODQ4NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2NDFmNTg2OGRkNzg2NTI0OGYwYzc1OWY3NGJkYWM0Y2U4MTA1MDQ1NTA1NzAzOTUyYjYzNjVlY2ViNGMxNTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0YTczN2MyZjIxNzUwMDVlZTFmZmYyYjZhNmE0ZTlkY2I0MWQyNTg5ZDEzNjdkY2ZkMzdkMzgyNDk2NGEyYzUifQ"
+          "version": "repo-lines-v1:sha256:1409c5d9820c52e81ff36712b98c54494f4a068bbff47009e6109d320f1b8d2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczOTY0ZDQ0YzEwMDNiMzBiZThkYzkxODFiZjRiMWZmNDk3OWZmMWM5ZGVlYWRjMWYzMGUyMzAwODAwODJiNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4M2UwZWE1NGVkYTJmNGZkNTM2MzM3NmYwZDU4M2ZmZDQ2MTNlNGEyYTM2Y2QxNTAxMTQ0YTFmNDMzMTczMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlZjEwODQwNGYzZjViZDU0ZmFhODFhYTY4ZGEzYWY3YmE1MWY4ZDY0MTNhN2UxYmJmZGEwMjhlYmE0Yzc0YjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwOWYxZGMzMmE3Y2FlZDk4MDcwNjc2N2RlMzE2MjA0M2NkY2Y1OTU5NzQwNmU3ZjFmZjMzOWEzOGRjMjA4MjMifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L94-L120",
-          "version": "repo-lines-v1:sha256:71967fcfbc6841be7f570de59026878f11a8d78eab70942d030016401f3d4ddd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmZGU5ODU1NjU1ODM5YWQ3NjM4NGJhOTI2MWFmYmM4MDhlOWI0ZmE1NDA1ZjViYThiNzZkNTA3MDEwNzM5YTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjZDg5YjJjZDQ0OTFjMjE4OGVlNTE0NjhjMGNiYWI2YmVhMjE0Y2RmZmExMjRmYWM0NmFmZTdlMWRjNGEyN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4NTQ1NzZjYmU3NTY1OWUzYWFlMjY0YjQzYzEzMmJhYzBmNmEyZWJjY2Q2ZWU5ZWQ4MTlhMDk3N2EzODIzYTEifQ"
+          "version": "repo-lines-v1:sha256:a15ad6560ed52711cbf4d5c262cdccab589ca0c5b03c36b890ab0793d899216b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNWExMTcwZjY0NjI2ZDhkYjAwYzYzOGRjMzkwYzlmODk5ZTQ0YzY0M2UyNWUzZWM2NTFlN2YwOTgyM2MzZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjMmRkNTg3YTZiM2I2MWI0OWNjYThhZDYyMzdkNGE0NWI5M2M2MTI4YzdhM2JlZDQ0Mjk5ZDE1Y2FiYzIwMTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkY2UyODRjMzllNmJjMzYyZDQ4MjcxOTEzNjQ0MDlmODY4M2UxZTA2OTQzODU1ZTZiN2QwNDEyMWZhNWY1M2QifQ"
         },
         {
           "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java#L131-L141",
-          "version": "repo-lines-v1:sha256:63b1c7b71c131c743a173316446177be7da55e0ed69dbeb00b9bf0e055562338:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJjOGQ2MzNiOTQwZjc2ZjZjYTk0MzM2M2ZlNzkwMjI0Nzc5N2EwZDI2NWMxZGJmNWFjODQxOTczN2I3NGVkZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBkMTYzYTRmOTc3NjcxZWU5NDhjOGJkY2Y2ODdjNmM3NWQ2NTdjYjZiZmNiZmU0ZGFhYzkyMWQ2MDJlMmUwNGQifQ"
+          "version": "repo-lines-v1:sha256:3e0b49c330a9b5cd684148cb027413ae1aa96e739707fda695a058626567326c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczZWU1N2YwYmYzYWUzMzNmZDE0MjVlYTMyYTFjZThlMmQ1ZDczZjhkOWRmZWU1Njc0NmZmYzA0MTJiYTVmZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3MGNlN2NkNzQyMjZlMDdlMTcyYjQ2MTQ3NmFhMGFiNDJjYTQ0ODAwYmU5MjcwNTIxMzQ3MjBlZjE4YmNlNjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2MWRmNDNhNzdjY2U5NDA0YzdhMDVjMTExM2NhZDA1OTk3MjQ4NDZjZWE2ZDAxNGY1NTIwYzg5YmUxZDRhMTAifQ"
         }
       ]
     },
@@ -79,7 +75,7 @@
       "statement": "CACHE_HIERARCHY is a comma-separated, case-insensitive list of cache types ordered primary first; in a layered hierarchy every put is write-through to all layers, every get consults all layers and backfills a value present in one layer into the layer that lacks it (in either direction), and under the default NONE conflict strategy the primary (first-listed) layer's value wins when two layers disagree.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L271-L288",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L273-L290",
           "version": "repo-lines-v1:sha256:002a238a316362601c93881069b4c16327ac8999c1cec259395f87e47b83884b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZmVjMDgyNGE0MTQwM2EwOWNkMTYzNWY4ZTBjYTc1M2EzYjNkZjFhNTZhNGRkYzlkN2I0ZWRiN2VkMGFjMzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNkOWI5ODVhZTZjZGM3Mjk4OGI0OGZlMzcyODc3MjJiODk0MjMxZTllYWFmOTA4NjFmMmRjMWI5ZGY1OGRlMjgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwYzcyM2U3MzFhNzFhMjgzOTM1YjE0Yzk4OGIyODg1ZjQ4MjI1MTIwOGVhYjUzMzlhMjM4NDZjZDY4ZDM1NzgifQ"
         },
         {
@@ -98,19 +94,19 @@
       "evidence": [
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L294-L298",
-          "version": "repo-lines-v1:sha256:16c5918286a8d49303674f2f8757af63f44b5fe5ea0cf3d6d6fa478b8448f6ae:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4ODQ0NTE1MDIyNDMwOGFiZjA4MDM1OGJkMzAwM2FkNDJmM2U4MjI2MTZjNWYwZGUyZGJkNzM4NDViNGE3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjczYmYxZGEyNzVhNjk2YmEyYTQxMzNkOGMxMTllNDdkNTYzYWE5MmJmMDFiY2NmODQwODU5MGU5OTFiMjNjNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTRlZThlOWRkYWQyZTg4NGFiZjc3NTQ1MWU1YThjZmE2ZDYwYmExNWJhMjRjYTBmYTE5Y2YzZmZiMDc0YjNhNyJ9"
+          "version": "repo-lines-v1:sha256:04c60936a85e1ff541f19c1c70c61f3a9c60684383c40b9c09ff518e825a2214:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGI1N2I1YWQzOGU5NzU4MDk0NzI0NTk3NTZlMTE3NTA3NzdlMThmOWFhYTk2NWYzYTNhMGI3NWViYTI3ZWQwZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTgwZWUyMTZkNTVhOTdlZDFjMjYxOGVkMDhkN2IzMjYyNWFjNzNmNWQzZmVlNWJkNDgyNjM1NTI3MDRmODYxYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTBjNzIzZTczMWE3MWEyODM5MzViMTRjOTg4YjI4ODVmNDgyMjUxMjA4ZWFiNTMzOWEyMzg0NmNkNjhkMzU3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTk5YmRlZmVlYWNhNjM0MGUwMjkwZGM4NmU4ODljODlkNWUxODlhYTViYTQ0YjU4NWIzYjcwNzM0ZjRhNjJkOCJ9"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java#L107-L121",
-          "version": "repo-lines-v1:sha256:b26d3f16c2149d91872d78a45179c73993e54a2bb052b8f9627a059f1fe3313c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlOTM3ZTI4NTFkZTQ2YWYzYzExYWU5YTliMGUzZjJiMzBjNjRkYzA1ODI0NzQ3ZGFlZWRkMGYzOGQzZmNhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0OGExYTk3NGYwNmQ2MzRhNmM0NzM5NjgwY2E0ODA1ZmRiODA4OWIxZmE1ZTQzMjNlZDFjM2U3N2I1ZTcxMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3NDU3MTdhNDA3NzEyNWE3ODQ5MmUzNjUwZTNjMzg4MDU1ODE4NjkwYTVmOTNmOTNhOTdlYTRlYjgyNDMzMWIifQ"
+          "version": "repo-lines-v1:sha256:9a223822bd2e411153a1e389e256ad4bff23330cdecc1ce6555f80e754a268be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlOTM3ZTI4NTFkZTQ2YWYzYzExYWU5YTliMGUzZjJiMzBjNjRkYzA1ODI0NzQ3ZGFlZWRkMGYzOGQzZmNhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0OGExYTk3NGYwNmQ2MzRhNmM0NzM5NjgwY2E0ODA1ZmRiODA4OWIxZmE1ZTQzMjNlZDFjM2U3N2I1ZTcxMzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3NDU3MTdhNDA3NzEyNWE3ODQ5MmUzNjUwZTNjMzg4MDU1ODE4NjkwYTVmOTNmOTNhOTdlYTRlYjgyNDMzMWIifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java#L161-L176",
-          "version": "repo-lines-v1:sha256:490f7a6d2232caacc17ba56356ef1e58402f3d2c7d682c7a32ebdf4e6400d60d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4M2VmYWYwYzBjNTYzODMwMjVhNjA5MjE2OWIyZGZiZTU4MjgwZmIyN2Q0NmYxY2FkMzA2M2ZjNjYxMzAyNmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2OTI0ZWU5NmQzNGVmNDc5YzUxM2E4NWM2NDQxOTM5OWVlMTE2ZTYyN2I5ZGY1YjdkNDAwYzBlMjg4NzExMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlNTQwN2Y0MDE2NjgxMGIzNmQ1MmI4ZGQyNTI2NTBkNTUzOTNhYjdmZTE2Yzg5YWI1ZWIzZjA2MGNjYWVjNWIifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/LocalCache.java#L151-L174",
+          "version": "repo-lines-v1:sha256:6e103c6e4dd7847a453604b83c1a5bde80f2a46f3b1cc3f0f1fae95d91652aa7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwZjkwMWIwNTFmZThlZjg1OGIxYjgxYjJkM2U3MzMyYzg4ZjhkOWJjYjAzMGFkYTk5OWU4ODk5MTczODE4YjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3OTJiNzAzMDUyOWI0NmQyYTI2NWIwNTc1YjI2MGJlYmNiYTRkMzg3MDlhNjUzYmY5ZTdlNDA5ZTg1MDQ3MTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVlMmI5ZTIxZmRjODZmYzJjMmVlNDQ3MjE4NWQ2NzY0NjdiZGQxY2JmMmUyNGI0ZGM2NDRhYjFhYmIzMzI1NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk5OWJkZWZlZWFjYTYzNDBlMDI5MGRjODZlODg5Yzg5ZDVlMTg5YWE1YmE0NGI1ODViM2I3MDczNGY0YTYyZDgifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L59-L62",
-          "version": "repo-lines-v1:sha256:7897af5a847f9196cd4b9668ac1ca034315a279234d5ef969cdf4100e2b292d1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWRjMmIzMTFhYmU4NzU3MmU4YTdjYzBkOTk2YTY1ODQ0MDc2ZTUyMzJkMjFiN2E4NTQ3NWY5YjQwNTViNzQ5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjIxYzZkNmNhNjgzMDUwYmY5MDAwMTUzOTQ2YzVmMjQ4ZGFiNTVkNzk5MmIxZDRmYWJhYTA4MjMxZDM1YzI3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWU2NjU0ZWIxOTlmOTUyNmI5ZjRjN2UxOGUxMTU3ZGJlNTUxZGIxY2M0ZDc5ZWM4ZjdiMDEwYWZiNjYwZGVmNiJ9"
+          "version": "repo-lines-v1:sha256:b6fd0e521733949cf9b0c87d5782d7a6b3acbc9ce6a73448926933dea3dfa766:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4ODQ0NTE1MDIyNDMwOGFiZjA4MDM1OGJkMzAwM2FkNDJmM2U4MjI2MTZjNWYwZGUyZGJkNzM4NDViNGE3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzY5NDZlMTAxZTVlNzhkOTBhNTEwYzY5ZjI2NmVmNzY1NDBkMzA5YjFiODIyNjk1YjUzMTcyZWQyY2FhMDI1OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmZmYWZhOTZhMjcxOTViOGFmYmI4NWMwNjU3ZGQzNjhjNTc2Y2Y3ZmNjNDRlOTAzYmZkMWE1ZjBjMTllOTVkZCJ9"
         }
       ]
     },
@@ -119,15 +115,15 @@
       "statement": "The LOCAL cache directory is the replication artifact: its JSON files are self-contained, so shipping the directory lets others reproduce a run offline (no API keys, no Redis, no model access) with CACHE_HIERARCHY=LOCAL. Running experiments with CACHE_HIERARCHY=REDIS,LOCAL (or REST_REDIS,LOCAL) fills it via write-through writes plus backfill of entries that exist only in the remote layer, and CacheManager.flush() at the end ensures everything is on disk before the directory is shipped.",
       "evidence": [
         {
-          "resource": "repo://README.md#L236-L243",
+          "resource": "repo://README.md#L241-L248",
           "version": "repo-lines-v1:sha256:dab1af2f0aed79d48a1ca97eb24655e20b3a67d54c21a4c2b31504571e5b2312:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYThkYmNmOTc3M2QxYzdiMTcxNWNjMmJjNWExMmQ4OTEyYmRmNGE1MWVlOWJiMmQ3ZWQwODUzNDQwM2I3NzJjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjRjMWU0NjI2NDg0YWQ1YTY1MjljZTlmZDUwM2M4NmY1YmE2NjhlYzllMjQ0OTc3NzRlNWM5NjViMzhhZTY4OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzZjODZkY2Q4ZDgzYjQwOWRlOGYyNWY0MTc2MjQ3MjYyZjVmMjI1MTgzMmZmZTFkNTFkYTg0YzU5YTI3YTM4MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjIzYjQzMjM2ZThjMDFkN2U4YmI0Zjc2OTFmYWUwM2NmZTg1ZDgxNjJlNmJiZDU5YjY3OGRiMGUwNDUyZWJmNSJ9"
         },
         {
-          "resource": "repo://README.md#L344-L360",
+          "resource": "repo://README.md#L349-L365",
           "version": "repo-lines-v1:sha256:5369d3657c36ec902a63d41c0be4e0d93a75b7a75c86b7e4529badd1aaa448cf:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZDA3MDkyMTI0NzI3Y2VmZGVhOWNiMGM0ZjVjNGM1MGQ0MDUzZGZkMTA3N2U1YzA1ZWMxYzIwZmY5OWIxZGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3MTliZWQxY2QxOTI3ZTNkM2IzODM4MmJhOTlkNDRiYzZiZjMxNTQyMWZhZTZiODg1MmE4MmEyYWVkNDJlZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5NmU4OTk5NjY4N2MzZjcxOGRhZDc0MzdkMzRhNjkwOGQ5MDNmYTk5ZWFiYjk0NDg3YjI5OTQ2MWVmZDY5NmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5Yzc1OTBhMTY3NGVlNzk1MWE2OTkxZWE1NWRiM2I0ZDFhZTcyODA2YjRmZDQ5OTc4ZDQ4ZGQ1NzdmMjA3MDYifQ"
         },
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L294-L298",
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L296-L300",
           "version": "repo-lines-v1:sha256:16c5918286a8d49303674f2f8757af63f44b5fe5ea0cf3d6d6fa478b8448f6ae:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmQ4ODQ0NTE1MDIyNDMwOGFiZjA4MDM1OGJkMzAwM2FkNDJmM2U4MjI2MTZjNWYwZGUyZGJkNzM4NDViNGE3ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjczYmYxZGEyNzVhNjk2YmEyYTQxMzNkOGMxMTllNDdkNTYzYWE5MmJmMDFiY2NmODQwODU5MGU5OTFiMjNjNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTRlZThlOWRkYWQyZTg4NGFiZjc3NTQ1MWU1YThjZmE2ZDYwYmExNWJhMjRjYTBmYTE5Y2YzZmZiMDc0YjNhNyJ9"
         },
         {
@@ -141,7 +137,7 @@
       "statement": "The recommended shared-cache Redis deployment is redis:7.4 run with --appendonly yes and a persisted data volume so the cache survives restarts; Redis has no authentication by default, so when it is reachable beyond a trusted network a password and/or TLS should be enabled and the credentials embedded in REDIS_URL (rediss://user:pass@host:6380).",
       "evidence": [
         {
-          "resource": "repo://README.md#L245-L273",
+          "resource": "repo://README.md#L250-L278",
           "version": "repo-lines-v1:sha256:3092f6cc30ea456791c3c85193fcaba2d2f1903a07adb1b6145472e8c5cc3b5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTQ4ZDhjNTNmMjBiOGRkMjgzZmRmZTNjNDg3NzYzYzUxMmFmYzEwYjM0MTZjOTg2NjU3YTk0ZWJkNzFmYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MDIyMzBjODNiOWVkYTcxYTlkMWMxZjI1ZmRjNTllNGE2MTI1MTAzZmRlMmRmMzI4ZGU2OGU4NjY5NGY5YjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjOWQ3MDdhMmU2YWY2OTRkY2JlM2Y2YzgxYTYxNTcwZmNhZTI3YjM1MDY4M2I4OGUxMmMwMmUyZTU0YTFjYmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0MWYxYTk4NGFlMjQ0ZDhhNmQyN2RmOWRjZjlkZjIyZTdmZTAzMDc0NzRjNGZjNGNkZjg1ZjViMDI5OTA2YjIifQ"
         }
       ]
@@ -151,7 +147,7 @@
       "statement": "The REST-Redis backend is served by org.fuchss:rest-redis (version 0.1.5 in this library's dependency set), published as the ghcr.io/dfuchss/rest-redis Docker image and configured via server_config.json with the keys redis_host, redis_port, and http_port. The intended topology is client → reverse proxy (TLS + Basic auth) → REST-Redis server → Redis, because the server itself has no built-in authentication or TLS; on a trusted network the client may point REST_REDIS_URI at the server directly.",
       "evidence": [
         {
-          "resource": "repo://README.md#L283-L342",
+          "resource": "repo://README.md#L288-L347",
           "version": "repo-lines-v1:sha256:a3ba5a0a56e434f8a3e304c8eae71d54bfe0bd92a2e4b589cfba30b762ecd8bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZDA1ZjQ0OGU2MTdjY2RhYzA5ZmNiYWRjNTI4OTdkMDUxNTFkNmMzMTc2MTMwMjJlNWY5NzY5MjFhNzRjODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMjg2MmIwMDQ0NzhjMDdmMDE3ZTFkMWJhNmRiYTBhYzc2NGFiZDIyZTVlMjE0ZTg1NmZkNDZlYWZiOTE1NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0YzE0NzdiMDliOWRhOTE5NWEwMDBhYzlhNWI3MDg3NTc2ZDA0OTEyMTk2ZmI4ZmI0ZTQ4NmZkNzUzYTc0YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4MmE3MDVlZWFhMmNkMDQ1OTJjNjg4Y2VjMjJhNmE5MzZhODZiZWJlMTc3ZDA3MzE0OGVhYmFlZThlMTBlNTkifQ"
         },
         {
@@ -165,7 +161,7 @@
       "statement": "The cache's entire Redis interaction is limited to the operations exposed by the UnifiedRedisClient seam — ping, exists, hget, hset, and close — which both the Jedis-backed RedisAdapter and the REST-backed RestRedisAdapter implement; this is why the REST-Redis server only needs to proxy those few operations and a thin HTTP server suffices.",
       "evidence": [
         {
-          "resource": "repo://README.md#L277-L281",
+          "resource": "repo://README.md#L282-L286",
           "version": "repo-lines-v1:sha256:03780ad155a4ead115862336ff913c5781326aa21c4d57cb42eae031d382bded:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWQ5NjU4YzQ1OTcwNTM2ZjkxZmIwZDI0MmJmYWU4ZTIwNTkzNDczZGZmMmJjYzIwYjdmMzlkMjY3MGZiNzIwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODUyYzQ5MGVhNDRkMGQ3YjkwZjhlMzcyNmQxZmM1MDYxNWE5YTc1Njk1YmZhMTc3MDE2MjhjY2EyODE5ZWM3ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTQxZjFhOTg0YWUyNDRkOGE2ZDI3ZGY5ZGNmOWRmMjJlN2ZlMDMwNzQ3NGM0ZmM0Y2RmODVmNWIwMjk5MDZiMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzBkMjVhOTA5N2M2YTQwZWI0MTFjOWMzNmRiNzM1YmI1MmQ2M2Y4ZDk2YzM1NTI4YTRiMWRjMjViMjZlZTYwNCJ9"
         },
         {
@@ -183,12 +179,12 @@
       "statement": "In a layered CACHE_HIERARCHY the backends are constructed in order at the first getCache call, so an unreachable REDIS still aborts cache acquisition even when LOCAL is also configured; pairing a remote backend with LOCAL provides data fallback and offline reproduction, not startup tolerance.",
       "evidence": [
         {
-          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L245-L259",
-          "version": "repo-lines-v1:sha256:d1dc4ffd6ac2dc93b020322f2c73ff4686c1b58f27c72b58dd09abfe96dd8a9a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0MmYxZTgxNGE1YzY3MjQ0MDg3ZGFhN2Q5NDQxNjMzMDAyYjQxODUwNzJiOWI3YTBiYTVjMTMxYmQ3ZTEyM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1YTg0Y2UzNjdkZWIzNWExMTdkNzZmY2IzZmZkNDU5NGQyYzk4YzUxOGVmY2I1Zjc5OTc1ZDE1ZWMyNTU3NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE4N2Q1OTcwZTU2NGI4MjM1NTQ2YTA5YWM3YzE2Nzk1NDhkYzBmMTgzOGIxODljOTQxMmY5Y2E0ODk2NDQ4OWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlMmI5ZTIxZmRjODZmYzJjMmVlNDQ3MjE4NWQ2NzY0NjdiZGQxY2JmMmUyNGI0ZGM2NDRhYjFhYmIzMzI1NDcifQ"
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java#L249-L263",
+          "version": "repo-lines-v1:sha256:ca3821f68553eb563453a33624f632d333aa850d3f0b13aaf1ce7715a787b786:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5YmYyZmQwMTdmOGU2Mjc3ZDgwZGY5YWJjNjgyNjhlZDVlYTcwNGUyMGIxZDFmMTgzMjFjYzU3NDkxNjI1ZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0YjUyNTVmM2Q3MGM1M2YxMjU4NTFiZmU3ZTZjOTRhZDBhNzRjMmRhZjRlOWUzZTRiNzhkMmEyYTY2ZTgyODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkYjRiMGMzMjU5NjcyNWY4NTVmYmJlN2FkYzc5YzZkYjkyYzYwYWIyNzY3Y2U1NWRkZDRkYzg1MjMyZGQ0YTgifQ"
         },
         {
           "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java#L84-L90",
-          "version": "repo-lines-v1:sha256:094ab1f61765876d04ea81981aaf0586703867e443c2fee423613d6231171459:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDEzNmVkNzUyODM0NDY0YzJiMTNjZjE1ZmVkZjk1OGM4M2IyYWJmMmFlYjM5NDllYzg1Zjk5MTU0NDA4OGI5NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGQ1YzJlYTdhY2Y1OTJmNDAxYmE4NDRiYzdkZTEzZTM4MjE1OGVlNGU2MWMwNDMxYTY1Y2IyNjk0Yjc0M2Y2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGQ1YTM0YzY0Yjc4YmRjMjA1MWFmZjYyZWJlMThmY2Q4YjhmZmYzNGYxYTU4Mjg2NzNhNWM3YzE4YTU1MmIyOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWUyYjllMjFmZGM4NmZjMmMyZWU0NDcyMTg1ZDY3NjQ2N2JkZDFjYmYyZTI0YjRkYzY0NGFiMWFiYjMzMjU0NyJ9"
+          "version": "repo-lines-v1:sha256:dfcf71d1014c97dbba4d8e2d5d49094c7760fca0c15c8e1d93ab32f01f81a22f:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGE5MjE2MDQ1OWE5OWU2N2QzZGIwM2JkNWQ2NjAzZjYyNTQ5NjkyNzZhMjU5NjNmOTE5YTA5MTNkYWZmZDZlMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmM2MGJlNjJhZDNhMjNjMWFjZWZhZDAyMDc5Nzc1ODI1MDdjYTY3ZTkzZTM1ZGEzMTI0NzM1YjZkYzA2ZDJiYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGVkY2QwNGU2M2Q1ZGMyYmE1OWRhM2VkYjg0ZGFkMzhiNWMzYTIzMzU1ODkwYmM0ZjczMWM5OWQ5ZTU1ZGE0MSJ9"
         }
       ]
     },
@@ -224,29 +220,29 @@
     },
     {
       "id": "claim_8afd64063a2c463e9bc9a8e26a558f8a",
-      "statement": "Release plumbing in pom.xml: central-publishing-maven-plugin is configured with publishingServerId central, autoPublish=true, waitUntil=published, and deploymentName=ardoco-llm-access — overriding the ardoco parent's default deployment name so the bundle is named distinctly in the Central Publisher Portal — and flatten-maven-plugin is pinned to 1.7.3 because the parent references it without a version and Maven would otherwise resolve 1.8.0, which has an NPE regression in its CI-friendly interpolator.",
+      "statement": "Release plumbing in pom.xml: central-publishing-maven-plugin is configured with publishingServerId central, autoPublish=true, waitUntil=published, and deploymentName=ardoco-llm-access — overriding the ardoco parent's default deployment name so the bundle is named distinctly in the Central Publisher Portal — and flatten-maven-plugin is pinned to 1.9.0 because the parent references it without a version and Maven would otherwise resolve the latest 1.8.0, which has an NPE regression in its CI-friendly interpolator.",
       "evidence": [
         {
-          "resource": "repo://pom.xml#L125-L131",
-          "version": "repo-lines-v1:sha256:67f356f5a09108d05414e0951a40bb4ba68bf236469c05c75900b74c95c44322:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmNjMzA0NDNhNDEyNzM0Mzc4ZTc3ZGIzNmIxYmMzYjhkNzU2YzZlOTI2NmZkYjZmNWNiMDFjMmExOWU4OTMxMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUxMmZiNzZiNDJmNTI2N2E1NDdmYjBhMGFhMjI5MDg1Nzc5NWI3MzAxOTgwMzJmY2Y0ZWIwY2U5MGM5ODE3OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDdhZTU4ZTc3M2MyYTUyY2JlZmZkMGMyODhiOTNmZjU3MTNjZDNmZDk5MDNiOTRkZGVhNDkzYWM1NzJlMGQ1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU3YzYwYjUyMzhjMzQyYTFmMjk1OTZiZGI1Zjc0YWExZGYzZmRkMDhjZDFjODdhNWM1ZDY0ZGRjMWNlOGY4ZSJ9"
+          "resource": "repo://pom.xml#L161-L167",
+          "version": "repo-lines-v1:sha256:b507adde73cbdfb2394124a80fc22c6bf0a9567c7ff44c144bb586c9d1192d7e:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWY2ZmUzMjUxZGIxMGMyMTczZWZiMmVkN2FlZTY4NDMwOWNhNDA0MzVmOTEyZDViNTQ1NDExYTM1MzkxZGU2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzI0MTQzN2FjMWViOWZlNGM4NzFlMDVlM2ZiZTNkMDVmMWRiZDZjM2FiZDliNGI3MzA5NjY0NmQ4NTJhMWQ0OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGNhNTQ1YTE4N2E2ZDEzYWQ5MzM0ZDM3MGIzOWUzOTA5N2E0ZGYwNTUxNWVjZWIyMGI5YTc1ZWUwM2MzOTdkNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGE1M2ExYmZhZGMwNDFlMTM3MzUwOTlmZTE3M2NiZThlYTQ3Y2VjNzYwMmNkMGUyYjEzNjFjNzY3OWJkMmY1NyJ9"
         },
         {
-          "resource": "repo://pom.xml#L134-L148",
-          "version": "repo-lines-v1:sha256:d9d370385f79c3a4f6dcfd1518ea5a4aec48e8db396c44dd2825ef4dedf80964:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZWMzY2U1M2FmMWE5NmVhNTA2NjQxZWIwMzE5ODhlMWY0ZDY1NjQ4ZjdiYjc2NzZiMjRiMjI3OTVkZmI4ZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMGQwZjhjMjFhM2VhYjNjZDJjZmU1OTAxNDQyYTA1YmU1OGI1MDQwOTU5NDQzNTRiY2ZiNWEzMjM5ZjhlNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1OTdlY2I4YTViYmY1ZjNlZTkzZDNkNDcwNWZiODY4NDM2MzFjZWRmYjhiZmFlNDYxZDkwODU4YTE1NmFmYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3YWQxMmI1ZWE5MGFkMTUyNTExYWYzZWU3OTQzYjMxZDZmOGFlOWZkNTE0YmEzOTUxYjk5ODJhYmQyZWMzYjkifQ"
+          "resource": "repo://pom.xml#L170-L184",
+          "version": "repo-lines-v1:sha256:1275d459e95804e79188ad95e30406c169e333f8592b05cf9d0c5a426cb8da9f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFjNzZhMDk3OTMyYzYxZDM5MWI3ODU2OTNhMDI0MzY4M2I0YzJjMTJjMTY4YmQ2NWVmODIyMzA4MzVlMDg4ZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwYTIyMDg0NTQ1Nzc3YjE0MWI0NzIzMmY5NWY1ODYwMjMyZjcwYTM2YzUyMjUwM2ViOWFmZTVlZDg0Zjc5M2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1N2M2MGI1MjM4YzM0MmExZjI5NTk2YmRiNWY3NGFhMWRmM2ZkZDA4Y2QxYzg3YTVjNWQ2NGRkYzFjZThmOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2ZTMyYTMwZjNmMjBiYmM4MmY1YzUzZDQ4MDg4M2RhODk0OWQwYWJhYTllZGQwNWFkMzJjZDdhYzRlMjc5ZTcifQ"
         }
       ]
     },
     {
       "id": "claim_70422ae17e5046308df48b5e877eeca5",
-      "statement": "RestRedisTest is the Docker-gated integration test for the deployed REST-Redis topology: annotated @Testcontainers(disabledWithoutDocker = true) it is skipped automatically without Docker, and with Docker it starts a redis:latest container plus an in-JVM org.fuchss rest-redis Server on a free port (configured via a generated server_config.json) and injects the connection settings through a MapEnvironment.",
+      "statement": "RestRedisTest is the Docker-gated integration test for the deployed REST-Redis topology: annotated @Testcontainers(disabledWithoutDocker = true) it is skipped automatically without Docker, and with Docker it starts a redis:latest container plus an in-JVM org.fuchss rest-redis Server on a free port (configured via a generated server_config.json that points the server at the containerized Redis), waits for the server to respond, and injects the connection settings through a MapEnvironment.",
       "evidence": [
         {
           "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java#L43-L48",
           "version": "repo-lines-v1:sha256:127bddf5e0fb85f28adb3ffb54d7f439752263678812045f8b8ab19e33f63355:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWU0YzljMDhjMzRkZGRjOTMyNGI4MjQ3YzljMTEzMmZjYzNlMTBlYzY4MmNlZDI1OWY2MjM4ZjJhNWMwYTlmMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTRiNWFlODM4OTUyMDRhZmU1NzFkMTg0MDUwNWM4NDI4MjU1YTUxNzUyNTU3NmIwOTVmYjE4NGMyMWE1ZTUzMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWJkZTc2YjVmZWU3YWIzNzVhNzE0YzBmYjBlODRjMDAwNDlkOGFmMGNhODJhMWY2YjE1YWVjOGY5Y2JmNTMzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODhiOTc5NDEyOWM3NzQ3NDIyMzRlMDRiYzE0MmI4MjkwYjMyOTUyZGI1NWFmZmNlYTFiZTEyODI1ZGJmN2RjYSJ9"
         },
         {
-          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java#L60-L80",
-          "version": "repo-lines-v1:sha256:7dd4abab0c2a36e9249604abe91cb68cc89c06455c3f264c8845cfd1b3a77065:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYWQ3MzNhMGZlODRjMjk0ZGRmMzZjODZjMjkwNjg5ZmNhYTcwODBmZDNmNzA3MzgzMTg0ZDliMzJkZTJkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4ZGIyMTU0MTg3Mjc3MDFlOWVhM2IyOGU0YzRmMjcxNzhmZjg4NzJmNGIzY2FlMzAwMGVmZTIwMTU1NjRmZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1OGM0MDk4OGI0MWI2NmYwMDg0MzUzYjhmODM5MGNhN2M4ZmM0NjgxMDBlNzFhNmYyMTc2M2NhMmExMDMyYWUifQ"
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java#L67-L85",
+          "version": "repo-lines-v1:sha256:819bf159679860cd61aa243df676ffc8c48309911553bed07b6d59132e3ee6ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2Nzc0NWI4MGMzNmI0ZGNmNWUzOTQxMzVmNmI0MjdjYzU2ZTA3NTEzMzkyNmJiNmI3ODZiYTk0ODRlNTk5NjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEzZDgwYzU0YTVjM2RmODdhOGEzNzZkZTUwNGM2Y2E4YjdkYzY2NDgzYzcyYjQ1YWU4YjJkMjA3OWU3ZGY1N2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk2YzMwMTExOTRmYmM5ZjU4YTFmYTBkMDFhYjQ5MTZhNWY5NWFjNzVlZGFiYjY1ZGE3MmE1ODcyMGU3YzE1M2YifQ"
         }
       ]
     },
@@ -259,10 +255,80 @@
           "version": "repo-lines-v1:sha256:3518070497ad1d810cfcebcd809f8ed8901f67b79f6ca7c287a61dfed8e03137:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NzM3MTg5NWNmYjA0MTU4NDljYmM5NzY4MGE4MzdkYzE2ODM1ZmNhYTlmOTk5MDIzYzlkNzkyNmRiYzhlNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyOWY4NTE5MzZkNWNmNjM3MDZkYjE1MjU0MDhmYjgyZTg4NjFlYmFmODhmOTA0ODYzZTRlZDY0OGUzOWFjM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIzZThlZDVhMTMzYjNmMWQ1YTVmMWY2ODQ1YjM4MzViYWJkNDQ0MWM0YTQ4NzZkNmI0MGM5Y2QwNWY1MDYyYTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiZDU1MjMwNzJmMTAwOWYxZWQ5MWI2NDM2NzVhMzNhM2JmNWE4YjAwOTZkMTk4NWFlNGM0MmRkODM2YzA4NGYifQ"
         }
       ]
+    },
+    {
+      "id": "claim_2b418346f3fa4e13867e90cc99ec9bd5",
+      "statement": "bifrost.yml runs BifrostIntegrationTest against the real Bifrost gateway using the BIFROST_API_KEY and BIFROST_URL secrets; because secrets are unavailable to forks and Dependabot, the job is skipped for both (github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]'). It determines the JDK major version inline from the POM (maven.compiler.target, then maven.compiler.release, then java.version via mvn help:evaluate, stripping a leading '1.'), installs temurin plus Maven 3.9.16 (the same Maven version as the ardoco actions workflow), and runs mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/bifrost.yml#L29-L63",
+          "version": "repo-lines-v1:sha256:8d2de6486cdfa07f5c6514004d9edb35b2745afa4e1f19c5faf2e922dc1d6256:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMjcxYTkzZGYwNzQzMjA5N2NmY2E5NTg1MTA4MGI4N2I0ZjJjNGFmZTBmNGZmMmExZGQwNTY5YTk4ZjlkMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxMjg3ZTlhNTZiNTEzZDRlYzQxYTMwNmEzMGRmNTFiNzQ5MzBiMzNlZDk1ZDQ4ZmQ3NmFmYmY0ZjExNjFmM2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_45b8fbd188454655b72400a94c4f26b3",
+      "statement": "deploy-snapshot.yml is manual-only (workflow_dispatch): it deploys the selected branch to the GitLab package registry via the shared ardoco/actions maven-snapshot.yml workflow, passing gitlab-project-id 203213 — the read-only mirror kit/kastel/sdq/research-projects/ardoco/llm-access on gitlab.kit.edu — with secrets inherited.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/deploy-snapshot.yml#L1-L13",
+          "version": "repo-lines-v1:sha256:557ee7129f808d4a659bfdcbdbd2391ffea857a3315ba427c1a773a3842998e5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1YzRkZDZiNDJmNjJmZGVmYTNkMGE3YjQxMTEwMWFhYjA2ZWIwYzIzMjFkNGIwYmRmNTNkYzFiMmFmZTc5ZjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5ZDVkZDNlOGEyNGQ1Y2VlMjhlYTIzZjdiNTRlYWY1MjQ2OGZmMWVkY2FhNWVmNTg5NzBmMWQ5NWYxMjRmNWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_88e6adb1642f493d9ec7e9be589dd534",
+      "statement": "The dependency stack is property-driven in pom.xml on the io.github.ardoco:parent 2.2.0-SNAPSHOT parent: artifact llm-access 0.2.2-SNAPSHOT, LangChain4j 1.23.0 via its BOM, Testcontainers 2.0.5 via its BOM, org.fuchss:rest-redis 0.1.7, jtokkit 1.1.0, dotenv-java 3.2.0, and ArchUnit 1.5.1 (test scope); dependencies resolve from Maven Central, the Sonatype snapshot repository (central.sonatype.com/repository/maven-snapshots), and the read-only ardocoSnapshots mirror group on gitlab.kit.edu.",
+      "evidence": [
+        {
+          "resource": "repo://pom.xml#L130-L156",
+          "version": "repo-lines-v1:sha256:439de9c466a5f03be29d79cf4bcd437df21a86a65e081c1b2af107d2c72e52a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlZDZiMGVlNjQ5Yjc2M2QyZmMxODZjNjM3ZjljZjE1MjgyNGVkYzRlMTk0ZmNmNjgzY2UxODc2MTY2NjhjZWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyMzljMDNhOTNiM2IzY2NmZWE3N2ZlNjI5Yzk2NGJmNjMwODFmZDAyY2U2MDljYjIxOTUyMzQzYThjNWJhMmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ3YWU1OGU3NzNjMmE1MmNiZWZmZDBjMjg4YjkzZmY1NzEzY2QzZmQ5OTAzYjk0ZGRlYTQ5M2FjNTcyZTBkNWYifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L5-L37",
+          "version": "repo-lines-v1:sha256:e084126b06020f1c0acd2f98a89524987b3b245899ff6640a9755e2540c799f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0YTQxNGFhNmJhNTA2MjEwNjNmNmM4YTk0NTNkODI4MTA5ODI1Mzc5OWI1ZTBhOWQ2MTZlOWE0NDM4MDhlZTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwMjM2M2NjNmE3MzM3MDhiMzFkMDc3NTE0Y2FhYzQzODExOWE0MTVhYmQxMzA0ZDQ4ZTViMGQ5ZTFmOTBjZDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxYzAxMjYwZTg5MmM4NTE5YjZhMmE3ZjY2ODAxZDdlMzAxNTU0OTAxNjhjMGJjZmUzZjEzYTE3ZjQ3MjE5MjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9779a3d9566a42bf9ef7f73443bbeecd",
+      "statement": "The REST-Redis server has no built-in authentication or TLS: REST_REDIS_USERNAME/REST_REDIS_PASSWORD are sent as HTTP Basic auth only when set (blank values count as unset), so deployments exposed beyond a trusted network must terminate TLS/Basic auth at a reverse proxy and point REST_REDIS_URI at the proxy. The server is org.fuchss:rest-redis 0.1.7, published as the Docker image ghcr.io/dfuchss/rest-redis, and is configured via server_config.json with redis_host, redis_port, and http_port.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L284-L336",
+          "version": "repo-lines-v1:sha256:f161d4e0b5bf475e1240932f837b2f7444dd3d97408936ed1557df73b4cef2b4:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4NDljN2QwYjUzNzU0NjFhM2I3YzFlZTUwZTYzZmRlYjVkODkxNDUzZTY5MDI4OGM2YjAyYTljZjQxOGViODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1ZTQ4NTA4YTg1ZDkwNGQxNjczMWQ4MTI5MWZmOTU4MTQzOWNkZjZhNDgxNGU2ZTJiMDU4MmE3MjgxMDUyZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0MDU5OWI5YTA3NmViYWFhNWNkZDA2NzZlODMyNWUxNDFlYjBiMDc0OTgyMDkwMzdhZmFjYjM4ZDUxMTkyY2MifQ"
+        },
+        {
+          "resource": "repo://pom.xml#L101-L104",
+          "version": "repo-lines-v1:sha256:26ba4f6b7f994d6f4f1b721273acf1ef1e3972ed0b944760d1d63b755ac02dfb:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTE1OTlmM2JmZDJkNGNjMjA0MDIxOTZmZjUxZDAzYmJiZTNhNjQ0Y2Q3ZmQyYTk4Nzk4NjU3OTRlN2E0OTVhZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjY2NGMwZmMxYWRlYzMzMWI1MTJhMzlmZDI4NjI5OWUzNDgyNzZkZDBhY2UyOTA1ZWYwODQyM2YwNGIyNWU2MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmYwY2QzNzQxMjYyOGJjZTM1OTM1NWU2YjFiYzYzZjU3ODM1MjUzODRmZmI4NmVmYzdlNzk0OGUxZjNlNjgyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzkzMmM4YmYzNmU1MzA3YjE1NTYzOGUxMTA4MDBmYTM3MjNhNzVjM2FiMWFkN2M4NzY1MDYyZDFiMTYxMjk1OCJ9"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L43-L55",
+          "version": "repo-lines-v1:sha256:258b6c628c67fa59272753d2257db28a8aad0c313ccd6efb7a90723279008971:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0NjdmZDMwNDJhYmRmOWEzZTE1NDI0YjcxZDg3MDllNGM2OWJlYWM0MDRiYTZkY2EwMWZmMzRmMzkwOWYzYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlZDQxZDkzNDVjZGNmNGJhZjQzZDllNTkwZWRhMGZlNTE4NGU0OGMyMGZkNzYxMWNmNzdhYWQxMWVkMGFhNWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0ZTI5NzhiZDFjMzExOTc2NjUzMzEyNjhlYzNkMDQxZDc4Mjk2YWU0YmZlMTE0YTRmMjFiMDdlYzg2YTE0NDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_11a7c67d67074303a9f054f17fa65bc6",
+      "statement": "A thin HTTP server suffices for REST-Redis because the cache uses only four Redis operations: the UnifiedRedisClient seam exposes ping, exists, hget, and hset (plus close), implemented by both the Jedis-backed RedisAdapter and the REST-backed RestRedisAdapter; RestRedisCache extends RedisCache and overrides only the connection setup, so the storage layout (Redis hashes keyed by the JSON form of the cache key, with data and timestamp fields) is identical for both transports.",
+      "evidence": [
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisAdapter.java#L15-L30",
+          "version": "repo-lines-v1:sha256:0170e5bfec5a03fd40a7a1ebf3f7433852b26b9f2ec4802081c65cc96179f2a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmNmIwY2FhMGU0ZjBlYzI5ZThiNjJhNWIzMjJiM2ExZWY4OGY0MzI2ZDBiNjRjOTRlYzk4YWNkNzI0YWY2MzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0NWE0NjhkMjgxNDNiZjQ5MWVjOTM4OTcxNGQ2Y2ZjYjY1ZDgzNWIzNDcyNWZiMzQ0NWQ3ZTcyM2ZjZjlkNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjNzY2ZDViNmE2NDY2MTRmZjFiMzQzOGZkYzIyMTExMzE5NTZmMTkzODA2YzBjYjgxYmMwYzljNTVkZmEyNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiMWM2NmY4YzM3ZWRkMDdmZmNhMTkxYTE5NzVkNjEyYzk3NDAwODIwOTAzMjQ0MGFlMGQwMTk3ZDFlOWM2ZWUifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java#L16-L28",
+          "version": "repo-lines-v1:sha256:56e2512678646630a668ca71c3a26181d180a1cd92f2cfe24e14cce75f994cce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiYTA2ZDE0MTZkNjYzNzVkYzc1MDRmYzcxYjU1NjA2YjM3Y2Y0NDYyNTRjODdhMmRiODlmZjYzZTFjNmQwOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRiODFiMTgyMzAxZTcxNzcxNzg4MjM4Y2U4YWEzMWVkZTM1OTE2YWI4MjMxOGZiYzNlNzI0NjgwM2RlYjZmNDQifQ"
+        },
+        {
+          "resource": "repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/UnifiedRedisClient.java",
+          "version": "repo-file-v1:sha256:1cad0cd7ecffb40ec3302e625f2b54f29362c5c0040002e68c30e929777e62af"
+        }
+      ]
     }
   ],
   "verification": {
-    "by": "openwiki/0.7.2",
-    "at": "2026-10-26T12:15:10.459Z"
+    "by": "openwiki/0.9.0",
+    "at": "2026-11-16T14:46:55.207Z"
   }
 }

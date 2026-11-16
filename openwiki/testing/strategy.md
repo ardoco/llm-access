@@ -1,9 +1,11 @@
 ---
 type: Operations
 title: Testing Strategy
-description: How the llm-access library is tested — hermetic unit tests built on MapEnvironment and @TempDir, Mockito-based layer tests, the Docker-gated Testcontainers REST-Redis integration test, ArchUnit architecture rules, LiSSA backward-compatibility guardrails, and the formatting gates.
+description: How the llm-access library is tested — hermetic unit tests built on MapEnvironment and @TempDir, Mockito-based layer tests, the Docker-gated Testcontainers REST-Redis integration test plus the live-gated Bifrost smoke test, ArchUnit architecture rules for cache-key completeness and the no-global-environment invariant, LiSSA backward-compatibility guardrails, and the formatting gates.
 tags: [testing, junit, mockito, testcontainers, archunit, docker, ci, spotless]
 sources:
+  - id: openwiki-source-606719b2dc777de859e4519b
+    resource: repo://.github/workflows/bifrost.yml
   - id: openwiki-source-f721914ec66a43bd2b76a715
     resource: repo://.github/workflows/format.yml
   - id: openwiki-source-4320a40cc58d6de85374b359
@@ -30,6 +32,12 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
   - id: openwiki-source-424e35b1b23cbd6261f4135e
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/MapEnvironment.java
+  - id: openwiki-source-4feeab6332f6627178c60394
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
+  - id: openwiki-source-38a704b0c016c8a6264f5154
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java
+  - id: openwiki-source-9727109b59766f9bf3510846
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheKeySerializationTest.java
   - id: openwiki-source-30f99b58023b3a9a8c01b6d4
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-1723ede8db0a8d28f9bd768f
@@ -58,6 +66,8 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/CachedEmbeddingCreatorTest.java
   - id: openwiki-source-65cab9f1c35cb70c3750cd65
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/embedding/EmbeddingConfigurationTest.java
+  - id: openwiki-source-f159a5e43c937a689a95c1b6
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/BifrostTest.java
   - id: openwiki-source-ae96d7bc45dacf528f83daad
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGeneratorTest.java
   - id: openwiki-source-53173e335c62f63857b13264
@@ -66,46 +76,52 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
   - id: openwiki-source-bf8ab9bc4c233ef5bca4a282
     resource: repo://src/test/resources/cache/test-local-cache-sample.json
-generated: { by: "openwiki/0.7.2", at: "2026-10-26T12:15:10.459Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-26T12:15:10.459Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 ---
 
 # Testing Strategy
 
-`llm-access` is tested almost entirely **hermetically**: every test except one runs without a
-server, without model credentials, and without Docker. Configuration is supplied
+`llm-access` is tested almost entirely **hermetically**: every test except two gated suites runs
+without a server, without model credentials, and without Docker. Configuration is supplied
 through an injected [`MapEnvironment`](../concepts/environment-provider.md), cache directories come
-from JUnit's `@TempDir`, model calls come from recording or Mockito-stubbed test doubles, and only
-`RestRedisTest` — the REST-Redis integration test — needs a real server topology, which it builds
-itself and skips automatically when Docker is absent. (Two cache-manager tests deliberately aim a
-`REDIS` cache at an unreachable `localhost:1` URL to prove the fail-fast connection contract;
-that is still no real server.) Two ArchUnit rules
-enforce the library's
-no-global-environment invariant as part of the same run, and backward compatibility with LiSSA's
-on-disk cache format is guarded by a checked-in fixture and a pinned key value. `mvn verify` is the
-full gate (the CI wiring itself is covered in
+from JUnit's `@TempDir`, and model calls come from recording or Mockito-stubbed test doubles. Only
+two suites need the outside world, and both gate themselves off when it is unavailable:
+`RestRedisTest` — the REST-Redis integration test — builds its own server topology and skips
+automatically when Docker is absent, and `BifrostIntegrationTest` — a live smoke test against a
+real Bifrost gateway — is skipped unless `BIFROST_API_KEY` and `BIFROST_URL` are set. (Two tests
+deliberately aim a `REDIS` hierarchy at an unreachable `localhost:1` URL to prove the fail-fast
+connection contract; that is still no real server.) Two ArchUnit
+suites run as part of the same build: `ArchitectureTest` structurally enforces cache-key
+completeness, and `NoGlobalEnvironmentTest` enforces the library's
+no-global-environment invariant. Backward compatibility with LiSSA's
+on-disk cache format is guarded by a checked-in fixture, a pinned key value, and byte-stable
+key-serialization pins. `mvn verify` is the full gate (the CI wiring itself is covered in
 [Operations and Deployment](../operations/deployment.md)).
 
 ## The boundary map
 
 | Boundary | Test classes | Needs |
 | --- | --- | --- |
-| Cache unit | `CacheTest`, `CacheReplacementStrategyTest`, `CacheManagerTest` | `@TempDir`, `MapEnvironment` |
+| Cache unit | `CacheTest`, `CacheReplacementStrategyTest`, `CacheManagerTest`, `CacheKeySerializationTest` | `@TempDir`, `MapEnvironment` |
 | Layer synchronization | `HierarchicalCacheTest` | Mockito mocks |
 | Chat | `CachingChatModelTest`, `ChatModelUtilsTest`, `ChatModelProviderTest`, `ChatConfigurationTest`, `LazyChatModelTest` | recording/mocked `ChatModel`, `MapEnvironment` |
 | Embedding | `CachedEmbeddingCreatorTest`, `EmbeddingConfigurationTest` | stub `EmbeddingModel`, `MapEnvironment` |
-| Util | `KeyGeneratorTest`, `MapEnvironmentTest`, `SystemEnvironmentTest`, `FuturesTest` | `@TempDir` (for the `.env` tests) |
-| Architecture | `NoGlobalEnvironmentTest` | ArchUnit over main classes |
-| Integration | `RestRedisTest` | Docker (Testcontainers) |
+| Util | `KeyGeneratorTest`, `MapEnvironmentTest`, `SystemEnvironmentTest`, `FuturesTest`, `BifrostTest` | `@TempDir` (for the `.env` tests), `MapEnvironment` |
+| Architecture | `ArchitectureTest`, `NoGlobalEnvironmentTest` | ArchUnit over main classes |
+| Integration (Docker-gated) | `RestRedisTest` | Docker (Testcontainers) |
+| Integration (live-gated) | `BifrostIntegrationTest` | `BIFROST_API_KEY` and `BIFROST_URL` env vars |
 
 The split is deliberate: everything that can be decided without a server is decided without one,
-so the whole suite runs in seconds on any machine; only the code path that actually talks to a
-REST-Redis deployment needs containers. The test libraries themselves (JUnit Jupiter, Mockito,
-ArchUnit) come from the `io.github.ardoco:parent` POM; this project's
-[`pom.xml`](../../pom.xml) adds the Testcontainers BOM (`2.0.5`) and the two Testcontainers
-artifacts in test scope.
+so the whole suite runs in seconds on any machine; only the code paths that actually talk to a
+REST-Redis deployment or a Bifrost gateway are gated. The test libraries themselves: JUnit Jupiter
+and Mockito come from the `io.github.ardoco:parent` POM, while this project's
+[`pom.xml`](../../pom.xml) declares ArchUnit (`archunit-junit5`, 1.5.1), the Testcontainers BOM
+(`2.0.5`) and the two Testcontainers artifacts (`testcontainers`, `testcontainers-junit-jupiter`)
+in test scope. `org.fuchss:rest-redis` (0.1.7) is a compile dependency — which is exactly what
+lets `RestRedisTest` run the real REST-Redis `Server` class in-process.
 
 ## Hermetic unit tests
 
@@ -175,7 +191,9 @@ it exercises, touching no static state at all. That is the same dependency-injec
   from the string-key behavior.
 - **`CacheManagerTest`** pins the manager itself: `getDefaultInstance` throws before a directory is
   set; `getCache` rejects `null` arguments, memoizes by name, and rejects the same name requested
-  with non-equal parameters; colons in names are sanitized to `__` in file names; `flush()`
+  with non-equal parameters; file names are sanitized (colons in names become `__`, and forward and
+  backward slashes — as in provider-prefixed model names like `openai/gpt-4o-mini` — become `--`,
+  with no subdirectory ever created and a reloaded manager reading the entries back); `flush()`
   persists to disk; the explicit constructor validates an empty hierarchy and a non-directory path;
   invalid `CACHE_HIERARCHY` / `CACHE_REPLACEMENT_STRATEGY` values from the injected environment
   throw `IllegalArgumentException` while unset variables fall back to the defaults. The
@@ -184,6 +202,8 @@ it exercises, touching no static state at all. That is the same dependency-injec
   with a `JedisConnectionException` naming that URL — demonstrating both that no network I/O
   happens until `getCache` and that the injected value, not any global default, is used. (The same
   unreachable-port trick appears in `CachedEmbeddingCreatorTest.createUsesInjectedCacheManager`.)
+- **`CacheKeySerializationTest`** pins the exact serialized form of the cache keys, byte for byte
+  (see [Backward-compatibility guardrails](#backward-compatibility-guardrails)).
 
 ### Layer synchronization with Mockito
 
@@ -215,24 +235,86 @@ responsibility belongs to `CacheReplacementStrategyTest` (unit-level, real files
   required credential is missing. `ChatConfigurationTest` additionally pins the default seed and
   temperature and the backward-compatible cache file identifier (`gpt-4o_133742243`).
 - **`LazyChatModelTest`** verifies lazy initialization with a counting supplier (runs only on
-  first use, exactly once) and a reflection check that `LazyChatModel` overrides every non-static
-  `ChatModel` method, so the delegation coverage cannot silently rot when LangChain4j adds methods.
+  first use, exactly once, with a `NullPointerException` for a `null` supplier) and a reflection
+  check that `LazyChatModel` overrides every non-static `ChatModel` method, so the delegation
+  coverage cannot silently rot when LangChain4j adds methods.
 - **`CachedEmbeddingCreatorTest`** drives a recording subclass of `CachedEmbeddingCreator` whose
   `EmbeddingModel` is a Mockito stub counting `embed` calls and returning a deterministic vector
   derived from the first input character. It verifies single-computation caching, input-order
   preservation, the empty-input short-circuit (no model call), persistence across a cache reload,
   the parallel path's per-thread model construction with forwarded parameters, and that the
-  environment injected into the constructor is visible inside `createEmbeddingModel`.
+  environment injected into the constructor is visible inside `createEmbeddingModel`. Beyond the
+  recording stub, the class pins `EmbeddingCreator.create`'s per-platform fail-fast over
+  `MapEnvironment`-only credentials (OpenAI needs `OPENAI_API_KEY`, Open WebUI its URL and key,
+  Bifrost needs both `BIFROST_API_KEY` and `BIFROST_URL`) and the oversized-input handling for
+  provider-prefixed models: a stub model rejects inputs over 45,000 characters, the creator
+  truncates and retries, and the embedding resolves in exactly two model calls.
   `EmbeddingConfigurationTest` covers the configuration API (including that builders default to a
   fresh `SystemEnvironment` and that `MOCK` needs no model name) plus the mock creator's zero
   vectors — so embedding platform behavior is testable with no Ollama, OpenAI, or ONNX files.
 
+## Architecture rules: `ArchitectureTest`
+
+`ArchitectureTest` is an ArchUnit suite over all non-test classes under
+`edu.kit.kastel.mcse.ardoco.llm` (`@AnalyzeClasses(..., importOptions = ImportOption.DoNotIncludeTests.class)`)
+that guards the *correctness of the cache* rather than its wiring. Its premise: a configuration
+attribute that is missing from a [`CacheKey`](../cache/cache-keys.md) or from
+`CacheParameter.parameters()` makes different configurations share cache entries or cache files,
+which silently returns wrong cached results. Two structural rules enforce completeness:
+
+1. **`cacheKeysMustHaveOfMethodWithCacheParameter`**
+   Every concrete `CacheKey` implementation must have a static `of(CacheParameter, String)` method,
+   and the rule inspects each such factory's call graph: it must read **every** attribute of its
+   `CacheParameter` type — every method except the explicitly exempted ones (`parameters()`,
+   which generates the cache file name and is not used in key creation; `createCacheKey()`, which
+   is the factory that calls `of()`, not the other way round; and `equals`/`hashCode`/`toString`).
+   If an attribute (model name, seed, temperature, mode) is not read by `of()`, it is not part of
+   the key, and entries created with different configurations would collide.
+2. **`cacheParametersMustUseAllFieldsInParametersMethod`**
+   Every concrete `CacheParameter` implementation must have a `parameters()` method that accesses
+   every non-static field, either directly or through a record accessor. `parameters()` determines
+   the cache file name, so a field missing there makes different configurations share one cache
+   file.
+
+Both rules fail the build with a message naming the class and the missed attribute (for example
+*"Method X.of() does not read CacheParameter attribute 'seed'"*), so adding a field to a parameter
+class without wiring it into both `parameters()` and `of()` cannot pass `mvn verify` — the
+collision failure mode is prevented structurally instead of being caught by case-by-case key tests.
+
+## Architecture rules: `NoGlobalEnvironmentTest`
+
+`NoGlobalEnvironmentTest` is an ArchUnit suite over all non-test classes under
+`edu.kit.kastel.mcse.ardoco.llm` (`@AnalyzeClasses(..., importOptions = ImportOption.DoNotIncludeTests.class)`).
+It turns the [no-global-environment invariant](../architecture/overview.md) into build-enforced
+rules rather than convention:
+
+1. **`noStaticEnvironmentFields`**
+   `noFields().that().areStatic().should().haveRawType(assignableTo(EnvironmentProvider.class))`
+   — *because "environments must be injected, not shared globally"*. No static field anywhere in
+   the library may hold an `EnvironmentProvider`, which forbids reintroducing a singleton like the
+   removed legacy `Environment` class.
+2. **`defaultCacheManagerOnlyInConvenienceOverload`**
+   `noClasses().should().callMethodWhere(CALLS_DEFAULT_CACHE_MANAGER.and(not(IN_CONVENIENCE_OVERLOAD)))`
+   — *because "the cache manager (and with it the cache environment) must be injected"*. The
+   `CALLS_DEFAULT_CACHE_MANAGER` predicate matches any call whose target is
+   `CacheManager.getDefaultInstance()`; the `IN_CONVENIENCE_OVERLOAD` predicate exempts exactly one
+   origin: calls whose full name is
+   `edu.kit.kastel.mcse.ardoco.llm.embedding.EmbeddingCreator.create(edu.kit.kastel.mcse.ardoco.llm.embedding.EmbeddingConfiguration)`.
+   Every other class must take a `CacheManager` — and thereby its environment — as an injected
+   dependency.
+
+Together the rules mean a contributor cannot accidentally re-grow a global environment: the
+compiler allows a static `EnvironmentProvider` field or a stray `getDefaultInstance()` call, but
+`mvn verify` fails on it. The one sanctioned call site delegates to
+`create(configuration, CacheManager.getDefaultInstance())` after short-circuiting the `MOCK`
+platform, which needs no cache setup (see [Embeddings](../embeddings/embeddings.md)).
+
 ## The Docker-gated integration test: `RestRedisTest`
 
-`RestRedisTest` is the suite's single integration test and the only test that contacts a real
-server. The class is annotated `@Testcontainers(disabledWithoutDocker = true)`, so `mvn verify`
-skips it automatically in environments without Docker — the CI gate stays green everywhere, and
-the test runs only where the topology it exercises can actually exist.
+`RestRedisTest` is the suite's Docker-gated integration test and its only Testcontainers test. The
+class is annotated `@Testcontainers(disabledWithoutDocker = true)`, so `mvn verify` skips it
+automatically in environments without Docker — the CI gate stays green everywhere, and the test
+runs only where the topology it exercises can actually exist.
 
 ```mermaid
 flowchart TD
@@ -277,48 +359,52 @@ The tests cover the deployed topology end to end:
   which is exactly the write-down behavior a replication package relies on
   (see [Operations and Deployment](../operations/deployment.md)).
 
-## Architecture rules: `NoGlobalEnvironmentTest`
+## The live-gated Bifrost smoke test: `BifrostIntegrationTest`
 
-`NoGlobalEnvironmentTest` is an ArchUnit suite over all non-test classes under
-`edu.kit.kastel.mcse.ardoco.llm` (`@AnalyzeClasses(..., importOptions = ImportOption.DoNotIncludeTests.class)`).
-It turns the [no-global-environment invariant](../architecture/overview.md) into build-enforced
-rules rather than convention:
+`BifrostIntegrationTest` is the suite's only live test: it talks to a real Bifrost gateway and is
+therefore gated on environment variables rather than Docker. `@EnabledIfEnvironmentVariable(named = "BIFROST_API_KEY", matches = ".+")`
+and the same for `BIFROST_URL` mean the test is silently skipped everywhere those credentials are
+absent — locally and in the default `mvn verify` run — and executes only where they are exported.
+When enabled it reads credentials from a `SystemEnvironment` and makes two minimal requests:
+`ChatModelProvider.createChatModel().chat("Reply with OK")` (model `openai/gpt-4o-mini`) must
+return a non-blank answer, and `EmbeddingCreator.create(...).calculateEmbedding("hello world")`
+(model `openai/text-embedding-3-small`, over a `@TempDir` `LOCAL`/`ERROR` cache manager) must
+return a non-empty vector.
 
-1. **`noStaticEnvironmentFields`**
-   `noFields().that().areStatic().should().haveRawType(assignableTo(EnvironmentProvider.class))`
-   — *because "environments must be injected, not shared globally"*. No static field anywhere in
-   the library may hold an `EnvironmentProvider`, which forbids reintroducing a singleton like the
-   removed legacy `Environment` class.
-2. **`defaultCacheManagerOnlyInConvenienceOverload`**
-   `noClasses().should().callMethodWhere(CALLS_DEFAULT_CACHE_MANAGER.and(not(IN_CONVENIENCE_OVERLOAD)))`
-   — *because "the cache manager (and with it the cache environment) must be injected"*. The
-   `CALLS_DEFAULT_CACHE_MANAGER` predicate matches any call whose target is
-   `CacheManager.getDefaultInstance()`; the `IN_CONVENIENCE_OVERLOAD` predicate exempts exactly one
-   origin: calls whose full name is
-   `edu.kit.kastel.mcse.ardoco.llm.embedding.EmbeddingCreator.create(edu.kit.kastel.mcse.ardoco.llm.embedding.EmbeddingConfiguration)`.
-   Every other class must take a `CacheManager` — and thereby its environment — as an injected
-   dependency.
+The [`bifrost.yml`](../../.github/workflows/bifrost.yml) workflow is what supplies those variables
+in CI: it triggers on pushes to `main` and on PRs (with the same `paths-ignore` for `docs/**` and
+`openwiki/**` as the other workflows, plus `workflow_dispatch`), skips forks and Dependabot because
+secrets are unavailable to them, exports `BIFROST_API_KEY` and `BIFROST_URL` from repository
+secrets, and runs `mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`
+with the same POM-derived JDK and Maven 3.9.16 used by the shared verify workflow.
 
-Together the rules mean a contributor cannot accidentally re-grow a global environment: the
-compiler allows a static `EnvironmentProvider` field or a stray `getDefaultInstance()` call, but
-`mvn verify` fails on it. The one sanctioned call site delegates to
-`create(configuration, CacheManager.getDefaultInstance())` after short-circuiting the `MOCK`
-platform, which needs no cache setup (see [Embeddings](../embeddings/embeddings.md)).
+The Bifrost credential handling itself is pinned hermetically by `BifrostTest` in the util
+package: `Bifrost.baseUrl` returns the configured `BIFROST_URL` and throws
+`IllegalStateException` without one, `Bifrost.apiKey` requires `BIFROST_API_KEY`, and
+`Bifrost.headers` wraps the key as the `x-bf-vk` header — all over `MapEnvironment`, no gateway
+needed.
 
 ## Backward-compatibility guardrails
 
 The cache file format is a **public artifact**: users ship `LOCAL` cache directories as
-replication packages, and they originate from LiSSA's caches. Two tests hold the line:
+replication packages, and they originate from LiSSA's caches. Three kinds of tests hold the line:
 
 - **`CacheTest.testBackwardCompatibility`** copies the checked-in fixture
-  `src/test/resources/cache/test-local-cache-sample.json` — the LiSSA cache format, a flat JSON
-  object mapping `KeyGenerator` content UUIDs to plain, unserialized string values — into the
-  temp cache directory and reads all three entries back by their content strings
-  (`test-key-1`…`test-key-3` → `test-value-1`…`test-value-3`). This exercises both halves of
-  legacy readability at once: the content-UUID `localKey` derivation still addresses the old
-  entries, and [`Cache.convert`](../cache/cache-core.md) returns a raw string when the legacy
-  value is not JSON-encoded. Any change to key derivation or value encoding that breaks this test
-  would orphan real users' caches.
+  `src/test/resources/cache/test-local-cache-sample.json` — the LiSSA cache format, a single-line
+  flat JSON object mapping `KeyGenerator` content UUIDs (`478af172-93d7-3e4e-87dc-4d7e36ce3d77`,
+  `2f80bb0a-fd35-369d-ba09-af947f0de0cf`, `a77ed447-329b-3d78-9206-894fe61c39c4`) to plain,
+  unserialized string values — into the temp cache directory and reads all three entries back by
+  their content strings (`test-key-1`…`test-key-3` → `test-value-1`…`test-value-3`). This exercises
+  both halves of legacy readability at once: the content-UUID `localKey` derivation still addresses
+  the old entries, and [`Cache.convert`](../cache/cache-core.md) returns a raw string when the
+  legacy value is not JSON-encoded. Any change to key derivation or value encoding that breaks
+  this test would orphan real users' caches.
+- **`CacheKeySerializationTest`** pins the Redis side of the format byte-for-byte: the JSON
+  produced by `toJsonKey()` for both key types must match exact expected strings, including
+  property order (`model`, `seed`, `temperature`, `mode`, `content`), two-space indentation, and
+  the escaping of slashes, quotes, umlauts/emoji, control characters, and whitespace in the
+  content. The test's comment states the reason: the JSON key addresses entries in Redis, so any
+  change to the serialized form invalidates all existing caches.
 - **`KeyGeneratorTest.stableUuidValue`** pins `KeyGenerator.generateKey("test")` to
   `098f6bcd-4621-3373-8ade-4e832627b4f6` with the comment that the value "must remain stable so
   existing cache files keep resolving" — the generated keys are part of the on-disk format, not an
@@ -335,12 +421,16 @@ the long-text embedding recovery. The full story of these format decisions is in
 ## Build, formatting, and CI gates
 
 - **`mvn verify`** is the documented full check ([`README.md`](../../README.md), "Building"): the
-  whole unit suite plus the Docker-gated integration test, which simply skips without Docker. In
-  CI, [`.github/workflows/verify.yml`](../../.github/workflows/verify.yml) delegates to the shared
+  whole unit suite, both ArchUnit suites, and the Docker-gated integration test, which simply skips
+  without Docker; `BifrostIntegrationTest` likewise skips without its credentials. In CI,
+  [`.github/workflows/verify.yml`](../../.github/workflows/verify.yml) delegates to the shared
   `ardoco/actions/.github/workflows/maven.yml@main` workflow with `deploy: false`, submodules
   checked out, on `ubuntu-latest`; it triggers on pushes to `main` (ignoring `v*` tags) and on
   PRs, with `paths-ignore` for `docs/**` and `openwiki/**` so documentation-only changes do not
   trigger builds (and it can also be run manually via `workflow_dispatch`).
+- **Bifrost integration** has its own workflow: [`.github/workflows/bifrost.yml`](../../.github/workflows/bifrost.yml)
+  runs `BifrostIntegrationTest` against the real gateway on the same push/PR triggers, injecting
+  the `BIFROST_API_KEY`/`BIFROST_URL` secrets (see above).
 - **Formatting** is gated by Spotless, configured through the ardoco parent POM with the Eclipse
   profile in [`formatter.xml`](../../formatter.xml) and the import order in
   [`spotless.importorder`](../../spotless.importorder) (`java`, `javax`, `org`, `com`);
@@ -358,14 +448,15 @@ the long-text embedding recovery. The full story of these format decisions is in
 ## Running the tests
 
 ```sh
-mvn verify                                                          # full gate; RestRedisTest skips without Docker
+mvn verify                                                          # full gate; RestRedisTest skips without Docker, BifrostIntegrationTest without credentials
 mvn -q test -Dtest=CacheTest                                        # local cache backend
-mvn -q test -Dtest=CacheManagerTest,HierarchicalCacheTest,CacheReplacementStrategyTest
+mvn -q test -Dtest=CacheManagerTest,HierarchicalCacheTest,CacheReplacementStrategyTest,CacheKeySerializationTest
 mvn -q test -Dtest=ChatModelProviderTest,ChatConfigurationTest,CachingChatModelTest,ChatModelUtilsTest
 mvn -q test -Dtest=CachedEmbeddingCreatorTest,EmbeddingConfigurationTest
-mvn -q test -Dtest=KeyGeneratorTest,MapEnvironmentTest,SystemEnvironmentTest,FuturesTest
-mvn -q test -Dtest=NoGlobalEnvironmentTest                          # architecture rules
+mvn -q test -Dtest=KeyGeneratorTest,MapEnvironmentTest,SystemEnvironmentTest,FuturesTest,BifrostTest
+mvn -q test -Dtest=ArchitectureTest,NoGlobalEnvironmentTest         # architecture rules
 mvn -q test -Dtest=RestRedisTest                                    # requires Docker
+BIFROST_API_KEY=... BIFROST_URL=... mvn -q test -Dtest=BifrostIntegrationTest   # requires a live gateway
 ```
 
 ## Where to read next
@@ -375,7 +466,8 @@ mvn -q test -Dtest=RestRedisTest                                    # requires D
 - [Cache Hierarchy and Manager](../cache/cache-hierarchy.md) and
   [Cache Backends](../cache/cache-backends.md) — the behavior pinned by the cache tests, including
   the `UnifiedRedisClient` seam.
-- [Cache Keys](../cache/cache-keys.md) — the key format the backward-compatibility guardrails pin.
+- [Cache Keys](../cache/cache-keys.md) — the key format the backward-compatibility guardrails and
+  the `ArchitectureTest` completeness rules pin.
 - [Environment and Configuration](../concepts/environment-provider.md) — the seam the hermetic
   tests inject through.
 - [Cached Chat Requests](../chat/cached-chat.md) and [Embeddings](../embeddings/embeddings.md) —

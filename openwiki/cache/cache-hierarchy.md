@@ -20,13 +20,13 @@ openwiki:
     - setCacheDir and the no-environment constructors fall back to a new SystemEnvironment.
     - Hierarchy and replacement strategy are read at construction; Redis connection settings are read when a cache is first requested.
     - getCache memoizes by name and throws IllegalArgumentException when the same name is requested with parameters that are not equal.
-    - Colons in cache names are replaced with double underscores before use as file names.
+    - Colons in cache names are replaced with double underscores and forward or backward slashes with double hyphens before use as file names.
     - HierarchicalCache.put writes through to all layers; get reads all layers and backfills missing ones; flush cascades to every layer.
     - Base resolve backfills either direction (returning the present value) and otherwise returns the primary value; ERROR throws IllegalStateException on deepEquals-mismatched non-null values; OVERWRITE overwrites the secondary with the primary and returns the primary value.
   validation_commands: ["mvn -q test -Dtest=CacheManagerTest,HierarchicalCacheTest,CacheReplacementStrategyTest"]
 verified:
-  - by: openwiki/0.7.2
-    at: 2026-10-09T23:10:07.903Z
+  - by: openwiki/0.9.0
+    at: 2026-11-16T14:46:55.207Z
 sources:
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
@@ -40,6 +40,8 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/HierarchicalCache.java
   - id: openwiki-source-9c0be2a8e438a2a14ff8210b
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
+  - id: openwiki-source-406400bb0fa6384c6e01eaf2
+    resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisCache.java
   - id: openwiki-source-85b58b8b1c96d35aae37196c
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModel.java
   - id: openwiki-source-cc5a2b50d20e43f17b5eed14
@@ -54,6 +56,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheReplacementStrategyTest.java
   - id: openwiki-source-9f073181959c4e22c4336039
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/chat/CachingChatModelTest.java
+generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
 ---
 
 # Cache Hierarchy and Manager
@@ -127,8 +130,11 @@ implementations:
 
 - The name is `origin.getClass().getSimpleName() + "_" + parameters.parameters()`; passing a
   `null` origin or `null` parameters throws `IllegalArgumentException`.
-- Every colon in the name is replaced with a double underscore (`:` → `__`) before use, so model
-  names such as `a:b` produce safe file names (`CacheManagerTest_a__b_1.json`).
+- The name is sanitized before use as a file name: every colon becomes a double underscore
+  (`:` → `__`) and every forward or backward slash becomes a double hyphen (`/` and `\` → `--`),
+  so model names such as `a:b` and provider-prefixed names such as `openai/gpt-4o-mini` produce
+  flat file names (`CacheManagerTest_a__b_1.json`, `CacheManagerTest_openai--gpt-4o-mini_1.json`)
+  instead of path escapes or subdirectories.
 - The resulting `Cache` is **memoized by name** within the manager: a repeated request with
   parameters equal to the stored ones returns the same instance, while the same name requested
   with parameters that are **not** `equals` to the stored ones throws `IllegalArgumentException`
@@ -146,8 +152,9 @@ implementations:
 `Cache.createByType` (see [Cache Core](cache-core.md)) and folds them left into
 `HierarchicalCache` instances:
 
-1. One `ObjectMapper` is created per hierarchy build and handed to every layer, together with the
-   cache-file path `<cacheDir>/<name>.json` (the Redis-based layers ignore the file path).
+1. Every layer receives the cache-file path `<cacheDir>/<name>.json` (ignored by the Redis-based
+   layers) and the manager's shared static `ObjectMapper` (`MAPPER`, built once with Jackson 2
+   compatibility defaults).
 2. `Cache.createByType` instantiates `LocalCache`, `RedisCache`, or `RestRedisCache` per type.
 3. The created caches are folded left: the first cache starts as the composite, and each next
    cache is layered over it via `new HierarchicalCache<>(parameters, compositeSoFar, next, strategy)`.
@@ -269,8 +276,9 @@ layered caches without access to the original content (see [Cache Core](cache-co
 - `CacheManagerTest` — singleton lifecycle (`defaultInstanceRequiresDirectory`), `getCache`
   null rejection, memoization, the parameter-conflict `IllegalArgumentException`
   (`getCacheConflictsOnDifferentParameters`, using identity-unequal parameters with the same
-  identifier), colon sanitization in file names, flush persistence, constructor validation
-  (empty hierarchy, non-directory path), environment-driven configuration
+  identifier), file-name sanitization for colons, forward slashes, and backslashes (with
+  round-trip reload checks and no subdirectories being created), flush persistence, constructor
+  validation (empty hierarchy, non-directory path), environment-driven configuration
   (`readsConfigurationFromInjectedEnvironment`), and that the injected environment reaches the
   Redis cache (`passesEnvironmentToRedisCache`).
 - `HierarchicalCacheTest` — mock-based layer synchronization: `put` writes to both layers,
