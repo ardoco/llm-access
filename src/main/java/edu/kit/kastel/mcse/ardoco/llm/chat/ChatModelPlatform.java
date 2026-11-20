@@ -38,7 +38,6 @@ public enum ChatModelPlatform {
      */
     OPENWEBUI,
     /**
-     * 
      * Bifrost LLM gateway (OpenAI-compatible API).
      */
     BIFROST;

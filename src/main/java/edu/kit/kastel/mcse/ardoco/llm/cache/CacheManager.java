@@ -28,6 +28,8 @@ import tools.jackson.databind.json.JsonMapper;
  * <p>
  * Each cache manager holds the {@link EnvironmentProvider} it was created with; it reads the cache configuration
  * from it and passes it on to the Redis-based caches for their connection settings.
+ * <p>
+ * Cache managers are thread-safe.
  */
 public final class CacheManager {
     /**
@@ -45,7 +47,7 @@ public final class CacheManager {
      */
     private static final CacheReplacementStrategy DEFAULT_REPLACEMENT_STRATEGY = CacheReplacementStrategy.NONE;
 
-    private static @Nullable CacheManager defaultInstanceManager;
+    private static volatile @Nullable CacheManager defaultInstanceManager;
     private final Path directoryOfCaches;
     private final CacheReplacementStrategy replacementStrategy;
     private final List<CacheType> hierarchyConfig;
@@ -192,32 +194,25 @@ public final class CacheManager {
     }
 
     /**
-     * Gets a cache instance for the specified name.
+     * Gets the cache instance for the specified parameters.
      * This method is designed for internal use by model implementations.
-     * The cache name will be sanitized for use as a file name: colons are replaced by double underscores, and
-     * forward and backward slashes (e.g., in provider-prefixed model names like {@code openai/gpt-4o-mini}) are replaced by double hyphens.
+     * <p>
+     * The cache name is the {@link LargeLanguageModelCacheMode#cacheNamePrefix() cache name prefix} of the parameter's
+     * {@link CacheParameter#mode() mode}, an underscore, and {@link CacheParameter#parameters()}, e.g.,
+     * {@code Chat_gpt-4o-mini_133742243} or {@code Embedding_text-embedding-3-small}. It does not depend on the caller.
+     * The name is sanitized for use as a file name: colons are replaced by double underscores, and forward and backward
+     * slashes (e.g., in model names like {@code meta-llama/x}) are replaced by double hyphens.
      *
-     * @param origin     The class origin (caller, {@code this})
      * @param parameters a list of parameters that define what makes a cache unique. E.g., the model name, temperature, and seed.
      * @param <K>        The type of cache key used in this cache
-     * @return A cache instance for the specified name
+     * @return A cache instance for the specified parameters
+     * @throws IllegalArgumentException If the parameters are null, or if a cache with the same name but different parameters exists
      */
-    public <K extends CacheKey> Cache<K> getCache(Object origin, CacheParameter<K> parameters) {
-        if (origin == null || parameters == null) {
-            throw new IllegalArgumentException("Origin and parameters must not be null");
+    public synchronized <K extends CacheKey> Cache<K> getCache(CacheParameter<K> parameters) {
+        if (parameters == null) {
+            throw new IllegalArgumentException("Parameters must not be null");
         }
-        String name = origin.getClass().getSimpleName() + "_" + parameters.parameters();
-        return getCache(name, parameters);
-    }
-
-    /**
-     * Gets a cache instance for the specified name and parameters.
-     *
-     * @param name       The name of the cache
-     * @param parameters The parameters that define the cache configuration
-     * @return A cache instance for the specified name
-     */
-    private <K extends CacheKey> Cache<K> getCache(String name, CacheParameter<K> parameters) {
+        String name = parameters.mode().cacheNamePrefix() + "_" + parameters.parameters();
         name = name.replace(":", "__").replace("/", "--").replace("\\", "--");
 
         if (caches.containsKey(name)) {
@@ -293,7 +288,7 @@ public final class CacheManager {
      * Flushes all caches managed by this cache manager.
      * This ensures that all pending changes are written to disk.
      */
-    public void flush() {
+    public synchronized void flush() {
         for (Cache<?> cache : caches.values()) {
             cache.flush();
         }

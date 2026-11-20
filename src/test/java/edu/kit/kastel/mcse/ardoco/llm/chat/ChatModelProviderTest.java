@@ -46,6 +46,24 @@ class ChatModelProviderTest {
     }
 
     @Test
+    @DisplayName("Bifrost and OpenAI share the cache parameters, while modelName keeps the prefix")
+    void bifrostCacheParametersIgnoreProviderPrefix() {
+        ChatModelProvider bifrost = new ChatModelProvider(configuration(ChatModelPlatform.BIFROST, "openai/gpt-4o-mini", emptyEnvironment));
+        ChatModelProvider openAi = new ChatModelProvider(configuration(ChatModelPlatform.OPENAI, "gpt-4o-mini", emptyEnvironment));
+
+        assertEquals(openAi.cacheParameters(), bifrost.cacheParameters());
+        assertEquals("gpt-4o-mini", bifrost.cacheParameters().modelName());
+        assertEquals("openai/gpt-4o-mini", bifrost.modelName());
+    }
+
+    @Test
+    @DisplayName("Open WebUI model names are not stripped")
+    void openWebUiCacheParametersKeepName() {
+        ChatModelProvider provider = new ChatModelProvider(configuration(ChatModelPlatform.OPENWEBUI, "meta-llama/x", emptyEnvironment));
+        assertEquals("meta-llama/x", provider.cacheParameters().modelName());
+    }
+
+    @Test
     @DisplayName("createChatModel builds a lazy model when the required credentials are present")
     void buildsOpenAiModel() {
         ChatModel model = new ChatModelProvider(configuration(ChatModelPlatform.OPENAI, "gpt-4o-mini", openAiEnvironment)).createChatModel();
