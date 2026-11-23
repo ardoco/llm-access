@@ -3,6 +3,19 @@ type: Operations
 title: Testing Strategy
 description: How the llm-access library is tested — hermetic unit tests built on MapEnvironment and @TempDir, Mockito-based layer tests, the Docker-gated Testcontainers REST-Redis integration test plus the live-gated Bifrost smoke test, ArchUnit architecture rules for cache-key completeness and the no-global-environment invariant, LiSSA backward-compatibility guardrails, and the formatting gates.
 tags: [testing, junit, mockito, testcontainers, archunit, docker, ci, spotless]
+source_paths:
+  - .github/workflows/bifrost.yml
+  - .github/workflows/format.yml
+  - .github/workflows/verify.yml
+  - formatter.xml
+  - renovate.json
+  - spotless.importorder
+  - src/test/java/edu/kit/kastel/mcse/ardoco/llm/ArchitectureTest.java
+  - src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java
+  - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
+  - src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
+  - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/BifrostTest.java
+  - src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
 sources:
   - id: openwiki-source-606719b2dc777de859e4519b
     resource: repo://.github/workflows/bifrost.yml
@@ -16,6 +29,8 @@ sources:
     resource: repo://pom.xml
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
+  - id: openwiki-source-cc2828785988d51226a4241e
+    resource: repo://renovate.json
   - id: openwiki-source-707e671fef0d325c74a0833e
     resource: repo://spotless.importorder
   - id: openwiki-source-824a85d7be154153c14cda51
@@ -76,10 +91,10 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/util/NoGlobalEnvironmentTest.java
   - id: openwiki-source-bf8ab9bc4c233ef5bca4a282
     resource: repo://src/test/resources/cache/test-local-cache-sample.json
-generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-23T17:22:55.858Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-16T14:46:55.207Z
+    at: 2026-11-23T17:22:55.858Z
 ---
 
 # Testing Strategy
@@ -373,9 +388,14 @@ return a non-empty vector.
 
 The [`bifrost.yml`](../../.github/workflows/bifrost.yml) workflow is what supplies those variables
 in CI: it triggers on pushes to `main` and on PRs (with the same `paths-ignore` for `docs/**` and
-`openwiki/**` as the other workflows, plus `workflow_dispatch`), skips forks and Dependabot because
-secrets are unavailable to them, exports `BIFROST_API_KEY` and `BIFROST_URL` from repository
-secrets, and runs `mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`
+`openwiki/**` as the other workflows, plus `workflow_dispatch`), and its job-level `if` —
+`github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]'` — skips
+fork PRs, where secrets are unavailable, and carries over a `dependabot[bot]` actor check that is
+a legacy holdover from when Dependabot opened the dependency PRs: dependency PRs now come from
+Renovate (see [Operations and Deployment](../operations/deployment.md)), whose same-repository
+branches are not forks and therefore still run this job. The job exports `BIFROST_API_KEY` and
+`BIFROST_URL` from repository secrets and runs
+`mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`
 with the same POM-derived JDK and Maven 3.9.16 used by the shared verify workflow.
 
 The Bifrost credential handling itself is pinned hermetically by `BifrostTest` in the util

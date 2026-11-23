@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:88e0618971fd9be6fbca2bca4b2c3a0d5d1701e82d9188374a75b8820f402abc",
+  "pageVersion": "sha256:3611ccce46e75fd832d2d7ec09446dbe1e705864ce45940d567f294ff26176b6",
   "claims": [
     {
       "id": "claim_1ab7c570d759475992727836a5d6aa47",
@@ -139,20 +139,6 @@
         {
           "resource": "repo://README.md#L250-L278",
           "version": "repo-lines-v1:sha256:3092f6cc30ea456791c3c85193fcaba2d2f1903a07adb1b6145472e8c5cc3b5f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI4OTQ4ZDhjNTNmMjBiOGRkMjgzZmRmZTNjNDg3NzYzYzUxMmFmYzEwYjM0MTZjOTg2NjU3YTk0ZWJkNzFmYTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ4MDIyMzBjODNiOWVkYTcxYTlkMWMxZjI1ZmRjNTllNGE2MTI1MTAzZmRlMmRmMzI4ZGU2OGU4NjY5NGY5YjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjOWQ3MDdhMmU2YWY2OTRkY2JlM2Y2YzgxYTYxNTcwZmNhZTI3YjM1MDY4M2I4OGUxMmMwMmUyZTU0YTFjYmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE0MWYxYTk4NGFlMjQ0ZDhhNmQyN2RmOWRjZjlkZjIyZTdmZTAzMDc0NzRjNGZjNGNkZjg1ZjViMDI5OTA2YjIifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_494da28d8a484a65865ee7fd52d139e1",
-      "statement": "The REST-Redis backend is served by org.fuchss:rest-redis (version 0.1.5 in this library's dependency set), published as the ghcr.io/dfuchss/rest-redis Docker image and configured via server_config.json with the keys redis_host, redis_port, and http_port. The intended topology is client → reverse proxy (TLS + Basic auth) → REST-Redis server → Redis, because the server itself has no built-in authentication or TLS; on a trusted network the client may point REST_REDIS_URI at the server directly.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L288-L347",
-          "version": "repo-lines-v1:sha256:a3ba5a0a56e434f8a3e304c8eae71d54bfe0bd92a2e4b589cfba30b762ecd8bc:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxZDA1ZjQ0OGU2MTdjY2RhYzA5ZmNiYWRjNTI4OTdkMDUxNTFkNmMzMTc2MTMwMjJlNWY5NzY5MjFhNzRjODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkMjg2MmIwMDQ0NzhjMDdmMDE3ZTFkMWJhNmRiYTBhYzc2NGFiZDIyZTVlMjE0ZTg1NmZkNDZlYWZiOTE1NzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0YzE0NzdiMDliOWRhOTE5NWEwMDBhYzlhNWI3MDg3NTc2ZDA0OTEyMTk2ZmI4ZmI0ZTQ4NmZkNzUzYTc0YjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ4MmE3MDVlZWFhMmNkMDQ1OTJjNjg4Y2VjMjJhNmE5MzZhODZiZWJlMTc3ZDA3MzE0OGVhYmFlZThlMTBlNTkifQ"
-        },
-        {
-          "resource": "repo://pom.xml#L100-L103",
-          "version": "repo-lines-v1:sha256:31e27d8b27797f69b5ccbf8f55e803ce5d6c918de473cd765af9ab4d7ecc572f:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJjOTMzMDQ2NGYxOGZmYzYyZDUxYWNlNDI2YmMyOGVmNmFhY2UxZDljMzU4MzJhMzU0ODFjODFhMDExZTRjZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzlmNzI2YzgzNGNjMTQ4YzZiMzdjYmQzY2UyOTc2NDQyMDFmMTAzYzZjYzMzNjljODIwNjY3ZDFkMzlhYzk5MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2Y1NDg1ZWZiMzQ0ZjcyMmVhMjJmMWQwN2E2MTk5ZmEwZjk4MTVhMzk3Y2ZjZDJkNWQ5OGRkYTUzYzlmNDI5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDE4NDcxNmFmODFlMjIyYmVmMjMwZDBlMDc5YWU5MGU4OWEwYWEwYzY5YmMxNzdiNzk0MmRiOTVhNWMyM2NiNCJ9"
         }
       ]
     },
@@ -325,10 +311,24 @@
           "version": "repo-file-v1:sha256:1cad0cd7ecffb40ec3302e625f2b54f29362c5c0040002e68c30e929777e62af"
         }
       ]
+    },
+    {
+      "id": "claim_fdf044f63e914b499de33c403ee4c896",
+      "statement": "Dependency upkeep is automated by Renovate, configured in renovate.json. The file extends only the external preset local>ArDoCo/actions:renovate-preset, so the update schedule, cadence, and commit-message conventions are defined by that preset rather than in this repository. Locally it adds a single packageRules entry matching dev.langchain4j:langchain4j-embeddings** with allowedVersions /.*/ and ignoreUnstable false, described as \"langchain4j-embeddings is only published as -beta (accepted exception); keep it updated in step with langchain4j\" — disabling Renovate's default stability filtering for that artifact so it can track its -beta releases in lockstep with the LangChain4j BOM version pinned in pom.xml.",
+      "evidence": [
+        {
+          "resource": "repo://pom.xml#L39-L46",
+          "version": "repo-lines-v1:sha256:1741be1b017b95b0b2f8d5ce9f9f0dc0213c550f75b9ae86046cef1d9f7d3d01:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmNlOGRmM2MwNWY4NTNkYTZmMGZlZDU3NWVmYzY5YzhmN2E5NDE3Y2JlYTMyMWM4NjU3ZGY1YThjN2VlZGQ3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWU4NzdlZWQwYzI5YTliZTYzNmMwMGE5OGJjYWQ4ZmU2OTJhNDI2ZGVkNzA0MmI1ODdjOGIyYzFkNzJhM2UzMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODkxMjY1ODQxMTZjYzIzNzg1OWQyYTZhNTZkYzI5NjVlMjE5MGE3MWY4MTQ4ODNiODVlNjU1NDkzM2I1YTM2ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzNhZmZkNWJlZjhmNjA5MzAyY2ZiNDVhNTcxZmVlMjA3ZTRhZGZiZDUzOTdjZjI2MGUzNTg1Mjk3OTNiYWU4OSJ9"
+        },
+        {
+          "resource": "repo://renovate.json#L1-L12",
+          "version": "repo-lines-v1:sha256:6bf28b8c83debeb6a678fa990999028a99a833ab5260f4b7b51ba3c462412b0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-16T14:46:55.207Z"
+    "at": "2026-11-23T17:22:55.858Z"
   }
 }
