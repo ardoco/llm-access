@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a9ab2a3334aa5ecca87533250c085ec253fc3458ff71b011f6c96472a8c52988",
+  "pageVersion": "sha256:2a0482fffa4616e1a95dff820a5dd9dd7dd691cf011e41355df02df6a76b5e55",
   "claims": [
     {
       "id": "claim_f395d12a6ba847f0becfe4183426fbf5",
@@ -129,10 +129,38 @@
           "version": "repo-lines-v1:sha256:7636526497a670a45a1010cfd677f6ee2a71b37c6647579a96c52eb3fb1b0504:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMTRkMTc4YmY5MTgwMmE1NzI5NDc0ZDc3ZGJhOGNkNGUzYTkzMzI5YzFlOWI1NWU0OTlmMWJjYjRmODM3MjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyNjI0NjIyZWY5ZmZlOGFlOWUzNGJkMTJhOGVhMmFjMWMxOTY5NzI0MjMxNjA2N2Q3ZDE5MzkyMGE4MjYwMjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiYWMxOGVlZTdlZGMzZTBkNjY4ZmZjYjc1ZTk2OTFhMDFmZWFjNmIxMTI0NWRiOTYwMDk3ZGViNDJiNzI5MDAifQ"
         }
       ]
+    },
+    {
+      "id": "claim_4fdcb13dea5e45d48ec63c9406a02897",
+      "statement": "In CI, .github/workflows/bifrost.yml runs the live BifrostIntegrationTest against the real Bifrost gateway, passing BIFROST_API_KEY and BIFROST_URL from repository secrets; the workflow's single bifrost job is gated by a job-level if condition that skips fork pull requests and the dependabot[bot] actor, because secrets are unavailable to those contexts.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/bifrost.yml#L24-L28",
+          "version": "repo-lines-v1:sha256:7dc8332ceff919892c23f0beacbabc105c608506d3ad28b32588f53a08f058a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlkODAxNTRlZDQyZmM1Yzc3OWIxMzMxNTc4YjU4Yjg5YzgwMWVhY2U3NGYyNGNkNDhlYjRhMjM1Nzk0MGE5NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMzNzMzNGFlYzBkY2IyNGU0MGUzYzIwZGMwOWQ1OWFmNjc0M2QwMjdkYmZmNTBjMWFjYTA4OTc0NzExNzY3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxZDcwZDcyYmFkMjMxZDQzYzU3NWFjZWY2OTQ2NTgwZTQzOWM4Nzk3OTRlZDJlYTFmNGE0MDM0MDI0NTE3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGQwN2Y1ZmI5ZTBlMDcyNjdjMzhlODFiZGNkZDAzYTUzNWQzOTlmMjkxNTgxYTBjMTg0YjA4NGM0MjY2ODRkYSJ9"
+        },
+        {
+          "resource": "repo://.github/workflows/bifrost.yml#L55-L59",
+          "version": "repo-lines-v1:sha256:2bf62bbdf4e5ed2127571999ecaa6532516f1ff6bca94095656d42448bd0a80d:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjA0OGM5YzA3NzRhOWEyOGJkOWI0NDQ4OWMyZmFmMDJmNDEwNjUwMjE4MjA2MjA4OGQ5ODhjMGM4NzJiMTdhZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU3ZmUxYzgyNTI2OTVjZDljNjA2OWM3NGZmNDQ3OTZkZGYwZTU1NThkMDdhYjUxZDI0ODIwOWIxMWZlZmRlOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDczMzJiMmViMGNjZGI5M2RiYTczOTY3ZmRhOGJhMzFmNjZlZTJkZTNkODhhODQzMTNlOWM0NjkzNWFlYjNkYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODU2ZTBiYzdhYjQ0Y2U0OWM5ZGZkZDFiZDgwYzdmYjYwZDNjOTgxZmE1NWExYmE4NzdmNDM2NTdjOTVkNzIxYiJ9"
+        },
+        {
+          "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java#L24-L28",
+          "version": "repo-lines-v1:sha256:75174c0b94558c77229cee73c8544e0f758ca62db4bac68783d602810a1d7762:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzg2OThlMzA1YzM3MDA3YmM3MDY5NDM0OTc2YTNhM2U5OTMzMjM1N2YzZDc0ZDVjZDQxZmEyOGRhYThmZTE0OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDAxMzVkZTNlYjM1NmM2MTk4Y2NlNTlkYmU1N2FlNWY4ZDUyZTE1ZjliODkzMzZiODA2MzIzMGMxMmE1ZWM2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjA5ODRjZjg5NTcxMDRiZTQyOGNiZmVlY2FjNjQ0YWNmNjVkZTMxOTUxMTFkMjc5NDBhYWFkY2RmMTc3YmE5YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzkwYTRhYmM4NjU1MTI3ZjFmYTJlYTFjNjY1NWQ3YmIwNWNlMjNlMzBjYzY2NmVhZWRiOTI5ZTc3NmNmZGE3ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_715999dd525b4551a84f9340a1bc098a",
+      "statement": "Dependency-update pull requests are produced by Renovate, not Dependabot: renovate.json extends the shared local>ArDoCo/actions:renovate-preset and adds a package rule for dev.langchain4j:langchain4j-embeddings** — which upstream publishes only as -beta versions — with allowedVersions /.*/ and ignoreUnstable: false, keeping that artifact updated in step with langchain4j.",
+      "evidence": [
+        {
+          "resource": "repo://renovate.json#L1-L12",
+          "version": "repo-lines-v1:sha256:6bf28b8c83debeb6a678fa990999028a99a833ab5260f4b7b51ba3c462412b0e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-16T14:46:55.207Z"
+    "at": "2026-11-23T17:22:55.858Z"
   }
 }

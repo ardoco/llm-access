@@ -5,18 +5,22 @@ description: Entry point to the OpenWiki knowledge base for the llm-access libra
 tags: [quickstart, overview, routing, caching]
 openwiki:
   roles: [architecture, repository]
-  source_paths: [.github/workflows/verify.yml, AGENTS.md, README.md, pom.xml, sample.env]
+  source_paths: [.github/workflows/bifrost.yml, .github/workflows/verify.yml, AGENTS.md, README.md, pom.xml, renovate.json, sample.env, src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java, src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java]
   validation_commands: ["mvn verify"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-16T14:46:55.207Z
+    at: 2026-11-23T17:22:55.858Z
 sources:
+  - id: openwiki-source-606719b2dc777de859e4519b
+    resource: repo://.github/workflows/bifrost.yml
   - id: openwiki-source-4320a40cc58d6de85374b359
     resource: repo://.github/workflows/verify.yml
   - id: openwiki-source-2355f81d7cf522f8dbdaabd4
     resource: repo://pom.xml
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
+  - id: openwiki-source-cc2828785988d51226a4241e
+    resource: repo://renovate.json
   - id: openwiki-source-4fd2e823addcf84d995a9216
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
   - id: openwiki-source-ba0dc6c01c930c4c675be60f
@@ -27,13 +31,15 @@ sources:
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/EnvironmentProvider.java
   - id: openwiki-source-91e90e06abef694a92ea2a06
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/util/KeyGenerator.java
+  - id: openwiki-source-38a704b0c016c8a6264f5154
+    resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java
   - id: openwiki-source-30f99b58023b3a9a8c01b6d4
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-80764162ff1e0089fe344077
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheTest.java
   - id: openwiki-source-77fcb76d829af13337d04708
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-23T17:22:55.858Z" }
 ---
 
 # ARDoCo LLM Access
@@ -81,7 +87,7 @@ latency down. The on-disk format is compatible with LiSSA's existing caches. See
 | [Cache Hierarchy and Manager](cache/cache-hierarchy.md) | `CacheManager`, `HierarchicalCache`, `CacheReplacementStrategy`, write-through and backfill semantics |
 | [Cache Backends](cache/cache-backends.md) | `LocalCache`, `RedisCache`, `RestRedisCache`, and the `UnifiedRedisClient` seam |
 | [Environment and Configuration](concepts/environment-provider.md) | The `EnvironmentProvider` seam (`SystemEnvironment`, `MapEnvironment`), which variables each subsystem reads, and the no-global-environment invariant |
-| [Operations and Deployment](operations/deployment.md) | Deploying LOCAL, Redis, and REST-Redis, the replication-package workflow, the fail-fast connection contract, and the CI/release pipelines |
+| [Operations and Deployment](operations/deployment.md) | Deploying LOCAL, Redis, and REST-Redis, the replication-package workflow, the fail-fast connection contract, the CI/release pipelines, and dependency upkeep via Renovate |
 | [Testing Strategy](testing/strategy.md) | Hermetic unit tests, Mockito layer tests, the Docker-gated `RestRedisTest`, ArchUnit architecture rules, backward-compatibility fixtures, and the formatting gates |
 
 ## Task routing table
@@ -99,7 +105,7 @@ repository paths.
 | Change layering / conflict strategy | [Cache Hierarchy and Manager](cache/cache-hierarchy.md) | `cache/CacheManager.java`, `cache/HierarchicalCache.java`, `cache/CacheReplacementStrategy.java` | `CacheManager.getCache`, `HierarchicalCache`, `CacheReplacementStrategy` | `CacheManagerTest`, `HierarchicalCacheTest`, `CacheReplacementStrategyTest` | `mvn -q test -Dtest=CacheManagerTest,HierarchicalCacheTest,CacheReplacementStrategyTest` |
 | Add or change a cache backend | [Cache Backends](cache/cache-backends.md) | `cache/LocalCache.java`, `cache/RedisCache.java`, `cache/RestRedisCache.java`, `cache/UnifiedRedisClient.java` | `LocalCache`, `RedisCache`, `RestRedisCache`, `UnifiedRedisClient`, `RedisAdapter`, `RestRedisAdapter` | `CacheTest`, `RestRedisTest` | `mvn -q test -Dtest=CacheTest` (REST-Redis needs Docker) |
 | Change env/credential handling | [Environment and Configuration](concepts/environment-provider.md) | `util/EnvironmentProvider.java`, `util/SystemEnvironment.java`, `util/MapEnvironment.java` | `EnvironmentProvider`, `SystemEnvironment`, `MapEnvironment`, `Bifrost`, `KeyGenerator.generateKey`, `Futures.getLogged` | `SystemEnvironmentTest`, `MapEnvironmentTest`, `KeyGeneratorTest`, `FuturesTest`, `BifrostTest`, `NoGlobalEnvironmentTest` | `mvn -q test -Dtest=SystemEnvironmentTest,MapEnvironmentTest,KeyGeneratorTest,FuturesTest,BifrostTest,NoGlobalEnvironmentTest` |
-| Deployment / CI / release | [Operations and Deployment](operations/deployment.md) | `README.md`, `.github/workflows/*`, `pom.xml`, `sample.env` | `CACHE_HIERARCHY`, `CACHE_REPLACEMENT_STRATEGY`, `REDIS_URL`, `REST_REDIS_URI`, `central-publishing-maven-plugin` | `BifrostIntegrationTest` | `BIFROST_API_KEY=… BIFROST_URL=… mvn -q test -Dtest=BifrostIntegrationTest` (needs a live gateway); `mvn verify` otherwise |
+| Deployment / CI / release | [Operations and Deployment](operations/deployment.md) | `README.md`, `.github/workflows/*`, `renovate.json`, `pom.xml`, `sample.env` | `CACHE_HIERARCHY`, `CACHE_REPLACEMENT_STRATEGY`, `REDIS_URL`, `REST_REDIS_URI`, `central-publishing-maven-plugin` | `BifrostIntegrationTest` | `BIFROST_API_KEY=… BIFROST_URL=… mvn -q test -Dtest=BifrostIntegrationTest` (needs a live gateway); `mvn verify` otherwise |
 | Test approach / build gates | [Testing Strategy](testing/strategy.md) | `src/test/java/**`, `.github/workflows/verify.yml`, `formatter.xml`, `spotless.importorder` | `MapEnvironment`, `@TempDir`, `@Testcontainers(disabledWithoutDocker = true)`, `CacheManager.resetDefaultInstance` | — | `mvn verify` |
 
 ## Build and test
@@ -111,11 +117,17 @@ mvn verify
 `mvn verify` is the full check: the whole unit suite plus the ArchUnit architecture rules, plus the
 Testcontainers-based REST-Redis integration test ([Testing Strategy](testing/strategy.md)), which is skipped
 automatically when no Docker environment is available, and the live-gated `BifrostIntegrationTest`, which is
-skipped unless both `BIFROST_API_KEY` and `BIFROST_URL` are set (in CI, `.github/workflows/bifrost.yml` runs
-it against the real gateway and skips forks and Dependabot, where the secrets are unavailable). Focused runs
+skipped unless both `BIFROST_API_KEY` and `BIFROST_URL` are set (in CI, `.github/workflows/bifrost.yml` runs it
+against the real gateway; its job-level `if` condition skips fork pull requests and the `dependabot[bot]`
+actor, to which those secrets are not exposed). Focused runs
 use the `mvn -q test -Dtest=…` commands from the routing table above. Formatting is enforced via Spotless
 (`mvn spotless:apply` locally); the formatting bot applies its result automatically on PRs to `main`
 ([Operations and Deployment](operations/deployment.md)).
+
+Dependency-update pull requests come from Renovate, not Dependabot: `renovate.json` extends the shared
+`local>ArDoCo/actions:renovate-preset` preset and adds a package rule for `dev.langchain4j:langchain4j-embeddings**`
+— which upstream publishes only as `-beta` versions — with `allowedVersions: /.*/` and `ignoreUnstable: false`,
+keeping that artifact updated in step with `langchain4j` ([Operations and Deployment](operations/deployment.md)).
 
 Tests that touch the default `CacheManager` share one static singleton: they call
 `CacheManager.setCacheDir(tempDir, environment)` in `@BeforeEach` for a fresh manager backed by an injected

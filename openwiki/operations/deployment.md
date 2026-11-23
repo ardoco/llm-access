@@ -14,6 +14,7 @@ openwiki:
     - .github/workflows/verify.yml
     - README.md
     - pom.xml
+    - renovate.json
     - sample.env
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
     - src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/RedisCache.java
@@ -27,7 +28,7 @@ openwiki:
   validation_commands: ["mvn verify", "mvn -q test -Dtest=RestRedisTest"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-16T14:46:55.207Z
+    at: 2026-11-23T17:22:55.858Z
 sources:
   - id: openwiki-source-606719b2dc777de859e4519b
     resource: repo://.github/workflows/bifrost.yml
@@ -43,6 +44,8 @@ sources:
     resource: repo://pom.xml
   - id: openwiki-source-23775c3de52f3ab95a13cb8b
     resource: repo://README.md
+  - id: openwiki-source-cc2828785988d51226a4241e
+    resource: repo://renovate.json
   - id: openwiki-source-4fd2e823addcf84d995a9216
     resource: repo://src/main/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManager.java
   - id: openwiki-source-9a928fd3a5261773953a3859
@@ -63,7 +66,7 @@ sources:
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/CacheManagerTest.java
   - id: openwiki-source-77fcb76d829af13337d04708
     resource: repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/cache/RestRedisTest.java
-generated: { by: "openwiki/0.9.0", at: "2026-11-16T14:46:55.207Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-23T17:22:55.858Z" }
 ---
 
 # Operations and Deployment
@@ -334,7 +337,10 @@ re-run.
   `dotenv-java` `3.2.0`, and ArchUnit `1.5.1` (test scope). Dependencies resolve from three
   repositories: Maven Central, the Sonatype snapshot repository
   (`central.sonatype.com/repository/maven-snapshots`), and the read-only ARDoCo mirror group on
-  `gitlab.kit.edu` (`ardocoSnapshots`).
+  `gitlab.kit.edu` (`ardocoSnapshots`). The `dev.langchain4j:langchain4j-embeddings` artifact is
+  the accepted exception in this set: it is published only as `-beta`, and dependency automation
+  is explicitly configured to accept those unstable versions so the artifact stays in lockstep
+  with the pinned LangChain4j version (see below).
 - **Publishing:** `central-publishing-maven-plugin` is configured with `publishingServerId`
   `central`, `autoPublish=true`, `waitUntil=published`, and `deploymentName=ardoco-llm-access` —
   overriding the parent's default deployment name so the bundle is named distinctly in the
@@ -348,7 +354,7 @@ re-run.
 | Workflow | Trigger | What it does |
 | --- | --- | --- |
 | `verify.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual | Runs the shared ardoco Maven workflow (`ardoco/actions/.github/workflows/maven.yml@main`) with `deploy: false` and submodules checked out; `paths-ignore` for `docs/**` and `openwiki/**` keeps wiki- or doc-only changes from triggering builds. |
-| `bifrost.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual; `paths-ignore` for `docs/**` and `openwiki/**` | Runs `BifrostIntegrationTest` against the real Bifrost gateway with the `BIFROST_API_KEY` and `BIFROST_URL` secrets. Because secrets are unavailable to forks and Dependabot, the job is skipped for both (`github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]'`). It derives the JDK major version inline from the POM (see below), installs temurin plus Maven 3.9.16 (the same Maven version as the ardoco actions workflow), and runs `mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`. |
+| `bifrost.yml` | push to `main` (ignoring `v*` tags), PRs (opened/synchronize/reopened), manual; `paths-ignore` for `docs/**` and `openwiki/**` | Runs `BifrostIntegrationTest` against the real Bifrost gateway with the `BIFROST_API_KEY` and `BIFROST_URL` secrets. Because secrets are unavailable to forks and Dependabot, the job is skipped for both (`github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]'`). It derives the JDK major version inline from the POM (see below), installs temurin plus Maven 3.9.16 (the same Maven version as the ardoco actions workflow), and runs `mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`. The `dependabot[bot]` actor check is a legacy holdover from when Dependabot opened the dependency PRs; dependency PRs now come from Renovate, whose same-repository branches are not forks and therefore still run this job. |
 | `format.yml` | PRs to `main` (no path filter), manual | Checks out with `actions/checkout@v7` (submodules, full history), derives the JDK major version from the POM (see below), installs temurin via `setup-java@v6` with the Maven cache, runs `mvn -B spotless:apply --file pom.xml`, and auto-commits the result with `stefanzweifel/git-auto-commit-action@v7` as "Apply formatting changes". |
 | `deploy-snapshot.yml` | manual (`workflow_dispatch`) only | Deploys the selected branch to the GitLab package registry via the shared `ardoco/actions/.github/workflows/maven-snapshot.yml@main` workflow, passing `gitlab-project-id: "203213"` — the read-only mirror `kit/kastel/sdq/research-projects/ardoco/llm-access` on `gitlab.kit.edu` — with secrets inherited. |
 | `openwiki.yml` | weekly schedule (`0 6 * * 1`, Monday 06:00 UTC), manual | Delegates to the shared `ardoco/actions/.github/workflows/openwiki.yml@main` workflow with `contents: write` and `pull-requests: write`, forwarding only `OPENROUTER_API_KEY`. The update logic (commit gating, PR creation) lives in that shared workflow, not in this repository's file. |
@@ -363,8 +369,17 @@ formatter's and the integration test's JDK on whatever the build targets (Java 2
 `spotless:apply` rewrites code with the same toolchain the build and tests use; a hand-pinned
 version could drift from the POM as the parent POM's compiler settings evolve.
 
-Dependency upkeep is automated: Dependabot opens weekly update PRs for the `github-actions` and
-`maven` ecosystems (Wednesdays 11:00 Europe/Berlin) with the commit-message prefix `Dependency`.
+Dependency upkeep is automated by Renovate, configured in
+[`renovate.json`](../../renovate.json) (it replaced the former `.github/dependabot.yml`). The
+file extends only the shared preset `local>ArDoCo/actions:renovate-preset`, so the update
+schedule, cadence, and commit-message conventions are defined by that external preset and not in
+this repository. What `renovate.json` itself adds is a single `packageRules` entry matching
+`dev.langchain4j:langchain4j-embeddings**`, described as "langchain4j-embeddings is only
+published as -beta (accepted exception); keep it updated in step with langchain4j", with
+`allowedVersions: /.*/` and `ignoreUnstable: false` — Renovate's default stability filtering
+would otherwise hide the `-beta` releases, and this rule disables it for the embeddings artifact
+so it can be kept at its `-beta` release in lockstep with the LangChain4j BOM version (`1.23.0`)
+pinned in `pom.xml`.
 
 ## Where to read next
 

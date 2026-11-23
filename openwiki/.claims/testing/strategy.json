@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:29a2309971528c71bfcac88b92a9f8aad91838b812a93fd42e6b41a1ed0c3303",
+  "pageVersion": "sha256:be1cdfddd241cfc0ec25d62d3cbd972c421c66a258462eba6ca198acbfd6996a",
   "claims": [
     {
       "id": "claim_8bd620070ac149ba83c31f8f4c2fc102",
@@ -344,15 +344,19 @@
     },
     {
       "id": "claim_e25b3ef07a1c49869d9996b9033eaa54",
-      "statement": "BifrostIntegrationTest is the suite's live-gated test: @EnabledIfEnvironmentVariable(named = \"BIFROST_API_KEY\", matches = \".+\") and the same for BIFROST_URL skip it wherever those credentials are absent (including plain mvn verify); enabled, it reads credentials from a SystemEnvironment and smoke-tests a real Bifrost gateway with one chat request (openai/gpt-4o-mini must return a non-blank answer) and one embedding request (openai/text-embedding-3-small over a @TempDir LOCAL/ERROR cache manager must return a non-empty vector); the bifrost.yml workflow supplies both values from repository secrets on pushes to main and PRs, skipping forks and Dependabot because secrets are unavailable to them, and runs mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test.",
+      "statement": "BifrostIntegrationTest is the suite's live-gated test: @EnabledIfEnvironmentVariable(named = \"BIFROST_API_KEY\", matches = \".+\") and the same for BIFROST_URL skip it wherever those credentials are absent (including plain mvn verify); enabled, it reads credentials from a SystemEnvironment and smoke-tests a real Bifrost gateway with one chat request (openai/gpt-4o-mini must return a non-blank answer) and one embedding request (openai/text-embedding-3-small over a @TempDir LOCAL/ERROR cache manager must return a non-empty vector); the bifrost.yml workflow supplies both values from repository secrets on pushes to main and PRs (with paths-ignore for docs/** and openwiki/** plus workflow_dispatch), gates its only job with if github.event.pull_request.head.repo.fork != true && github.actor != 'dependabot[bot]', and runs mvn -U -B -Dtest=BifrostIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/bifrost.yml#L3-L16",
-          "version": "repo-lines-v1:sha256:e2e3f76e131363b37d4fc7460cc7f7e9edbe741610ca6d0c469dd1dfab426ed2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NmRjNDgxNDlmNWE4M2QxZWQ2ZGJiMzliYmM3ZTJiOTAyYWEzZDM0ZDZiZDVhZTRiMjkxYjY4ZGYwY2E3OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3NWQ4ZjY4YWM0ZWFjNTAyNzBhNjY0ZTYxYjQ3NmQyZjg0MjdkZWVhOWFmMjQ1ZDEyYjhiZjQ5MWI2OTZjY2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkYTA2YTEwYTRjMWRkN2E0Yzg2MTU4Yzc2Y2M4Y2E3NDBlNTk3Y2I1ODMzZjVkMGIzMjQzMTU1ZmE2MjY3YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliMTI4OWYzMzAzNmExYWFkMGI2NWE0MDcwMzAwODJlYzM4ZGU0NTJjYmIyMzRhYmFjOWFkNjg1NTlmYjM4YTUifQ"
+          "resource": "repo://.github/workflows/bifrost.yml#L24-L28",
+          "version": "repo-lines-v1:sha256:7dc8332ceff919892c23f0beacbabc105c608506d3ad28b32588f53a08f058a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlkODAxNTRlZDQyZmM1Yzc3OWIxMzMxNTc4YjU4Yjg5YzgwMWVhY2U3NGYyNGNkNDhlYjRhMjM1Nzk0MGE5NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMzNzMzNGFlYzBkY2IyNGU0MGUzYzIwZGMwOWQ1OWFmNjc0M2QwMjdkYmZmNTBjMWFjYTA4OTc0NzExNzY3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxZDcwZDcyYmFkMjMxZDQzYzU3NWFjZWY2OTQ2NTgwZTQzOWM4Nzk3OTRlZDJlYTFmNGE0MDM0MDI0NTE3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGQwN2Y1ZmI5ZTBlMDcyNjdjMzhlODFiZGNkZDAzYTUzNWQzOTlmMjkxNTgxYTBjMTg0YjA4NGM0MjY2ODRkYSJ9"
         },
         {
-          "resource": "repo://.github/workflows/bifrost.yml#L31-L63",
-          "version": "repo-lines-v1:sha256:22ea2bfaf69193107ac0fdacc3cedbd6133e11ef55772052511c097af04141d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjYWNmNDliYTYwZGRlN2Q1NTE1NDJiZTk2NWE1ZTc3MGFjYjQ1ZjljMjc1YzFlMDZmYjI4MGQ1ZGM3NjEyMGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMjcxYTkzZGYwNzQzMjA5N2NmY2E5NTg1MTA4MGI4N2I0ZjJjNGFmZTBmNGZmMmExZGQwNTY5YTk4ZjlkMDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyYTI1MDc5ZjEyYmNmOGMwNTc0YzI5NzRiYjE2Y2UyNjU2MGJjODgyN2VhMzU3N2Q4ZjZkNjUyOTBlZDVhZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://.github/workflows/bifrost.yml#L3-L19",
+          "version": "repo-lines-v1:sha256:e8a4a7dba4a2d9dd863cede5c021e136214be64bc401910aaeb7906163f53f08:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NmRjNDgxNDlmNWE4M2QxZWQ2ZGJiMzliYmM3ZTJiOTAyYWEzZDM0ZDZiZDVhZTRiMjkxYjY4ZGYwY2E3OWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMmZhNzNmMDcwNDg5ZDk3MjRhMDI5ZGZiNTAyYWEwODg1MDdkMDg1NzliYmJjYzk0ZWQ5MzVjMWEwNTMzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkYTA2YTEwYTRjMWRkN2E0Yzg2MTU4Yzc2Y2M4Y2E3NDBlNTk3Y2I1ODMzZjVkMGIzMjQzMTU1ZmE2MjY3YWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlMjc0MjI0ZTk4Mjg4MWQ5ODFiOGFkZGZkZGM5ODgwYjJmMWQwNzgwMzE1ZDcwZDVkNTE5MWM3NWY5NWE1YjIifQ"
+        },
+        {
+          "resource": "repo://.github/workflows/bifrost.yml#L59-L63",
+          "version": "repo-lines-v1:sha256:f6ff7ca7fbb599ea9f9e3b69db079bc715ed87bbba9c257ee9d28b25126555c4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTU3ZmUxYzgyNTI2OTVjZDljNjA2OWM3NGZmNDQ3OTZkZGYwZTU1NThkMDdhYjUxZDI0ODIwOWIxMWZlZmRlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYyNzFhOTNkZjA3NDMyMDk3Y2ZjYTk1ODUxMDgwYjg3YjRmMmM0YWZlMGY0ZmYyYTFkZDA1NjlhOThmOWQwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODMwMDk0ZTZiN2YyMGQwNDFmNjE2NTYwNDE4MWQzOTc3OWFiZWYzNGNhMjEzZDc0ZjFjZDc1ZTNlYTRkNDg4YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         },
         {
           "resource": "repo://src/test/java/edu/kit/kastel/mcse/ardoco/llm/BifrostIntegrationTest.java#L27-L66",
@@ -379,10 +383,24 @@
           "version": "repo-lines-v1:sha256:7e769f259183df867875f62f44c67449c623ecd8a19102bd4e7f92de65b7eb36:eyJzZWxlY3RlZExpbmVDb3VudCI6NzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMTc2MzE0Yzk3NmFhZWE2NTBlNTdjMmVmZTEzNGQ0MmE4MTY0NWI2MTZlMjgzNzUyN2ZhNzk3NDA5ODVkM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZjA5ZWIwYzU3NDRmYjk3MzMxYjk4ZmYzZmJmMDVhNjAyYmEzZjdmNjdlNWRhNWJlOTA5NTAzM2Y2MjU4MjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4YzAzZjE0ZjMyYTQ3ZWFiZGZmMjc3OTcxMDliZDA4ZTdkYzY4NTg3YzQwYTkzMTBiYzI0ZjE2OTIzZjEwNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhMWY2MThiNTY1ZDY5NGMwNmY4YjI4MWZlNWZjODhjNjllZDI0MmQ1Y2YzYjJjZGNjYWVlNjYxZjUzNjg3ZGUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_1fda210822e141aeb657202ec6357e9b",
+      "statement": "The dependabot[bot] actor check in bifrost.yml's job-level if is a legacy holdover from when Dependabot opened the dependency PRs; dependency PRs now come from Renovate, configured in renovate.json (which extends only the shared preset local>ArDoCo/actions:renovate-preset and adds a package rule matching dev.langchain4j:langchain4j-embeddings**), whose same-repository branches are not forks and therefore still run the Bifrost integration job.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/bifrost.yml#L24-L28",
+          "version": "repo-lines-v1:sha256:7dc8332ceff919892c23f0beacbabc105c608506d3ad28b32588f53a08f058a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTlkODAxNTRlZDQyZmM1Yzc3OWIxMzMxNTc4YjU4Yjg5YzgwMWVhY2U3NGYyNGNkNDhlYjRhMjM1Nzk0MGE5NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMzNzMzNGFlYzBkY2IyNGU0MGUzYzIwZGMwOWQ1OWFmNjc0M2QwMjdkYmZmNTBjMWFjYTA4OTc0NzExNzY3MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmYxZDcwZDcyYmFkMjMxZDQzYzU3NWFjZWY2OTQ2NTgwZTQzOWM4Nzk3OTRlZDJlYTFmNGE0MDM0MDI0NTE3MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGQwN2Y1ZmI5ZTBlMDcyNjdjMzhlODFiZGNkZDAzYTUzNWQzOTlmMjkxNTgxYTBjMTg0YjA4NGM0MjY2ODRkYSJ9"
+        },
+        {
+          "resource": "repo://renovate.json",
+          "version": "repo-file-v1:sha256:6bf28b8c83debeb6a678fa990999028a99a833ab5260f4b7b51ba3c462412b0e"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-16T14:46:55.207Z"
+    "at": "2026-11-23T17:22:55.858Z"
   }
 }
