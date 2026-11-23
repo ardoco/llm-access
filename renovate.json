@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>ArDoCo/actions:renovate-preset"],
+  "packageRules": [
+    {
+      "description": "langchain4j-embeddings is only published as -beta (accepted exception); keep it updated in step with langchain4j",
+      "matchPackageNames": ["dev.langchain4j:langchain4j-embeddings**"],
+      "allowedVersions": "/.*/",
+      "ignoreUnstable": false
+    }
+  ]
+}
