@@ -86,6 +86,10 @@ ChatModel cached = new CachingChatModel(provider.createChatModel(), cache);
 cached.chat(List.of(UserMessage.from("Summarize X"))); // response cached by message content
 ```
 
+Requests with tool specifications (e.g., `AiServices` with `@Tool` methods) are cached as well: the key additionally contains the
+tool specifications sorted by name, and the stored reply keeps the tool calls (id, name, arguments), so the whole
+tool loop can be replayed from the cache. Other request parameters (tool choice, response format) are not part of the key.
+
 ### Embeddings
 
 ```java
