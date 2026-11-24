@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Set;
 
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +17,10 @@ import org.junit.jupiter.api.io.TempDir;
 
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.chat.Capability;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
+import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.AiServices;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
@@ -197,6 +200,17 @@ class BifrostIntegrationTest {
         public ChatResponse doChat(ChatRequest chatRequest) {
             calls++;
             return delegate.doChat(chatRequest);
+        }
+
+        // The provider-specific defaults must reach ChatModel.chat, which merges them into the request (OpenAI expects its own parameter type).
+        @Override
+        public ChatRequestParameters defaultRequestParameters() {
+            return delegate.defaultRequestParameters();
+        }
+
+        @Override
+        public Set<Capability> supportedCapabilities() {
+            return delegate.supportedCapabilities();
         }
     }
 }
