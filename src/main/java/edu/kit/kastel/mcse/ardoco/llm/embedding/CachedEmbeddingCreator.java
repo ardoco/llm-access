@@ -11,6 +11,7 @@ import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingRegistry;
 
+import dev.langchain4j.exception.RetriableException;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
@@ -202,10 +203,15 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
                 float[] embedding = embeddingModel.embed(content).content().vector();
                 cache.put(content, embedding);
                 return embedding;
+            } catch (RetriableException e) {
+                // Transient error that survived the model's own retries (rate limit, server error, timeout): the input
+                // is not the problem, so the token-length fallback would only hide the real cause.
+                STATIC_LOGGER.error("Transient error while calculating embedding for: {}", KeyGenerator.generateKey(content));
+                throw e;
             } catch (Exception e) {
                 STATIC_LOGGER.error("Error while calculating embedding for .. try to fix ..: {}", KeyGenerator.generateKey(content));
                 // Probably the length was too long .. check that
-                return tryToFixWithLength(embeddingModel, cache, embeddingCacheParameter.modelName(), content);
+                return tryToFixWithLength(embeddingModel, cache, embeddingCacheParameter.modelName(), content, e);
             }
         }
     }
@@ -219,10 +225,12 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
      * @param cache          The cache to use for storing and retrieving embeddings
      * @param rawNameOfModel The name of the model being used
      * @param content        The content that exceeded the token limit
+     * @param failure        The error of the original attempt; attached as cause if the token length was not the reason
      * @return The vector embedding of the truncated content
      * @throws IllegalArgumentException If the token length was not the cause of the failure
      */
-    private static float[] tryToFixWithLength(EmbeddingModel embeddingModel, Cache<EmbeddingCacheKey> cache, String rawNameOfModel, String content) {
+    private static float[] tryToFixWithLength(EmbeddingModel embeddingModel, Cache<EmbeddingCacheKey> cache, String rawNameOfModel, String content,
+            Exception failure) {
         EmbeddingCacheKey originalKey = cache.getCacheParameter().createCacheKey(content);
         String newKey = originalKey.localKey() + "_fixed_" + MAX_TOKEN_LENGTH;
 
@@ -242,7 +250,7 @@ abstract class CachedEmbeddingCreator extends EmbeddingCreator {
                 "Unknown Embedding Model. Don't know how to handle previous exception"));
         int tokens = encoding.countTokens(content);
         if (tokens < MAX_TOKEN_LENGTH)
-            throw new IllegalArgumentException("Token length was not too long. Don't know how to handle previous exception");
+            throw new IllegalArgumentException("Token length was not too long. Don't know how to handle previous exception", failure);
 
         // Binary search for max length of string
         int left = 0;

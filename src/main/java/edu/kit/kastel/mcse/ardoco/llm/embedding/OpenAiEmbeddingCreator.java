@@ -47,10 +47,7 @@ public class OpenAiEmbeddingCreator extends CachedEmbeddingCreator {
         String openAiOrganizationId = environment().getenv("OPENAI_ORGANIZATION_ID");
         String openAiApiKey = environment().getenvNonNull("OPENAI_API_KEY");
         // The organization id is optional; when set it is sent to OpenAI, otherwise it is omitted.
-        return new OpenAiEmbeddingModel.OpenAiEmbeddingModelBuilder().modelName(model)
-                .organizationId(openAiOrganizationId)
-                .apiKey(openAiApiKey)
-                .maxRetries(0)
-                .build();
+        // Retries stay at the LangChain4j default so that transient errors (429, 5xx, timeouts) are retried.
+        return new OpenAiEmbeddingModel.OpenAiEmbeddingModelBuilder().modelName(model).organizationId(openAiOrganizationId).apiKey(openAiApiKey).build();
     }
 }
