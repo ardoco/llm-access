@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.service.AiServices;
 import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
@@ -202,6 +204,19 @@ class CachingChatModelTest {
     }
 
     @Test
+    @DisplayName("the original finish reason of a tool reply is replayed")
+    void keepsFinishReason() {
+        ScriptedChatModel delegate = new ScriptedChatModel(FinishReason.LENGTH, AiMessage.from(CALL));
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        model.chat(toolRequest(TOOL_A));
+        ChatResponse replayed = model.chat(toolRequest(TOOL_A));
+
+        assertEquals(1, delegate.calls);
+        assertEquals(FinishReason.LENGTH, replayed.finishReason());
+    }
+
+    @Test
     @DisplayName("different tool sets do not share cache entries")
     void toolSetsDoNotCollide() {
         ScriptedChatModel delegate = new ScriptedChatModel(AiMessage.from("one"), AiMessage.from("two"), AiMessage.from("three"));
@@ -303,15 +318,22 @@ class CachingChatModelTest {
     /** Replies with the given messages in order. */
     private static final class ScriptedChatModel implements ChatModel {
         private final List<AiMessage> replies;
+        private final @Nullable FinishReason finishReason;
         private int calls;
 
+        private ScriptedChatModel(FinishReason finishReason, AiMessage... replies) {
+            this.finishReason = finishReason;
+            this.replies = new ArrayList<>(List.of(replies));
+        }
+
         private ScriptedChatModel(AiMessage... replies) {
+            this.finishReason = null;
             this.replies = new ArrayList<>(List.of(replies));
         }
 
         @Override
         public ChatResponse doChat(ChatRequest chatRequest) {
-            return ChatResponse.builder().aiMessage(replies.get(calls++)).build();
+            return ChatResponse.builder().aiMessage(replies.get(calls++)).finishReason(finishReason).build();
         }
     }
 

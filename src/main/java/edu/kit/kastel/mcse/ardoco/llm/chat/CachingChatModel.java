@@ -87,11 +87,14 @@ public final class CachingChatModel implements ChatModel {
         CachedAiMessage cached = cache.get(key, CachedAiMessage.class);
         if (cached != null) {
             AiMessage message = cached.toAiMessage();
-            FinishReason finishReason = message.hasToolExecutionRequests() ? FinishReason.TOOL_EXECUTION : FinishReason.STOP;
+            FinishReason finishReason = cached.finishReason();
+            if (finishReason == null) {
+                finishReason = message.hasToolExecutionRequests() ? FinishReason.TOOL_EXECUTION : FinishReason.STOP;
+            }
             return ChatResponse.builder().aiMessage(message).finishReason(finishReason).build();
         }
         ChatResponse response = delegate.doChat(chatRequest);
-        cache.put(key, CachedAiMessage.from(response.aiMessage()));
+        cache.put(key, CachedAiMessage.from(response.aiMessage(), response.finishReason()));
         cache.flush();
         return response;
     }
