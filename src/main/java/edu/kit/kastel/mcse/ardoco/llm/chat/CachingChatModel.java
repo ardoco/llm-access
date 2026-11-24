@@ -37,6 +37,9 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
  * replays them with the same ids, so the follow-up request carrying the tool results is a hit as well. Other
  * request parameters (tool choice, response format, ...) are not part of the key.
  * <p>
+ * Cached tool replies keep text, tool calls, thinking, attributes and finish reason. Cache hits carry no token
+ * usage or other response metadata.
+ * <p>
  * After each newly computed response the cache is flushed, so responses are persisted immediately (relevant
  * for the file-based cache).
  */
@@ -59,7 +62,9 @@ public final class CachingChatModel implements ChatModel {
     /**
      * The single point through which all {@link ChatModel#chat} overloads are routed by the default
      * interface methods. On a cache hit the stored response is returned without contacting the delegate; on a
-     * miss the request is forwarded to the delegate and the resulting text is cached and flushed.
+     * miss the request is forwarded to the delegate, and the result is cached and flushed. Requests without tool
+     * specifications cache only the resulting text; requests with tool specifications cache a
+     * {@link CachedAiMessage} (text, tool calls, thinking, attributes and finish reason).
      */
     @Override
     public ChatResponse doChat(ChatRequest chatRequest) {
