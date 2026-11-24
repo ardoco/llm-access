@@ -42,6 +42,7 @@ class Plan:
     conflicts: list = field(default_factory=list)  # (target, key, kept_from, dropped_from)
     skipped: list = field(default_factory=list)    # (name, reason)
     unstripped: list = field(default_factory=list)  # (name, target, prefix) of chat files that kept a possible provider prefix
+    empty: list = field(default_factory=list)       # names of blank legacy files, moved to the backup without merging
 
 
 def _is_number_list(value):
@@ -53,7 +54,7 @@ def _is_number_list(value):
 
 
 def _load(path):
-    """Returns (data, error); data None with error None means blank file."""
+    """Returns (data, error); a blank file gives error "empty file"."""
     with open(path, encoding="utf-8") as f:
         text = f.read()
     if not text.strip():
@@ -94,6 +95,9 @@ def plan(directory, options=None):
             continue
         m = NAME_RE.match(name)
         data, err = _load(path)
+        if m and err == "empty file":
+            p.empty.append(name)
+            continue
         if err:
             p.skipped.append((name, err))
             continue
@@ -167,6 +171,11 @@ def apply(p):
             dest = _free_name(p.backup_dir, src)
             shutil.move(os.path.join(p.directory, src), os.path.join(p.backup_dir, dest))
             moved.append((src, dest))
+    for src in p.empty:
+        os.makedirs(p.backup_dir, exist_ok=True)
+        dest = _free_name(p.backup_dir, src)
+        shutil.move(os.path.join(p.directory, src), os.path.join(p.backup_dir, dest))
+        moved.append((src, dest))
     return moved
 
 
@@ -177,12 +186,14 @@ def report(p, dry_run, out=print):
             out(f"    <- {s} (+{t['added'][s]} new)")
     for target, key, kept, dropped in p.conflicts:
         out(f"CONFLICT in {target}, key {key}: kept value from {kept}, dropped value from {dropped}")
+    for name in p.empty:
+        out(f"EMPTY {name}: nothing to merge, moved to backup")
     for name, reason in p.skipped:
         out(f"SKIPPED {name}: {reason}")
     for name, target, prefix in p.unstripped:
         out(f"NOTE {name} -> {target} keeps '{prefix}--'; if it was written for Bifrost, 0.3.0 will not find it: "
             f"rerun with --strip-provider-prefix={prefix} (or =all)")
-    if not p.targets and not p.skipped:
+    if not p.targets and not p.skipped and not p.empty:
         out("nothing to migrate")
     if dry_run:
         out("dry run - nothing written")
