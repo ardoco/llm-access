@@ -26,8 +26,9 @@ DEFAULT_PROVIDERS = "openai,ollama"
 # Strips any provider prefix from chat files, like Bifrost.cacheModelName in Java.
 ALL_PROVIDERS = "all"
 NAME_RE = re.compile(r"^([A-Za-z0-9$]+)_(.+)\.json$")
-# llm-access stores entries under UUID keys (KeyGenerator); other caches (e.g. ARDoCo's <MODEL>-cache.json) do not.
-KEY_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+# llm-access stores entries under UUID keys (KeyGenerator), embeddings of truncated texts under <uuid>_fixed_<tokens>
+# (CachedEmbeddingCreator); other caches (e.g. ARDoCo's <MODEL>-cache.json) do not.
+KEY_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(_fixed_[0-9]+)?$")
 
 
 @dataclass
