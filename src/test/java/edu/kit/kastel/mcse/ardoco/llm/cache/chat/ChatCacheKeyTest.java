@@ -3,17 +3,26 @@ package edu.kit.kastel.mcse.ardoco.llm.cache.chat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
+
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
+import edu.kit.kastel.mcse.ardoco.llm.chat.ChatModelPlatform;
+import edu.kit.kastel.mcse.ardoco.llm.chat.ChatModelProvider;
+import edu.kit.kastel.mcse.ardoco.llm.chat.LlmConfiguration;
+import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
+import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
  * Tests for {@link ChatCacheParameter} and {@link ChatCacheKey}, including the backward-compatible file
  * identifier and JSON key format.
  */
 @NullMarked
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ChatCacheKeyTest {
 
     @Test
@@ -54,5 +63,38 @@ class ChatCacheKeyTest {
         ChatCacheParameter parameter = new ChatCacheParameter("gpt-4o", 42, 0.0);
         assertEquals(parameter.createCacheKey("hello"), parameter.createCacheKey("hello"));
         assertNotEquals(parameter.createCacheKey("hello"), parameter.createCacheKey("world"));
+    }
+
+    @Test
+    @DisplayName("toJsonKey keeps the Redis key format byte-identical (golden)")
+    void jsonKeyGolden() {
+        String json = new ChatCacheParameter("gpt-4o", 42, 0.0).createCacheKey("hello").toJsonKey();
+        String expected = """
+                {
+                  "model" : "gpt-4o",
+                  "seed" : 42,
+                  "temperature" : 0.0,
+                  "mode" : "CHAT",
+                  "content" : "hello"
+                }""";
+        assertEquals(expected, json.replace("\r\n", "\n"));
+    }
+
+    @Test
+    @DisplayName("toJsonKey is equal for Bifrost and OpenAI models of the same name")
+    void jsonKeyEqualForBifrostAndOpenAi() {
+        EnvironmentProvider environment = new MapEnvironment(Map.of());
+        ChatModelProvider bifrost = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.BIFROST)
+                .modelName("openai/gpt-4o")
+                .seed(42)
+                .environment(environment)
+                .build());
+        ChatModelProvider openAi = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.OPENAI)
+                .modelName("gpt-4o")
+                .seed(42)
+                .environment(environment)
+                .build());
+
+        assertEquals(openAi.cacheParameters().createCacheKey("hello").toJsonKey(), bifrost.cacheParameters().createCacheKey("hello").toJsonKey());
     }
 }

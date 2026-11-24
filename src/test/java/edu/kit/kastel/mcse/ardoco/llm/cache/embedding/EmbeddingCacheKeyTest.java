@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
+import edu.kit.kastel.mcse.ardoco.llm.util.Bifrost;
 import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
 
 /**
  * Tests for {@link EmbeddingCacheParameter} and {@link EmbeddingCacheKey}.
  */
 @NullMarked
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EmbeddingCacheKeyTest {
 
     @Test
@@ -54,5 +57,29 @@ class EmbeddingCacheKeyTest {
         EmbeddingCacheParameter parameter = new EmbeddingCacheParameter("ada");
         assertEquals(parameter.createCacheKey("hello"), parameter.createCacheKey("hello"));
         assertNotEquals(parameter.createCacheKey("hello"), parameter.createCacheKey("world"));
+    }
+
+    @Test
+    @DisplayName("toJsonKey keeps the Redis key format byte-identical (golden)")
+    void jsonKeyGolden() {
+        String json = new EmbeddingCacheParameter("ada").createCacheKey("hello").toJsonKey();
+        String expected = """
+                {
+                  "model" : "ada",
+                  "seed" : -1,
+                  "temperature" : -1.0,
+                  "mode" : "EMBEDDING",
+                  "content" : "hello"
+                }""";
+        assertEquals(expected, json.replace("\r\n", "\n"));
+    }
+
+    @Test
+    @DisplayName("toJsonKey is equal for a Bifrost model name without provider prefix and the OpenAI name")
+    void jsonKeyEqualForBifrostAndOpenAi() {
+        EmbeddingCacheParameter bifrost = new EmbeddingCacheParameter(Bifrost.cacheModelName("openai/text-embedding-3-small"));
+        EmbeddingCacheParameter openAi = new EmbeddingCacheParameter("text-embedding-3-small");
+
+        assertEquals(openAi.createCacheKey("hello").toJsonKey(), bifrost.createCacheKey("hello").toJsonKey());
     }
 }

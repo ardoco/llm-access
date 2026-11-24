@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.llm.cache.chat;
 
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheParameter;
+import edu.kit.kastel.mcse.ardoco.llm.cache.LargeLanguageModelCacheMode;
 
 /**
  * Cache parameters for chat operations.
@@ -21,6 +22,11 @@ public record ChatCacheParameter(String modelName, int seed, double temperature)
         } else {
             return String.join("_", modelName, String.valueOf(seed), String.valueOf(temperature));
         }
+    }
+
+    @Override
+    public LargeLanguageModelCacheMode mode() {
+        return LargeLanguageModelCacheMode.CHAT;
     }
 
     @Override

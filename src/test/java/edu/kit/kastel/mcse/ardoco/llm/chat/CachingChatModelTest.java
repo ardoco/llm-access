@@ -23,6 +23,7 @@ import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
@@ -49,7 +50,7 @@ class CachingChatModelTest {
     }
 
     private Cache<ChatCacheKey> cache() {
-        return CacheManager.getDefaultInstance().getCache(this, new ChatCacheParameter("test-model", 42, 0.0));
+        return CacheManager.getDefaultInstance().getCache(new ChatCacheParameter("test-model", 42, 0.0));
     }
 
     @Test
@@ -113,6 +114,8 @@ class CachingChatModelTest {
         String expected = new CachingChatModel(delegate, cache()).chat("ping");
         assertEquals(1, delegate.calls);
 
+        CacheManager.getDefaultInstance().flush();
+        ClearLocalCachesExtension.clearInstances();
         // Recreate the manager so the cache is read fresh from disk instead of from memory.
         CacheManager.setCacheDir(tempCacheDir.toString(), environment);
 
@@ -121,6 +124,31 @@ class CachingChatModelTest {
 
         assertEquals(expected, afterReload);
         assertEquals(0, reloadedDelegate.calls, "the reloaded cache must serve the value without touching the delegate");
+    }
+
+    @Test
+    @DisplayName("a Bifrost model is served from an entry written through OpenAI parameters")
+    void bifrostSharesCacheWithOpenAi() throws IOException {
+        ChatModelProvider openAi = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.OPENAI)
+                .modelName("gpt-4o-mini")
+                .environment(new MapEnvironment(Map.of("OPENAI_API_KEY", "DUMMY", "OPENAI_ORGANIZATION_ID", "DUMMY")))
+                .build());
+        RecordingChatModel delegate = new RecordingChatModel();
+        CacheManager writer = new CacheManager(tempCacheDir, environment);
+        String expected = new CachingChatModel(delegate, writer.getCache(openAi.cacheParameters())).chat("ping");
+        writer.flush();
+        ClearLocalCachesExtension.clearInstances();
+
+        ChatModelProvider bifrost = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.BIFROST)
+                .modelName("openai/gpt-4o-mini")
+                .environment(new MapEnvironment(Map.of("BIFROST_API_KEY", "DUMMY", "BIFROST_URL", "http://localhost:1/v1")))
+                .build());
+        CacheManager reader = new CacheManager(tempCacheDir, environment);
+        // The lazy model never connects to the gateway as long as the cache answers.
+        String actual = new CachingChatModel(bifrost.createChatModel(), reader.getCache(bifrost.cacheParameters())).chat("ping");
+
+        assertEquals(expected, actual);
+        assertEquals(1, delegate.calls);
     }
 
     /**

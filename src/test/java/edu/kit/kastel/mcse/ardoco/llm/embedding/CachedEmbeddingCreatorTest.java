@@ -24,6 +24,8 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
+import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
@@ -89,6 +91,7 @@ class CachedEmbeddingCreatorTest {
         creator.calculateEmbedding("hello");
         cacheManager.flush();
 
+        ClearLocalCachesExtension.clearInstances();
         RecordingEmbeddingCreator.embedCalls.set(0);
         cacheManager = new CacheManager(tempCacheDir, environment);
         RecordingEmbeddingCreator reloaded = new RecordingEmbeddingCreator(cacheManager, "persist-model", 1);
@@ -202,13 +205,30 @@ class CachedEmbeddingCreatorTest {
     }
 
     @Test
+    @DisplayName("a Bifrost creator reads the embedding file written through OpenAI parameters")
+    void bifrostCreatorSharesCacheWithOpenAi() throws IOException {
+        CacheManager writer = new CacheManager(tempCacheDir, environment);
+        writer.getCache(new EmbeddingCacheParameter("text-embedding-3-small")).put("hello", new float[] { 1.0f, 2.0f });
+        writer.flush();
+        assertTrue(Files.exists(tempCacheDir.resolve("Embedding_text-embedding-3-small.json")));
+        ClearLocalCachesExtension.clearInstances();
+
+        EnvironmentProvider bifrostEnvironment = new MapEnvironment(Map.of("BIFROST_API_KEY", "dummy", "BIFROST_URL", "http://localhost:1/v1"));
+        EmbeddingCreator creator = new BifrostEmbeddingCreator("openai/text-embedding-3-small", bifrostEnvironment, new CacheManager(tempCacheDir,
+                environment));
+
+        // The model is never called: the cached vector answers.
+        assertArrayEquals(new float[] { 1.0f, 2.0f }, creator.calculateEmbedding("hello"));
+    }
+
+    @Test
     @DisplayName("the embedding cache is created by the injected cache manager")
     void usesInjectedCacheManager() throws IOException {
         RecordingEmbeddingCreator creator = new RecordingEmbeddingCreator(cacheManager, "manager-model", 1);
         creator.calculateEmbedding("hello");
         cacheManager.flush();
 
-        assertTrue(Files.exists(tempCacheDir.resolve("RecordingEmbeddingCreator_manager-model.json")), "the cache file must be in the manager's directory");
+        assertTrue(Files.exists(tempCacheDir.resolve("Embedding_manager-model.json")), "the cache file must be in the manager's directory");
     }
 
     @Test

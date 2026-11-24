@@ -295,11 +295,14 @@ public class ChatModelProvider {
 
     /**
      * Returns the parameters used to create the cache key for this model.
-     * This method is used to identify the cache uniquely.
+     * This method is used to identify the cache uniquely. For {@link ChatModelPlatform#BIFROST} the provider prefix of
+     * the model name is not part of the cache identity (see {@link Bifrost#cacheModelName(String)}), so entries are
+     * shared with the native platforms; {@link #modelName()} and the requests keep the prefix.
      *
      * @return The chat cache parameters for this model configuration
      */
     public ChatCacheParameter cacheParameters() {
-        return new ChatCacheParameter(modelName, seed, temperature);
+        String cacheModelName = platform == ChatModelPlatform.BIFROST ? Bifrost.cacheModelName(modelName) : modelName;
+        return new ChatCacheParameter(cacheModelName, seed, temperature);
     }
 }

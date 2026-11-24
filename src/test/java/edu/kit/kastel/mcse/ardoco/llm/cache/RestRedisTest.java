@@ -128,7 +128,7 @@ public class RestRedisTest {
     @Test
     @DisplayName("Test HierarchicalCache with local and REST Redis cache")
     void testHierarchicalCacheWithLocalAndRestRedis() {
-        Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("hierarchical_test.json").toString(), cacheParameter);
+        Cache<ChatCacheKey> localCache = LocalCache.forFile(tempCacheDir.resolve("hierarchical_test.json").toString(), cacheParameter);
         Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "conflict-key";
@@ -153,7 +153,7 @@ public class RestRedisTest {
     @Test
     @DisplayName("Test HierarchicalCache OVERWRITE strategy with REST Redis")
     void testHierarchicalCacheOverwriteStrategyWithRestRedis() {
-        Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("overwrite_test.json").toString(), cacheParameter);
+        Cache<ChatCacheKey> localCache = LocalCache.forFile(tempCacheDir.resolve("overwrite_test.json").toString(), cacheParameter);
         Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "overwrite-key";
@@ -180,7 +180,7 @@ public class RestRedisTest {
     @Test
     @DisplayName("Test HierarchicalCache ERROR strategy detects conflicts with REST Redis")
     void testHierarchicalCacheErrorStrategyWithRestRedis() {
-        Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("error_test.json").toString(), cacheParameter);
+        Cache<ChatCacheKey> localCache = LocalCache.forFile(tempCacheDir.resolve("error_test.json").toString(), cacheParameter);
         Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "error-key";
@@ -204,7 +204,7 @@ public class RestRedisTest {
     @Test
     @DisplayName("Test HierarchicalCache backfill with REST Redis cache")
     void testHierarchicalCacheBackfillWithRestRedis() {
-        Cache<ChatCacheKey> localCache = new LocalCache<>(tempCacheDir.resolve("backfill_test.json").toString(), cacheParameter);
+        Cache<ChatCacheKey> localCache = LocalCache.forFile(tempCacheDir.resolve("backfill_test.json").toString(), cacheParameter);
         Cache<ChatCacheKey> redisCache = new RestRedisCache<>(cacheParameter, MAPPER, environment);
 
         String testKey = "backfill-key";
