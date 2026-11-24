@@ -10,6 +10,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * directories. Registered globally via JUnit extension autodetection.
  */
 public class ClearLocalCachesExtension implements AfterEachCallback, AfterAllCallback {
+    /**
+     * Drops all shared {@link LocalCache} instances so that the next cache for a file is read from disk.
+     */
+    public static void clearInstances() {
+        LocalCache.clearInstances();
+    }
+
     @Override
     public void afterEach(ExtensionContext context) {
         LocalCache.clearInstances();

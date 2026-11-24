@@ -19,6 +19,7 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
 import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.chat.CachingChatModel;
 import edu.kit.kastel.mcse.ardoco.llm.chat.ChatModelPlatform;
@@ -99,6 +100,7 @@ class BifrostIntegrationTest {
         };
         new CachingChatModel(sentinelModel, seedingManager.getCache(new ChatModelProvider(nativeConfiguration).cacheParameters())).chat(prompt);
         seedingManager.flush();
+        ClearLocalCachesExtension.clearInstances();
 
         CacheManager bifrostManager = new CacheManager(tempCacheDir, cacheEnvironment);
         ChatModelProvider bifrostProvider = new ChatModelProvider(bifrostConfiguration);
@@ -116,6 +118,7 @@ class BifrostIntegrationTest {
         // Same value format as CachedEmbeddingCreator: float[] stored under the text.
         seedingManager.getCache(new EmbeddingCacheParameter("text-embedding-3-small")).put(text, sentinel);
         seedingManager.flush();
+        ClearLocalCachesExtension.clearInstances();
 
         EmbeddingConfiguration configuration = EmbeddingConfiguration.builder(EmbeddingPlatform.BIFROST)
                 .modelName("openai/text-embedding-3-small")

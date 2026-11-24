@@ -23,6 +23,7 @@ import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
+import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
@@ -113,6 +114,8 @@ class CachingChatModelTest {
         String expected = new CachingChatModel(delegate, cache()).chat("ping");
         assertEquals(1, delegate.calls);
 
+        CacheManager.getDefaultInstance().flush();
+        ClearLocalCachesExtension.clearInstances();
         // Recreate the manager so the cache is read fresh from disk instead of from memory.
         CacheManager.setCacheDir(tempCacheDir.toString(), environment);
 
@@ -134,6 +137,7 @@ class CachingChatModelTest {
         CacheManager writer = new CacheManager(tempCacheDir, environment);
         String expected = new CachingChatModel(delegate, writer.getCache(openAi.cacheParameters())).chat("ping");
         writer.flush();
+        ClearLocalCachesExtension.clearInstances();
 
         ChatModelProvider bifrost = new ChatModelProvider(LlmConfiguration.builder(ChatModelPlatform.BIFROST)
                 .modelName("openai/gpt-4o-mini")
