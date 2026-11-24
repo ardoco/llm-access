@@ -186,6 +186,22 @@ class CachingChatModelTest {
     }
 
     @Test
+    @DisplayName("thinking and attributes of a tool call reply are replayed")
+    void keepsThinkingAndAttributes() {
+        AiMessage original = AiMessage.builder().toolExecutionRequests(List.of(CALL)).thinking("let me think").attributes(Map.of("signature", "abc")).build();
+        ScriptedChatModel delegate = new ScriptedChatModel(original);
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        model.chat(toolRequest(TOOL_A));
+        AiMessage replayed = model.chat(toolRequest(TOOL_A)).aiMessage();
+
+        assertEquals(1, delegate.calls);
+        assertEquals("let me think", replayed.thinking());
+        assertEquals(Map.of("signature", "abc"), replayed.attributes());
+        assertEquals(original.toString(), replayed.toString());
+    }
+
+    @Test
     @DisplayName("different tool sets do not share cache entries")
     void toolSetsDoNotCollide() {
         ScriptedChatModel delegate = new ScriptedChatModel(AiMessage.from("one"), AiMessage.from("two"), AiMessage.from("three"));
