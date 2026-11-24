@@ -3,7 +3,7 @@
 
 Usage (Linux/macOS: python3, Windows: py):
     python3 scripts/migrate_cache_0_3_0.py <dir> [--dry-run]
-        [--strip-provider-prefix[=openai,ollama]] [--backup-dir PATH]
+        [--strip-provider-prefix[=openai,ollama|all]] [--backup-dir PATH]
 
 Old files `<Origin>_<params>.json` become `Chat_<params>.json` or
 `Embedding_<params>.json`; files that map to the same target are merged.
@@ -23,6 +23,8 @@ from dataclasses import dataclass, field
 
 # Bifrost providers that map to a native llm-access platform (used by --strip-provider-prefix without a value).
 DEFAULT_PROVIDERS = "openai,ollama"
+# Strips any provider prefix from chat files, like Bifrost.cacheModelName in Java.
+ALL_PROVIDERS = "all"
 NAME_RE = re.compile(r"^([A-Za-z0-9$]+)_(.+)\.json$")
 
 
@@ -39,6 +41,7 @@ class Plan:
     targets: dict = field(default_factory=dict)    # name -> {"sources": [names], "data": dict, "added": {src: n}}
     conflicts: list = field(default_factory=list)  # (target, key, kept_from, dropped_from)
     skipped: list = field(default_factory=list)    # (name, reason)
+    unstripped: list = field(default_factory=list)  # (name, target, prefix) of chat files that kept a possible provider prefix
 
 
 def _is_number_list(value):
@@ -67,9 +70,13 @@ def _load(path):
 def _target_name(origin, params, options):
     embedding = origin.endswith("EmbeddingCreator")
     seg, sep, rest = params.partition("--")
-    if sep and ((origin == "BifrostEmbeddingCreator") or (not embedding and seg in options.strip_providers)):
+    strip_chat = seg in options.strip_providers or ALL_PROVIDERS in options.strip_providers
+    kept_prefix = None
+    if sep and ((origin == "BifrostEmbeddingCreator") or (not embedding and strip_chat)):
         params = rest
-    return ("Embedding_" if embedding else "Chat_") + params + ".json", embedding
+    elif sep and not embedding:
+        kept_prefix = seg
+    return ("Embedding_" if embedding else "Chat_") + params + ".json", embedding, kept_prefix
 
 
 def plan(directory, options=None):
@@ -93,10 +100,12 @@ def plan(directory, options=None):
         if not m:
             p.skipped.append((name, "name does not match <Origin>_<parameters>.json"))
             continue
-        target, embedding = _target_name(m.group(1), m.group(2), options)
+        target, embedding, kept_prefix = _target_name(m.group(1), m.group(2), options)
         if any(_is_number_list(v) != embedding for v in data.values()):
             p.skipped.append((name, "content does not match kind (" + ("embedding" if embedding else "chat") + ")"))
             continue
+        if kept_prefix is not None:
+            p.unstripped.append((name, target, kept_prefix))
         groups.setdefault(target, []).append((name, data))
     # Windows and macOS file systems are usually case-insensitive: never let targets differ only in case.
     lower = {}
@@ -170,6 +179,9 @@ def report(p, dry_run, out=print):
         out(f"CONFLICT in {target}, key {key}: kept value from {kept}, dropped value from {dropped}")
     for name, reason in p.skipped:
         out(f"SKIPPED {name}: {reason}")
+    for name, target, prefix in p.unstripped:
+        out(f"NOTE {name} -> {target} keeps '{prefix}--'; if it was written for Bifrost, 0.3.0 will not find it: "
+            f"rerun with --strip-provider-prefix={prefix} (or =all)")
     if not p.targets and not p.skipped:
         out("nothing to migrate")
     if dry_run:

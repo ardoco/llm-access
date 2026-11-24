@@ -212,7 +212,9 @@ The script needs only Python 3 and runs on Linux, macOS and Windows (use `py` in
 
 Run it with `--dry-run` first and check the report. Options: `--strip-provider-prefix[=openai,ollama]`
 also strips the provider prefix from Bifrost chat files (by default only embedding files are stripped, as chat
-file names cannot tell Bifrost from other platforms), and `--backup-dir` sets where the old files are moved
+file names cannot tell Bifrost from other platforms); `=all` strips any prefix, like 0.3.0 does for Bifrost, but
+also from other platforms' model names containing `/` (e.g., Ollama `hf.co/...`). The report lists every chat file
+that kept a possible prefix. `--backup-dir` sets where the old files are moved
 (default `<cache-dir>/pre-0.3.0-backup`). Nothing is deleted. Do not run the script while a cache directory is in
 use.
 
