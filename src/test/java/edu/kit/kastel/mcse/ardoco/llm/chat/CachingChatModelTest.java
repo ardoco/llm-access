@@ -2,31 +2,42 @@
 package edu.kit.kastel.mcse.ardoco.llm.chat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.io.TempDir;
 
+import dev.langchain4j.agent.tool.P;
+import dev.langchain4j.agent.tool.Tool;
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.output.FinishReason;
+import dev.langchain4j.service.AiServices;
 import edu.kit.kastel.mcse.ardoco.llm.cache.Cache;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
@@ -149,6 +160,181 @@ class CachingChatModelTest {
 
         assertEquals(expected, actual);
         assertEquals(1, delegate.calls);
+    }
+
+    private static final ToolSpecification TOOL_A = ToolSpecification.builder().name("alpha").description("first").build();
+    private static final ToolSpecification TOOL_B = ToolSpecification.builder().name("beta").description("second").build();
+    private static final ToolExecutionRequest CALL = ToolExecutionRequest.builder().id("call-1").name("alpha").arguments("{\"x\":1}").build();
+
+    private static final ToolExecutionRequest TOOL_LOOP_CALL = ToolExecutionRequest.builder().id("call-2").name("alpha").arguments("{\"arg0\":1}").build();
+
+    private ChatRequest toolRequest(ToolSpecification... tools) {
+        return ChatRequest.builder().messages(UserMessage.from("use a tool")).toolSpecifications(tools).build();
+    }
+
+    @Test
+    @DisplayName("a tool call reply is replayed from the cache without calling the delegate")
+    void cachesToolCalls() {
+        ScriptedChatModel delegate = new ScriptedChatModel(AiMessage.from(CALL));
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        ChatResponse first = model.chat(toolRequest(TOOL_A));
+        ChatResponse second = model.chat(toolRequest(TOOL_A));
+
+        assertEquals(1, delegate.calls);
+        assertEquals(List.of(CALL), first.aiMessage().toolExecutionRequests());
+        assertEquals(List.of(CALL), second.aiMessage().toolExecutionRequests());
+        assertNull(second.aiMessage().text());
+    }
+
+    @Test
+    @DisplayName("thinking and attributes of a tool call reply are replayed")
+    void keepsThinkingAndAttributes() {
+        AiMessage original = AiMessage.builder().toolExecutionRequests(List.of(CALL)).thinking("let me think").attributes(Map.of("signature", "abc")).build();
+        ScriptedChatModel delegate = new ScriptedChatModel(original);
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        model.chat(toolRequest(TOOL_A));
+        AiMessage replayed = model.chat(toolRequest(TOOL_A)).aiMessage();
+
+        assertEquals(1, delegate.calls);
+        assertEquals("let me think", replayed.thinking());
+        assertEquals(Map.of("signature", "abc"), replayed.attributes());
+        assertEquals(original.toString(), replayed.toString());
+    }
+
+    @Test
+    @DisplayName("the original finish reason of a tool reply is replayed")
+    void keepsFinishReason() {
+        ScriptedChatModel delegate = new ScriptedChatModel(FinishReason.LENGTH, AiMessage.from(CALL));
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        model.chat(toolRequest(TOOL_A));
+        ChatResponse replayed = model.chat(toolRequest(TOOL_A));
+
+        assertEquals(1, delegate.calls);
+        assertEquals(FinishReason.LENGTH, replayed.finishReason());
+    }
+
+    @Test
+    @DisplayName("different tool sets do not share cache entries")
+    void toolSetsDoNotCollide() {
+        ScriptedChatModel delegate = new ScriptedChatModel(AiMessage.from("one"), AiMessage.from("two"), AiMessage.from("three"));
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        model.chat(toolRequest(TOOL_A));
+        model.chat(toolRequest(TOOL_A, TOOL_B));
+        model.chat(ChatRequest.builder().messages(UserMessage.from("use a tool")).build());
+
+        assertEquals(3, delegate.calls);
+    }
+
+    @Test
+    @DisplayName("tool order does not influence the cache key")
+    void toolOrderIsIrrelevant() {
+        ScriptedChatModel delegate = new ScriptedChatModel(AiMessage.from("one"), AiMessage.from("two"));
+        CachingChatModel model = new CachingChatModel(delegate, cache());
+
+        String first = model.chat(toolRequest(TOOL_A, TOOL_B)).aiMessage().text();
+        String second = model.chat(toolRequest(TOOL_B, TOOL_A)).aiMessage().text();
+
+        assertEquals(1, delegate.calls);
+        assertEquals(first, second);
+    }
+
+    @Test
+    @DisplayName("requests without tools still store plain text")
+    void withoutToolsStoresPlainText() {
+        Cache<ChatCacheKey> cache = cache();
+        ScriptedChatModel delegate = new ScriptedChatModel(AiMessage.from("plain"));
+        CachingChatModel model = new CachingChatModel(delegate, cache);
+        ChatRequest request = ChatRequest.builder().messages(UserMessage.from("q")).build();
+
+        model.chat(request);
+
+        assertEquals("plain", cache.get(request.messages().toString(), String.class));
+    }
+
+    @Test
+    @DisplayName("tool-free requests hit a hand-written cache file in the pre-change format and leave it plain text")
+    void toolFreeRequestHitsExistingCacheFile() throws IOException {
+        ChatRequest request = ChatRequest.builder().messages(UserMessage.from("legacy question")).build();
+        // Pre-change on-disk format, built by hand: {"<generateKey(messages.toString())>":"<JSON-quoted plain text>"}
+        String legacyFile = "{\"" + KeyGenerator.generateKey(request.messages().toString()) + "\":\"\\\"legacy answer\\\"\"}";
+        Path cacheFile = tempCacheDir.resolve("Chat_test-model_42.json");
+        Files.writeString(cacheFile, legacyFile);
+        ClearLocalCachesExtension.clearInstances();
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
+
+        ScriptedChatModel delegate = new ScriptedChatModel();
+        String answer = new CachingChatModel(delegate, cache()).chat(request).aiMessage().text();
+
+        assertEquals("legacy answer", answer);
+        assertEquals(0, delegate.calls, "the legacy entry must be hit without contacting the delegate");
+        CacheManager.getDefaultInstance().flush();
+        assertEquals(legacyFile, Files.readString(cacheFile), "the cache file must stay untouched");
+    }
+
+    @Test
+    @DisplayName("an AiServices tool loop is fully served from a reloaded cache")
+    void aiServicesToolLoopIsCached() throws IOException {
+        ScriptedChatModel firstDelegate = new ScriptedChatModel(AiMessage.from(TOOL_LOOP_CALL), AiMessage.from("The answer is 2"));
+        CalculatorTool firstTool = new CalculatorTool();
+        String first = assistant(firstDelegate, firstTool).chat("what is 1+1?");
+
+        assertEquals("The answer is 2", first);
+        assertEquals(2, firstDelegate.calls);
+        assertEquals(1, firstTool.invocations);
+
+        CacheManager.getDefaultInstance().flush();
+        ClearLocalCachesExtension.clearInstances();
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
+
+        ScriptedChatModel secondDelegate = new ScriptedChatModel();
+        String second = assistant(secondDelegate, new CalculatorTool()).chat("what is 1+1?");
+
+        assertEquals(first, second);
+        assertEquals(0, secondDelegate.calls, "both model calls must be served from the reloaded cache");
+    }
+
+    private Assistant assistant(ChatModel delegate, CalculatorTool tool) {
+        return AiServices.builder(Assistant.class).chatModel(new CachingChatModel(delegate, cache())).tools(tool).build();
+    }
+
+    interface Assistant {
+        String chat(String question);
+    }
+
+    static final class CalculatorTool {
+        private int invocations;
+
+        @Tool("Increments a number")
+        String alpha(@P("the number") int x) {
+            invocations++;
+            return String.valueOf(x + 1);
+        }
+    }
+
+    /** Replies with the given messages in order. */
+    private static final class ScriptedChatModel implements ChatModel {
+        private final List<AiMessage> replies;
+        private final @Nullable FinishReason finishReason;
+        private int calls;
+
+        private ScriptedChatModel(FinishReason finishReason, AiMessage... replies) {
+            this.finishReason = finishReason;
+            this.replies = new ArrayList<>(List.of(replies));
+        }
+
+        private ScriptedChatModel(AiMessage... replies) {
+            this.finishReason = null;
+            this.replies = new ArrayList<>(List.of(replies));
+        }
+
+        @Override
+        public ChatResponse doChat(ChatRequest chatRequest) {
+            return ChatResponse.builder().aiMessage(replies.get(calls++)).finishReason(finishReason).build();
+        }
     }
 
     /**

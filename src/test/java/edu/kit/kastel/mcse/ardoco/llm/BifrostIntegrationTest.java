@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Set;
 
 import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.DisplayName;
@@ -14,10 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 
+import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.chat.Capability;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
+import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.service.AiServices;
 import edu.kit.kastel.mcse.ardoco.llm.cache.CacheManager;
 import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
 import edu.kit.kastel.mcse.ardoco.llm.cache.embedding.EmbeddingCacheParameter;
@@ -35,7 +40,8 @@ import edu.kit.kastel.mcse.ardoco.llm.util.SystemEnvironment;
 /**
  * Live test against a real Bifrost gateway: one tiny chat request, one embedding request, and checks that Bifrost
  * models share their cache identity with the native OpenAI platform. The cache-hit tests seed the native identity
- * and must be answered from the cache without any request. The class is skipped unless both
+ * and must be answered from the cache without any request. A tool loop through {@code AiServices} is run once
+ * against Bifrost and then replayed from the reloaded cache. The class is skipped unless both
  * {@code BIFROST_API_KEY} and {@code BIFROST_URL} are set.
  */
 @NullMarked
@@ -127,5 +133,84 @@ class BifrostIntegrationTest {
         CacheManager bifrostManager = new CacheManager(tempCacheDir, cacheEnvironment);
 
         assertArrayEquals(sentinel, EmbeddingCreator.create(configuration, bifrostManager).calculateEmbedding(text));
+    }
+
+    @Test
+    @DisplayName("an AiServices tool loop over Bifrost is replayed from the cache without any request")
+    void toolLoopIsReplayedFromCache() throws IOException {
+        LlmConfiguration configuration = LlmConfiguration.builder(ChatModelPlatform.BIFROST).modelName("openai/gpt-4o-mini").environment(environment).build();
+        ChatModelProvider provider = new ChatModelProvider(configuration);
+        String question = "Call the tool secretNumber and reply with only the number it returns.";
+
+        CountingChatModel bifrost = new CountingChatModel(provider.createChatModel());
+        SecretTool firstTool = new SecretTool();
+        CacheManager firstManager = new CacheManager(tempCacheDir, cacheEnvironment);
+        String firstAnswer = AiServices.builder(Assistant.class)
+                .chatModel(new CachingChatModel(bifrost, firstManager.getCache(provider.cacheParameters())))
+                .tools(firstTool)
+                .build()
+                .ask(question);
+        firstManager.flush();
+        ClearLocalCachesExtension.clearInstances();
+
+        assertTrue(firstAnswer.contains(SecretTool.SECRET), "the model must have used the tool: " + firstAnswer);
+        assertTrue(firstTool.calls > 0, "the tool must have been executed");
+        assertTrue(bifrost.calls >= 2, "a tool loop needs a tool call and a final answer");
+
+        ChatModel unreachable = new ChatModel() {
+            @Override
+            public ChatResponse doChat(ChatRequest chatRequest) {
+                throw new AssertionError("the replayed tool loop must not reach the model");
+            }
+        };
+        CacheManager secondManager = new CacheManager(tempCacheDir, cacheEnvironment);
+        String secondAnswer = AiServices.builder(Assistant.class)
+                .chatModel(new CachingChatModel(unreachable, secondManager.getCache(provider.cacheParameters())))
+                .tools(new SecretTool())
+                .build()
+                .ask(question);
+
+        assertEquals(firstAnswer, secondAnswer);
+    }
+
+    interface Assistant {
+        String ask(String question);
+    }
+
+    static final class SecretTool {
+        static final String SECRET = "48151623";
+        private int calls;
+
+        @Tool("Returns the secret number")
+        String secretNumber() {
+            calls++;
+            return SECRET;
+        }
+    }
+
+    static final class CountingChatModel implements ChatModel {
+        private final ChatModel delegate;
+        private int calls;
+
+        CountingChatModel(ChatModel delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public ChatResponse doChat(ChatRequest chatRequest) {
+            calls++;
+            return delegate.doChat(chatRequest);
+        }
+
+        // The provider-specific defaults must reach ChatModel.chat, which merges them into the request (OpenAI expects its own parameter type).
+        @Override
+        public ChatRequestParameters defaultRequestParameters() {
+            return delegate.defaultRequestParameters();
+        }
+
+        @Override
+        public Set<Capability> supportedCapabilities() {
+            return delegate.supportedCapabilities();
+        }
     }
 }
