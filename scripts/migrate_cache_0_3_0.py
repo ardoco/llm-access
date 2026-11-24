@@ -26,6 +26,8 @@ DEFAULT_PROVIDERS = "openai,ollama"
 # Strips any provider prefix from chat files, like Bifrost.cacheModelName in Java.
 ALL_PROVIDERS = "all"
 NAME_RE = re.compile(r"^([A-Za-z0-9$]+)_(.+)\.json$")
+# llm-access stores entries under UUID keys (KeyGenerator); other caches (e.g. ARDoCo's <MODEL>-cache.json) do not.
+KEY_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 
 
 @dataclass
@@ -103,6 +105,9 @@ def plan(directory, options=None):
             continue
         if not m:
             p.skipped.append((name, "name does not match <Origin>_<parameters>.json"))
+            continue
+        if not all(KEY_RE.match(k) for k in data):
+            p.skipped.append((name, "not an llm-access cache (keys are not UUIDs)"))
             continue
         target, embedding, kept_prefix = _target_name(m.group(1), m.group(2), options)
         if any(_is_number_list(v) != embedding for v in data.values()):
