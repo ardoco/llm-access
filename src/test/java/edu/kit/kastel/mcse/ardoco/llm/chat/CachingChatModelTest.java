@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import edu.kit.kastel.mcse.ardoco.llm.cache.ClearLocalCachesExtension;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheKey;
 import edu.kit.kastel.mcse.ardoco.llm.cache.chat.ChatCacheParameter;
 import edu.kit.kastel.mcse.ardoco.llm.util.EnvironmentProvider;
+import edu.kit.kastel.mcse.ardoco.llm.util.KeyGenerator;
 import edu.kit.kastel.mcse.ardoco.llm.util.MapEnvironment;
 
 /**
@@ -220,6 +222,26 @@ class CachingChatModelTest {
         model.chat(request);
 
         assertEquals("plain", cache.get(request.messages().toString(), String.class));
+    }
+
+    @Test
+    @DisplayName("tool-free requests hit a hand-written cache file in the pre-change format and leave it plain text")
+    void toolFreeRequestHitsExistingCacheFile() throws IOException {
+        ChatRequest request = ChatRequest.builder().messages(UserMessage.from("legacy question")).build();
+        // Pre-change on-disk format, built by hand: {"<generateKey(messages.toString())>":"<JSON-quoted plain text>"}
+        String legacyFile = "{\"" + KeyGenerator.generateKey(request.messages().toString()) + "\":\"\\\"legacy answer\\\"\"}";
+        Path cacheFile = tempCacheDir.resolve("Chat_test-model_42.json");
+        Files.writeString(cacheFile, legacyFile);
+        ClearLocalCachesExtension.clearInstances();
+        CacheManager.setCacheDir(tempCacheDir.toString(), environment);
+
+        ScriptedChatModel delegate = new ScriptedChatModel();
+        String answer = new CachingChatModel(delegate, cache()).chat(request).aiMessage().text();
+
+        assertEquals("legacy answer", answer);
+        assertEquals(0, delegate.calls, "the legacy entry must be hit without contacting the delegate");
+        CacheManager.getDefaultInstance().flush();
+        assertEquals(legacyFile, Files.readString(cacheFile), "the cache file must stay untouched");
     }
 
     @Test
